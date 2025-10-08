@@ -331,8 +331,8 @@ class ProfessionalAudioProcessor:
         
         output = signal.copy()
         for i in range(len(signal)):
-            delay_samples = int(modulation[i])
-            if i >= delay_samples:
+            delay_samples = int(abs(modulation[i]))
+            if i >= delay_samples and delay_samples < len(signal):
                 output[i] = (1 - wet) * signal[i] + wet * signal[i - delay_samples]
         
         return output
@@ -579,21 +579,23 @@ class SolidarityAudioProcessor:
     def _apply_spatial_effect(self, signal: np.ndarray) -> np.ndarray:
         """Apply spatial audio effect"""
         # Rotate position in 3D space
-        theta = 2 * np.pi * np.arange(len(signal)) / len(signal)
+        theta = 2 * np.pi * np.arange(len(signal)) / max(len(signal), 1)
         x = np.cos(theta)
         z = np.sin(theta)
         
         # Average spatial effect
         output = np.zeros_like(signal)
-        samples_per_position = len(signal) // 100
+        samples_per_position = max(len(signal) // 100, 1)
         
         for i in range(0, len(signal), samples_per_position):
             end_idx = min(i + samples_per_position, len(signal))
             chunk = signal[i:end_idx]
-            pos_idx = i // samples_per_position
+            pos_idx = min(i // samples_per_position, len(x) - 1)
             if pos_idx < len(x):
+                x_idx = min(pos_idx * len(x) // max(100, 1), len(x) - 1)
+                z_idx = min(pos_idx * len(z) // max(100, 1), len(z) - 1)
                 left, right = self.spatial_processor.apply_3d_positioning(
-                    chunk, x[pos_idx * len(x) // 100], 0.0, z[pos_idx * len(z) // 100]
+                    chunk, x[x_idx], 0.0, z[z_idx]
                 )
                 output[i:end_idx] = (left + right) / 2
         
