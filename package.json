@@ -1,7 +1,7 @@
 {
   "name": "solidarity-platform",
   "version": "2.41.0",
-  "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system - Professional Audio Processing & Financial Commerce Platform",
+  "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system - Professional Bridging Processing & Financial Commerce Platform",
   "main": "launcher.js",
   "scripts": {
     "start": "node src/api/server.js",
@@ -10,8 +10,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:colors": "node test_color_utils.js",
-    "test:audio": "python3 src/solidarityAudioProcessor.py",
-    "test:advanced": "python3 test_advanced_audio.py",
+    "test:bridging": "python3 src/solidarityBridgingProcessor.py",
+    "test:advanced": "python3 test_advanced_bridging.py",
     "test:quantum": "python3 quantum_cubic_backend.py report",
     "quantum:demo": "node launcher.js quantum",
     "quantum:cubic": "node launcher.js cubic",
@@ -68,22 +68,22 @@
     "correction:demo": "node src/correctedSolidaritySystem.js",
     "correction:test": "node src/focusedPassCorrector.js",
     "solidarity:full": "node src/correctedSolidaritySystem.js",
-    "golden:demo": "node src/goldenHarmonicSystem.js",
-    "golden:test": "node src/goldenHarmonicSystem.js",
-    "golden:full": "node src/goldenHarmonicSystem.js",
-    "master:golden": "node src/goldenHarmonicSystem.js",
+    "anchor:demo": "node src/anchorBridgingSystem.js",
+    "anchor:test": "node src/anchorBridgingSystem.js",
+    "anchor:full": "node src/anchorBridgingSystem.js",
+    "master:anchor": "node src/anchorBridgingSystem.js",
     "ultimate:demo": "node src/ultimateSolidaritySystem.js",
     "ultimate:test": "node src/ultimateSolidaritySystem.js",
     "ultimate:full": "node src/ultimateSolidaritySystem.js",
     "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
   },
   "keywords": [
-    "audio-processing",
+    "bridging-processing",
     "financial-commerce",
     "blockchain",
-    "spatial-audio",
+    "spatial-bridging",
     "professional-studio",
-    "harmonic-analysis",
+    "bridging-analysis",
     "real-time-processing",
     "secure-transactions",
     "api-server",
@@ -93,7 +93,7 @@
     "sacred-geometry",
     "henry-7-step",
     "cubit-calculation",
-    "harmonic-progression"
+    "bridging-progression"
   ],
   "authors": [
     "Scott Charles Olson (Charly)",

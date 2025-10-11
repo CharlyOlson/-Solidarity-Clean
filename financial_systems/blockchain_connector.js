@@ -17,14 +17,14 @@
  * 
  * Blockchain Network Integration
  * Multi-chain support (Ethereum, Solana, etc.)
- * Golden ratio (φ = 1.618) baseline for all operations
+ * Golden ratio (anchor constant = 1.618) baseline for all operations
  */
 
 class BlockchainConnector {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.anchorRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Connection configuration
     this.config = {

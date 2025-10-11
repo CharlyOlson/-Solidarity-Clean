@@ -27,8 +27,8 @@
     "model_download_timeout": 300000
   },
   "safety_configuration": {
-    "golden_ratio": 1.618,
-    "harmonic_baseline": 0.618,
+    "anchor_ratio": 1.618,
+    "bridging_baseline": 0.618,
     "default_safety_level": 0.618,
     "safety_thresholds": {
       "CRITICAL_EMERGENCY": {
@@ -118,13 +118,13 @@
   "quantum_integration": {
     "enabled": true,
     "coherence_harmonization": true,
-    "golden_ratio_baseline": 0.618,
+    "anchor_ratio_baseline": 0.618,
     "sync_with_quantum_system": true
   },
   "solidarity_context": {
     "platform_name": "Solidarity-Clean",
-    "harmonic_processing": true,
-    "golden_ratio_integration": true,
+    "bridging_processing": true,
+    "anchor_ratio_integration": true,
     "quantum_coherence_levels": [0.03, 0.25, 0.618, 0.85, 0.97],
     "default_quantum_coherence": 0.618
   },
@@ -161,7 +161,7 @@
     "custom_solidarity_prompts": true,
     "emergency_stabilization": true,
     "model_management": true,
-    "harmonic_ai_integration": true,
+    "bridging_ai_integration": true,
     "multi_safety_level_testing": true
   }
 }

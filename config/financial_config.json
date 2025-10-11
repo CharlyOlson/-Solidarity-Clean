@@ -15,9 +15,9 @@
     "platform": "Solidarity-Clean",
     "enabled": true
   },
-  "golden_ratio_configuration": {
-    "phi": 1.618,
-    "harmonic_baseline": 0.618,
+  "anchor_ratio_configuration": {
+    "anchor": 1.618,
+    "bridging_baseline": 0.618,
     "apply_to_all_calculations": true
   },
   "test_mode": {
@@ -79,10 +79,10 @@
     "local_computation_first": true,
     "batch_operations": true,
     "dynamic_gas_pricing": true,
-    "use_golden_ratio_for_estimation": true
+    "use_anchor_ratio_for_estimation": true
   },
   "safety_configuration": {
-    "golden_ratio_baseline": 0.618,
+    "anchor_ratio_baseline": 0.618,
     "risk_thresholds": {
       "low": {
         "min": 0.618,
@@ -144,11 +144,11 @@
   },
   "portfolio_optimization": {
     "rebalance_frequency": "daily",
-    "use_golden_ratio_targets": true,
-    "harmonic_balancing": true,
+    "use_anchor_ratio_targets": true,
+    "bridging_balancing": true,
     "risk_tolerance": "moderate",
     "primary_asset_percentage": 61.8,
-    "distribution_method": "golden_ratio_powers"
+    "distribution_method": "anchor_ratio_powers"
   },
   "market_data": {
     "providers": ["coingecko", "coinmarketcap"],
@@ -203,7 +203,7 @@
     "gas_optimization": true,
     "audit_logging": true,
     "compliance_features": true,
-    "golden_ratio_calculations": true,
+    "anchor_ratio_calculations": true,
     "safety_integration": true,
     "local_processing": true,
     "batch_operations": true,
