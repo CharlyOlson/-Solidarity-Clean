@@ -1,7 +1,7 @@
 {
   "name": "solidarity-platform",
   "version": "2.41.0",
-  "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system - Professional Audio Processing & Financial Commerce Platform",
+  "description": "Solidarity Platform implementing the Henry 7 Step 14 Trott Waltz numerological system - Professional Bridging Anchor Processing & Financial Commerce Platform",
   "main": "launcher.js",
   "scripts": {
     "start": "node src/api/server.js",
@@ -10,8 +10,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:colors": "node test_color_utils.js",
-    "test:audio": "python3 src/solidarityAudioProcessor.py",
-    "test:advanced": "python3 test_advanced_audio.py",
+    "test:bridging": "python3 bridging_anchor_systems/bridging_anchor_processor.py",
+    "test:advanced": "python3 bridging_anchor_systems/bridging_anchor_test_suite.py",
     "test:quantum": "python3 quantum_cubic_backend.py report",
     "quantum:demo": "node launcher.js quantum",
     "quantum:cubic": "node launcher.js cubic",
@@ -78,12 +78,13 @@
     "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
   },
   "keywords": [
-    "audio-processing",
+    "bridging-anchor-processing",
+    "signal-processing",
     "financial-commerce",
     "blockchain",
-    "spatial-audio",
+    "spatial-processing",
     "professional-studio",
-    "harmonic-analysis",
+    "base-ratio-analysis",
     "real-time-processing",
     "secure-transactions",
     "api-server",
@@ -91,9 +92,9 @@
     "solidarity",
     "numerology",
     "sacred-geometry",
-    "henry-7-step",
+    "henry-7-step-14-trott-waltz",
     "cubit-calculation",
-    "harmonic-progression"
+    "bridging-progression"
   ],
   "authors": [
     "Scott Charles Olson (Charly)",
