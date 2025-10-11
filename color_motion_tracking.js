@@ -20,22 +20,6 @@ const MOTION_SAFETY_THRESHOLDS = {
 
 let globalMotionSafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-// Import Solidarity platform utilities
-const colorUtils = require('./src/utils/colorUtils');
-const { bridgingCommands, executeBridgingCommand } = require('./src/enhancedBridgingStudioCommands');
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {
     constructor() {
@@ -403,231 +387,25 @@ class ComprehensiveSolidarityDiscovery {
 const discovery = new ComprehensiveSolidarityDiscovery();
 discovery.scanAllLocations();
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-// Color Motion Visualization Functions
-class ColorMotionVisualizer {
-    constructor() {
-        this.colors = [];
-        this.palette = colorUtils.generateBridgingPalette(240, 6); // Generate chakra-based bridging palette
-        this.chakraColors = {
-            root: '#FF0000',       // Red - stability layers
-            sacral: '#FF6600',     // Orange - movement energy
-            solar: '#FFFF00',      // Yellow - core applications
-            heart: '#00FF00',      // Green - balance transitions
-            throat: '#0066FF',     // Blue - deep tones
-            third_eye: '#6600FF',  // Indigo - projection points
-            crown: '#FF00FF'       // Violet - anti-color borders
-        };
-    }
-
-    /**
-     * Visualize motion tracking data with chakra-based color gradients
-     * @param {Array} data - Motion tracking data points 
-     * @param {Object} options - Visualization options
-     */
-    visualizeMotionData(data, options = {}) {
-        console.log("\n🎨 Visualizing Motion Tracking Data with Chakra Colors");
-        console.log("=".repeat(50));
-        
-        const defaultOptions = {
-            showIntensity: true,
-            colorize: true,
-            threshold: 0.75,
-            useChakraColors: true
-        };
-        
-        const config = { ...defaultOptions, ...options };
-        
-        data.forEach((point, index) => {
-            const strength = Math.min(1, Math.max(0, point.intensity || 0.5));
-            const colorData = this.getChakraColorIntensity(strength);
-            
-            console.log(`Point ${index + 1}:`);
-            console.log(`  Strength: ${strength.toFixed(2)}`);
-            console.log(`  Chakra Color: ${colorData.fill}`);
-            console.log(`  Energy Level: ${colorData.chakraLevel}`);
-            
-            if (colorData.stroke) {
-                console.log(`  Anti-Border: ${colorData.stroke} (high intensity)`);
-            }
-            
-            console.log(`  Coordinates: (${point.x || 0}, ${point.y || 0})`);
-            console.log("-".repeat(40));
-        });
-    }
-    
-    /**
-     * Get chakra-based color intensity mapping
-     * @param {number} intensity - Normalized intensity (0-1)
-     * @returns {Object} - Color data with chakra mapping
-     */
-    getChakraColorIntensity(intensity) {
-        const chakraKeys = Object.keys(this.chakraColors);
-        const chakraIndex = Math.floor(intensity * (chakraKeys.length - 1));
-        const chakraKey = chakraKeys[chakraIndex];
-        
-        return {
-            fill: this.chakraColors[chakraKey],
-            stroke: intensity > 0.75 ? this.getAntiColor(this.chakraColors[chakraKey]) : null,
-            chakraLevel: chakraKey,
-            intensity: intensity
-        };
-    }
-    
-    /**
-     * Generate anti-color for borders
-     * @param {string} color - Original color hex
-     * @returns {string} - Anti-color hex
-     */
-    getAntiColor(color) {
-        // Convert to RGB and invert
-        const hex = color.replace('#', '');
-        const r = 255 - parseInt(hex.substr(0, 2), 16);
-        const g = 255 - parseInt(hex.substr(2, 2), 16);
-        const b = 255 - parseInt(hex.substr(4, 2), 16);
-        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-    }
-    
-    /**
-     * Generate a chakra-based color gradient for visualization
-     * @param {number} steps - Number of gradient steps
-     * @returns {Array} - Array of chakra color values
-     */
-    createChakraGradient(steps = 7) {
-        const gradient = [];
-        const chakraKeys = Object.keys(this.chakraColors);
-        
-        for (let i = 0; i < steps; i++) {
-            const factor = i / (steps - 1);
-            const chakraIndex = Math.floor(factor * (chakraKeys.length - 1));
-            gradient.push({
-                color: this.chakraColors[chakraKeys[chakraIndex]],
-                chakra: chakraKeys[chakraIndex],
-                intensity: factor
-            });
-        }
-        
-        return gradient;
-    }
-}
-
-// Export for module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        ComprehensiveSolidarityDiscovery,
-        ColorMotionVisualizer
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ComprehensiveSolidarityDiscovery
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     };
 }
 
 // Auto-run if called directly
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-async function main() {
-    const discovery = new ComprehensiveSolidarityDiscovery();
-    await discovery.scanAllLocations();
-    await discovery.detectMobileDevices();
-    discovery.generateDiscoveryReport();
-}
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-// Demo chakra visualization
-function demoChakraVisualization() {
-    const visualizer = new ColorMotionVisualizer();
-    
-    // Sample motion tracking data with chakra intensity mapping
-    const sampleData = [
-        { x: 10, y: 20, intensity: 0.1, chakra: 'root' },        // Pastel red - new growth
-        { x: 15, y: 25, intensity: 0.4, chakra: 'solar' },       // Mid yellow - developing
-        { x: 20, y: 30, intensity: 0.8, chakra: 'throat' },      // Deep blue - stable
-        { x: 25, y: 35, intensity: 1.0, chakra: 'crown' }        // Intense violet - peak energy
-    ];
-    
-    visualizer.visualizeMotionData(sampleData);
-    
-    console.log("\n🌈 Chakra Gradient Demo:");
-    const gradient = visualizer.createChakraGradient(7);
-    gradient.forEach((colorData, i) => {
-        console.log(`${colorData.chakra}: ${colorData.color} (Intensity: ${colorData.intensity.toFixed(2)})`);
-    });
-}
-
-// Python environment detection
-const venvPython = './venv/Scripts/python.exe'; // Windows path
-let pythonCommand = 'python3';
-
-=======
 // Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
 // Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
 // Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
 // Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
 if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
 } else {
     console.log('💡 Run python:setup to create secure environment');
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-}
-
-// Run the demo if this file is executed directly
-if (require.main === module) {
-    demoChakraVisualization();
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }
