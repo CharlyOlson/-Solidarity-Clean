@@ -16,7 +16,7 @@
  * ==========================================
  * 
  * Cost Optimization and Efficiency System
- * Golden ratio (φ = 1.618) baseline for all optimization
+ * Base ratio (φ = 1.618) baseline for all optimization
  * Minimize gas fees through local computation
  * Batch operations for cost efficiency
  */
@@ -24,8 +24,8 @@
 class FinancialOptimizer {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.baseRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Configuration
     this.config = {
@@ -56,8 +56,8 @@ class FinancialOptimizer {
     this.maxHistorySize = 100;
     
     console.log('⚡ Financial Optimizer initialized');
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
-    console.log(`📊 Harmonic Baseline: ${this.harmonicBaseline}`);
+    console.log(`🌟 Base Ratio: ${this.baseRatio}`);
+    console.log(`📊 Bridging Baseline: ${this.bridgingBaseline}`);
   }
   
   // Optimize transaction gas
@@ -73,12 +73,12 @@ class FinancialOptimizer {
       };
     }
     
-    // Calculate optimal gas price using golden ratio
+    // Calculate optimal gas price using base ratio
     const optimalGasPrice = this.calculateOptimalGasPrice(currentGasPrice);
     
-    // Estimate gas limit with safety margin (golden ratio)
+    // Estimate gas limit with safety margin (base ratio)
     const optimizedGasLimit = transaction.estimatedGas
-      ? Math.ceil(transaction.estimatedGas * this.goldenRatio)
+      ? Math.ceil(transaction.estimatedGas * this.baseRatio)
       : transaction.gasLimit;
     
     // Calculate savings
@@ -111,15 +111,15 @@ class FinancialOptimizer {
       const avgGasPrice = this.calculateAverageGasPrice();
       const medianGasPrice = this.calculateMedianGasPrice();
       
-      // Use harmonic baseline to balance between avg and median
-      const targetPrice = avgGasPrice * this.harmonicBaseline + medianGasPrice * (1 - this.harmonicBaseline);
+      // Use bridging baseline to balance between avg and median
+      const targetPrice = avgGasPrice * this.bridgingBaseline + medianGasPrice * (1 - this.bridgingBaseline);
       
       // Don't exceed max gas price
       return Math.min(targetPrice, this.config.maxGasPrice, currentGasPrice * 1.1);
     }
     
-    // Apply golden ratio reduction to current price
-    const optimizedPrice = currentGasPrice / this.goldenRatio;
+    // Apply base ratio reduction to current price
+    const optimizedPrice = currentGasPrice / this.baseRatio;
     
     return Math.max(optimizedPrice, 1); // Minimum 1 Gwei
   }
@@ -294,10 +294,10 @@ class FinancialOptimizer {
   // Perform local calculation
   performLocalCalculation(computation) {
     switch (computation.type) {
-      case 'golden_ratio':
-        return computation.value * this.goldenRatio;
-      case 'harmonic':
-        return computation.value * this.harmonicBaseline;
+      case 'base_ratio':
+        return computation.value * this.baseRatio;
+      case 'bridging':
+        return computation.value * this.bridgingBaseline;
       case 'balance':
         return this.precisionRound(computation.value, 8);
       default:
@@ -305,9 +305,9 @@ class FinancialOptimizer {
     }
   }
   
-  // Optimize portfolio allocation with golden ratio
+  // Optimize portfolio allocation with base ratio
   optimizeAllocation(portfolio) {
-    console.log('🌟 Optimizing portfolio with golden ratio...');
+    console.log('🌟 Optimizing portfolio with base ratio...');
     
     const totalValue = portfolio.totalValue || 0;
     const assets = portfolio.assets || [];
@@ -315,7 +315,7 @@ class FinancialOptimizer {
     // Sort assets by current value
     const sortedAssets = [...assets].sort((a, b) => b.value - a.value);
     
-    // Apply golden ratio distribution
+    // Apply base ratio distribution
     const optimizedAllocation = [];
     let remainingPercentage = 100;
     
@@ -323,11 +323,11 @@ class FinancialOptimizer {
       let allocation;
       
       if (index === 0) {
-        // Primary asset gets harmonic baseline
-        allocation = this.harmonicBaseline * 100;
+        // Primary asset gets bridging baseline
+        allocation = this.bridgingBaseline * 100;
       } else {
-        // Other assets distributed by golden ratio powers
-        const divisor = Math.pow(this.goldenRatio, index);
+        // Other assets distributed by base ratio powers
+        const divisor = Math.pow(this.baseRatio, index);
         allocation = Math.min(remainingPercentage / divisor, remainingPercentage);
       }
       

@@ -16,7 +16,7 @@
  * ======================================================
  * 
  * Core Financial Configuration System
- * Golden ratio (φ = 1.618) baseline for all financial calculations
+ * Base ratio (φ = 1.618) baseline for all financial calculations
  * Integrated with quantum coherence and safety systems
  */
 
@@ -26,8 +26,8 @@ const fs = require('fs');
 class FinancialConfiguration {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.baseRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Financial system configuration
     this.config = {
@@ -36,8 +36,8 @@ class FinancialConfiguration {
         name: 'Solidarity-Clean Financial System',
         version: this.version,
         trademark: 'TRADEMARKED BY SCOTT CHARLES OLSON',
-        goldenRatio: this.goldenRatio,
-        harmonicBaseline: this.harmonicBaseline
+        baseRatio: this.baseRatio,
+        bridgingBaseline: this.bridgingBaseline
       },
       
       // Test mode (ALWAYS START IN TEST MODE)
@@ -107,9 +107,9 @@ class FinancialConfiguration {
         targetGasPrice: 50 // Gwei
       },
       
-      // Financial safety (integrated with golden ratio)
+      // Financial safety (integrated with base ratio)
       safety: {
-        goldenRatioBaseline: this.harmonicBaseline,
+        baseRatioBaseline: this.bridgingBaseline,
         riskThresholds: {
           low: { min: 0.618, max: 0.75, multiplier: 1.0 },
           moderate: { min: 0.50, max: 0.618, multiplier: 0.8 },
@@ -132,8 +132,8 @@ class FinancialConfiguration {
       // Portfolio optimization
       portfolio: {
         rebalanceFrequency: 'daily', // daily, weekly, monthly
-        goldenRatioTargets: true,
-        harmonicBalancing: true,
+        baseRatioTargets: true,
+        bridgingBalancing: true,
         riskTolerance: 'moderate'
       },
       
@@ -170,8 +170,8 @@ class FinancialConfiguration {
     };
     
     console.log('💰 Financial Configuration System initialized');
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
-    console.log(`📊 Harmonic Baseline: ${this.harmonicBaseline}`);
+    console.log(`🌟 Base Ratio: ${this.baseRatio}`);
+    console.log(`📊 Bridging Baseline: ${this.bridgingBaseline}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
   }
   
@@ -293,11 +293,11 @@ class FinancialConfiguration {
     return Math.min(targetPrice, maxPrice, currentGasPrice * 1.1);
   }
   
-  // Apply golden ratio to financial calculation
-  applyGoldenRatio(value, operation = 'multiply') {
+  // Apply base ratio to financial calculation
+  applyBaseRatio(value, operation = 'multiply') {
     switch (operation) {
       case 'multiply':
-        return value * this.goldenRatio;
+        return value * this.baseRatio;
       case 'divide':
         return value / this.goldenRatio;
       case 'harmonic':
@@ -318,8 +318,8 @@ class FinancialConfiguration {
     return {
       version: this.version,
       testMode: this.config.testMode,
-      goldenRatio: this.goldenRatio,
-      harmonicBaseline: this.harmonicBaseline,
+      baseRatio: this.baseRatio,
+      bridgingBaseline: this.bridgingBaseline,
       networksEnabled: Object.entries(this.config.networks).reduce((acc, [network, envs]) => {
         acc[network] = Object.entries(envs).filter(([, config]) => config.enabled).map(([env]) => env);
         return acc;
@@ -338,8 +338,8 @@ class FinancialConfiguration {
     console.log('='.repeat(60));
     console.log(`Version: ${status.version}`);
     console.log(`🧪 Test Mode: ${status.testMode ? 'ENABLED ✅' : 'DISABLED ⚠️'}`);
-    console.log(`🌟 Golden Ratio: ${status.goldenRatio}`);
-    console.log(`📊 Harmonic Baseline: ${status.harmonicBaseline}`);
+    console.log(`🌟 Base Ratio: ${status.baseRatio}`);
+    console.log(`📊 Bridging Baseline: ${status.bridgingBaseline}`);
     console.log(`📋 Compliance Mode: ${status.complianceMode}`);
     console.log(`⛽ Gas Optimization: ${status.gasOptimization ? 'ENABLED' : 'DISABLED'}`);
     
@@ -351,7 +351,7 @@ class FinancialConfiguration {
     });
     
     console.log('\n💳 TRANSACTION LIMITS:');
-    const limits = this.calculateSafetyLimits(this.harmonicBaseline);
+    const limits = this.calculateSafetyLimits(this.bridgingBaseline);
     console.log(`  Daily Limit: $${limits.dailyLimit}`);
     console.log(`  Single Transaction: $${limits.singleTransactionLimit}`);
     console.log(`  Max Gas Price: ${limits.maxGasPrice} Gwei`);
@@ -391,11 +391,11 @@ function demo() {
     console.log('Errors:', validation.errors);
   }
   
-  // Test golden ratio calculations
-  console.log('\n🌟 Golden Ratio Calculations:');
-  console.log(`100 * φ = ${config.applyGoldenRatio(100, 'multiply')}`);
-  console.log(`100 / φ = ${config.applyGoldenRatio(100, 'divide')}`);
-  console.log(`100 * 0.618 = ${config.applyGoldenRatio(100, 'harmonic')}`);
+  // Test base ratio calculations
+  console.log('\n🌟 Base Ratio Calculations:');
+  console.log(`100 * φ = ${config.applyBaseRatio(100, 'multiply')}`);
+  console.log(`100 / φ = ${config.applyBaseRatio(100, 'divide')}`);
+  console.log(`100 * 0.618 = ${config.applyBaseRatio(100, 'bridging')}`);
   
   // Test precision rounding
   console.log('\n📐 Precision Rounding:');
