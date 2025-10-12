@@ -148,18 +148,18 @@ class HarmoniousSafetyCoordinator {
         return this.getSystemStatus();
     }
 
-    // 🚨 Emergency stabilization - return all systems to Golden Ratio
+    // 🚨 Emergency stabilization - return all systems to Bridging Baseline
     emergencyStabilization(reason = 'Manual trigger') {
         console.log('🚨 EMERGENCY STABILIZATION ACTIVATED');
         console.log(`📋 Reason: ${reason}`);
         
-        const goldenRatio = 0.618;
-        console.log(`🌟 Restoring all systems to Golden Ratio: ${goldenRatio}`);
+        const bridgingBaseline = 0.618;
+        console.log(`🌟 Restoring all systems to Bridging Baseline: ${bridgingBaseline}`);
         
-        // Set all components to Golden Ratio
+        // Set all components to Bridging Baseline
         for (const component in this.componentLevels) {
             if (component !== 'system') {
-                this.componentLevels[component] = goldenRatio;
+                this.componentLevels[component] = bridgingBaseline;
             }
         }
         

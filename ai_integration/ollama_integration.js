@@ -71,7 +71,7 @@ const AI_SAFETY_THRESHOLDS = {
     models: ['llama3.2:3b', 'llama3.1:8b', 'codellama:7b'], 
     maxTokens: 4000,
     temperature: 0.4,
-    systemPrompt: 'Provide comprehensive, helpful responses with full capabilities. Golden Ratio (φ = 1.618) baseline active.'
+    systemPrompt: 'Provide comprehensive, helpful responses with full capabilities. Base Ratio (φ = 1.618) baseline active.'
   },
   UPPER_CAUTION: { 
     min: 0.75, max: 0.85, 
@@ -100,7 +100,7 @@ const AI_SAFETY_THRESHOLDS = {
 };
 
 // Global AI safety level (harmonized with quantum coherence)
-let globalAISafetyLevel = 0.618; // Golden Ratio PHI - harmonious starting point
+let globalAISafetyLevel = 0.618; // Base Ratio PHI - bridging starting point
 
 // 🛡️ Safety Assessment Function
 function assessAISafety(safetyLevel = globalAISafetyLevel) {
@@ -110,8 +110,8 @@ function assessAISafety(safetyLevel = globalAISafetyLevel) {
         level: thresholdName, 
         ...threshold,
         currentSafetyLevel: safetyLevel,
-        goldenRatio: 1.618,
-        harmonicBaseline: 0.618
+        baseRatio: 1.618,
+        bridgingBaseline: 0.618
       };
     }
   }
@@ -120,8 +120,8 @@ function assessAISafety(safetyLevel = globalAISafetyLevel) {
     level: 'WARNING_LEVEL', 
     ...AI_SAFETY_THRESHOLDS.WARNING_LEVEL, 
     currentSafetyLevel: safetyLevel,
-    goldenRatio: 1.618,
-    harmonicBaseline: 0.618
+    baseRatio: 1.618,
+    bridgingBaseline: 0.618
   };
 }
 
@@ -163,7 +163,7 @@ async function queryOllama(prompt, options = {}) {
       safetyLevel: safetyLevel,
       safetyMode: safetyConfig.mode,
       tokensUsed: response.data.eval_count || 0,
-      goldenRatio: safetyConfig.goldenRatio,
+      baseRatio: safetyConfig.baseRatio,
       metadata: {
         done: response.data.done,
         context: response.data.context,
@@ -205,7 +205,7 @@ function harmonizeAIWithSystem(quantumCoherence, launcherSafety, solidaritySafet
   console.log(`   Launcher Safety: ${launcherSafety.toFixed(3)}`);
   console.log(`   Solidarity Safety: ${solidaritySafety.toFixed(3)}`);
   console.log(`   AI Safety (harmonized): ${globalAISafetyLevel.toFixed(3)}`);
-  console.log(`   Golden Ratio Baseline: 0.618`);
+  console.log(`   Bridging Baseline: 0.618`);
   
   return assessAISafety();
 }
@@ -222,8 +222,8 @@ function setAISafetyLevel(newLevel) {
 function emergencyAIStabilization(reason = 'Manual trigger') {
   console.log('🚨 EMERGENCY AI STABILIZATION ACTIVATED');
   console.log(`📋 Reason: ${reason}`);
-  setAISafetyLevel(0.618); // Return to Golden Ratio stability
-  console.log('🌟 All AI systems restored to Golden Ratio (φ = 0.618)');
+  setAISafetyLevel(0.618); // Return to Bridging Baseline stability
+  console.log('🌟 All AI systems restored to Bridging Baseline (φ = 0.618)');
   return assessAISafety();
 }
 
@@ -267,9 +267,9 @@ ${safetyConfig.systemPrompt}
 SOLIDARITY PLATFORM CONTEXT:
 - Quantum Coherence Level: ${solidarityContext.quantumCoherence || 0.618}
 - System Safety Mode: ${safetyConfig.level}
-- Harmonic Processing: ${solidarityContext.harmonicMode || 'standard'}
-- Golden Ratio Integration: Active (φ = 1.618)
-- Baseline Safety: ${safetyConfig.harmonicBaseline}
+- Bridging Processing: ${solidarityContext.bridgingMode || 'standard'}
+- Base Ratio Integration: Active (φ = 1.618)
+- Baseline Safety: ${safetyConfig.bridgingBaseline}
 
 User Query: ${query}
 `;
@@ -314,8 +314,8 @@ function getAISystemStatus() {
     currentSafetyLevel: globalAISafetyLevel,
     safetyMode: safetyConfig.level,
     safetyRange: `${safetyConfig.min.toFixed(3)}-${safetyConfig.max.toFixed(3)}`,
-    goldenRatio: safetyConfig.goldenRatio,
-    harmonicBaseline: safetyConfig.harmonicBaseline,
+    baseRatio: safetyConfig.baseRatio,
+    bridgingBaseline: safetyConfig.bridgingBaseline,
     recommendedModels: safetyConfig.models,
     maxTokens: safetyConfig.maxTokens,
     temperature: safetyConfig.temperature,
@@ -378,7 +378,7 @@ async function demo() {
     if (result.success) {
       console.log(`✅ Response: ${result.content.substring(0, 100)}...`);
       console.log(`📊 Tokens: ${result.tokensUsed}, Mode: ${result.safetyMode}`);
-      console.log(`🌟 Golden Ratio: ${result.goldenRatio}`);
+      console.log(`🌟 Base Ratio: ${result.baseRatio}`);
     } else {
       console.log(`❌ Error: ${result.error}`);
     }
@@ -388,10 +388,10 @@ async function demo() {
   console.log('\n🎯 Testing Solidarity Context Processing:');
   setAISafetyLevel(0.618);
   const contextResult = await processWithSolidarityContext(
-    'What is the golden ratio?',
+    'What is the base ratio?',
     {
       quantumCoherence: 0.618,
-      harmonicMode: 'enhanced',
+      bridgingMode: 'enhanced',
       safetyLevel: 0.618
     }
   );

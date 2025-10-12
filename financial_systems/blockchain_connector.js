@@ -23,8 +23,8 @@
 class BlockchainConnector {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.baseRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Connection configuration
     this.config = {
