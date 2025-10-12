@@ -16,8 +16,8 @@
  * ============================================
  * 
  * AI Safety Protocols and Coordination System
- * Integrates with Harmonious Safety Coordinator for unified safety management
- * Golden ratio (φ = 1.618) baseline for all AI operations
+ * Integrates with Bridging Safety Coordinator for unified safety management
+ * Base ratio (φ = 1.618) baseline for all AI operations
  */
 
 const fs = require('fs');
@@ -342,8 +342,8 @@ class AISafetyCoordinator {
       console.log(`  ✓ Response type: ${assessment.responseType}`);
     }
     
-    // Return to golden ratio
-    console.log('\n🌟 Restoring to golden ratio baseline...');
+    // Return to bridging baseline
+    console.log('\n🌟 Restoring to bridging baseline...');
     this.emergencyStabilization('Protocol test complete');
   }
 }
@@ -366,7 +366,7 @@ async function demo() {
   console.log('\n📊 Testing Different Safety Levels:');
   coordinator.setSafetyLevel(0.85, 'Testing upper caution');
   coordinator.setSafetyLevel(0.25, 'Testing caution range');
-  coordinator.setSafetyLevel(0.618, 'Restoring golden ratio');
+  coordinator.setSafetyLevel(0.618, 'Restoring bridging baseline');
   
   // Test quantum harmonization
   console.log('\n⚛️  Testing Quantum Harmonization:');

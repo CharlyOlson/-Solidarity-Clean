@@ -17,7 +17,7 @@
  * 
  * Blockchain Network Integration
  * Multi-chain support (Ethereum, Solana, etc.)
- * Golden ratio (φ = 1.618) baseline for all operations
+ * Base ratio (φ = 1.618) baseline for all operations
  */
 
 class BlockchainConnector {

@@ -16,7 +16,7 @@
  * ======================================================
  * 
  * Core Financial Configuration System
- * Golden ratio (φ = 1.618) baseline for all financial calculations
+ * Base ratio (φ = 1.618) baseline for all financial calculations
  * Integrated with quantum coherence and safety systems
  */
 

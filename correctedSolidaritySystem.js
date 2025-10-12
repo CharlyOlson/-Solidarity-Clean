@@ -445,12 +445,12 @@ class CorrectedSolidaritySystem {
 		// Emergency quantum stabilization protocol
 		console.log('🔧 Activating emergency quantum stabilization...');
 		console.log('   → Reducing system load to essential functions');
-		console.log('   → Applying golden ratio coherence boost');
+		console.log('   → Applying base ratio coherence boost');
 		console.log('   → Limiting complexity processing to safe levels');
 		console.log('   → Monitoring user system protection status');
 		
 		// Reset quantum state to safe defaults
-		this.status.quantum_coherence = 0.618; // Reset to golden ratio
+		this.status.quantum_coherence = 0.618; // Reset to bridging baseline
 		this.quantumConfig.emergencyMode = true;
 		this.quantumConfig.maxAllowedComplexity = 21; // Reduce max complexity
 		

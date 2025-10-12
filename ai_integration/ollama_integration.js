@@ -16,16 +16,16 @@
  * ====================================================
  * 
  * Ollama Local AI Integration for Solidarity Platform
- * Free, self-contained AI processing with harmonious safety controls
+ * Free, self-contained AI processing with bridging safety controls
  * No API keys needed - runs completely local!
  * 
  * Features:
  * - Zero-cost AI processing with local Ollama integration
- * - Safety-integrated AI responses that adapt to quantum coherence levels (0.618 golden ratio)
+ * - Safety-integrated AI responses that adapt to quantum coherence levels (0.618 bridging baseline)
  * - Solidarity context processing with custom prompts
  * - Emergency AI stabilization protocols
  * - Model management and status checking
- * - Harmonic AI integration with quantum processing
+ * - Bridging AI integration with quantum processing
  * - Multiple safety level testing (0.03, 0.25, 0.618, 0.85, 0.97)
  */
 
@@ -182,7 +182,7 @@ async function queryOllama(prompt, options = {}) {
         success: false,
         error: 'Ollama not running. Please install and start Ollama: https://ollama.ai',
         fallbackSuggestion: 'Install Ollama and run: ollama pull llama3.2:1b',
-        emergencyStabilization: 'Call emergencyAIStabilization() to restore golden ratio baseline'
+        emergencyStabilization: 'Call emergencyAIStabilization() to restore bridging baseline'
       };
     }
     
@@ -404,7 +404,7 @@ async function demo() {
   // Test emergency stabilization
   console.log('\n🚨 Testing Emergency Stabilization:');
   setAISafetyLevel(0.97); // Set to critical level
-  emergencyAIStabilization('Demo test - restoring golden ratio');
+  emergencyAIStabilization('Demo test - restoring bridging baseline');
   
   console.log('\n✅ Demo Complete!');
   console.log('='.repeat(60));
