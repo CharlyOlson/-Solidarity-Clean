@@ -92,9 +92,6 @@ if (require.main === module) {
 	const result = system.executeZipPhrase('zoomies');
 	console.log('Executed ZIP phrase "zoomies":', result);
 	console.log('System status:', system.getSystemStatus());
-	console.log('System status:', system.getSystemStatus());
-	console.log('System status:', system.getSystemStatus());
-	console.log('System status:', system.getSystemStatus());
 }
 
 module.exports = { CorrectedSolidaritySystem };
