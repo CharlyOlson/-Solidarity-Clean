@@ -100,7 +100,7 @@ const AI_SAFETY_THRESHOLDS = {
 };
 
 // Global AI safety level (harmonized with quantum coherence)
-let globalAISafetyLevel = 0.618; // Base Ratio PHI - bridging starting point
+let globalAISafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
 // 🛡️ Safety Assessment Function
 function assessAISafety(safetyLevel = globalAISafetyLevel) {
@@ -363,7 +363,7 @@ async function demo() {
   const testPrompts = [
     'Hello! How does the Solidarity Platform work?',
     'Explain quantum coherence in simple terms',
-    'Help me understand harmonic mathematics'
+    'Help me understand bridging mathematics'
   ];
   
   const safetyLevels = [0.03, 0.25, 0.618, 0.85, 0.97]; // Test various safety levels

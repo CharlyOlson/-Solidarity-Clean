@@ -18,7 +18,7 @@ const MOTION_SAFETY_THRESHOLDS = {
   CRITICAL_UPPER: { min: 0.95, max: 1.00, mode: 'emergency_limits', fps: 5, colors: 'minimal' }
 };
 
-let globalMotionSafetyLevel = 0.618; // Golden Ratio PHI - harmonious starting point
+let globalMotionSafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
 // Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');

@@ -42,7 +42,7 @@ class BridgingAnchorProcessor:
         Args:
             config_path: Optional path to configuration file
         """
-        # Base ratio (φ - golden ratio for mathematical harmony)
+        # Base ratio (anchor ratio for mathematical harmony)
         self.base_ratio = 1.618033988749
         self.bridging_baseline = 0.618  # Reciprocal of base ratio
         

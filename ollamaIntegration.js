@@ -71,7 +71,7 @@ const AI_SAFETY_THRESHOLDS = {
 };
 
 // Global AI safety level (harmonized with quantum coherence)
-let globalAISafetyLevel = 0.618; // Golden Ratio PHI - harmonious starting point
+let globalAISafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
 // 🛡️ Safety Assessment Function
 function assessAISafety(safetyLevel = globalAISafetyLevel) {
@@ -179,7 +179,7 @@ function setAISafetyLevel(newLevel) {
 // 🚨 Emergency AI Stabilization
 function emergencyAIStabilization() {
   console.log('🚨 EMERGENCY AI STABILIZATION ACTIVATED');
-  setAISafetyLevel(0.618); // Return to Golden Ratio stability
+  setAISafetyLevel(0.618); // Return to Anchor Ratio stability
   return assessAISafety();
 }
 
@@ -209,7 +209,7 @@ SOLIDARITY PLATFORM CONTEXT:
 - Quantum Coherence Level: ${solidarityContext.quantumCoherence || 0.618}
 - System Safety Mode: ${safetyConfig.level}
 - Bridging Processing: ${solidarityContext.bridgingMode || 'standard'}
-- Golden Ratio Integration: Active (PHI = 1.618)
+- Anchor Ratio Integration: Active (ANCHOR = 1.618)
 
 User Query: ${query}
 `;

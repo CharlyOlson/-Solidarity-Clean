@@ -17,14 +17,14 @@
  * 
  * Multi-Wallet Integration System
  * Support for Ethereum, Solana, and other chains
- * Golden ratio (φ = 1.618) baseline for portfolio management
+ * Anchor ratio (anchor = 1.618) baseline for portfolio management
  */
 
 class WalletManager {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.anchorRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Configuration
     this.config = {
@@ -47,7 +47,7 @@ class WalletManager {
     this.history = new Map();
     
     console.log('👛 Wallet Manager initialized');
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
+    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
   }
   
@@ -256,22 +256,22 @@ class WalletManager {
     }
     
     // Apply golden ratio for recommended allocation
-    // Major asset: harmonicBaseline (61.8%)
+    // Major asset: bridgingBaseline (61.8%)
     // Secondary assets: remaining split by golden ratio
     const sortedAssets = Array.from(this.portfolio.assets.entries())
       .sort((a, b) => b[1] - a[1]);
     
     if (sortedAssets.length > 0) {
-      // Primary asset gets harmonic baseline
+      // Primary asset gets bridging baseline
       const primaryAsset = sortedAssets[0][0];
-      optimization.recommendedAllocation.set(primaryAsset, this.harmonicBaseline * 100);
+      optimization.recommendedAllocation.set(primaryAsset, this.bridgingBaseline * 100);
       
       // Distribute remaining among other assets
-      const remainingPercentage = (1 - this.harmonicBaseline) * 100;
+      const remainingPercentage = (1 - this.bridgingBaseline) * 100;
       const otherAssets = sortedAssets.slice(1);
       
       otherAssets.forEach((asset, index) => {
-        const allocation = remainingPercentage / this.goldenRatio ** (index + 1);
+        const allocation = remainingPercentage / this.anchorRatio ** (index + 1);
         optimization.recommendedAllocation.set(asset[0], this.precisionRound(allocation, 2));
       });
     }
@@ -391,8 +391,8 @@ class WalletManager {
     console.log('='.repeat(60));
     console.log(`📊 Total Wallets: ${this.wallets.size}`);
     console.log(`💎 Portfolio Value: $${this.portfolio.totalValue}`);
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
-    console.log(`📊 Harmonic Baseline: ${this.harmonicBaseline}`);
+    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
+    console.log(`📊 Harmonic Baseline: ${this.bridgingBaseline}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
     console.log(`🔒 Encryption: ${this.config.encryptionEnabled ? 'ENABLED' : 'DISABLED'}`);
     

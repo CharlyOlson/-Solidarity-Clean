@@ -16,7 +16,7 @@
  * ==========================================
  * 
  * Cost Optimization and Efficiency System
- * Base ratio (φ = 1.618) baseline for all optimization
+ * Base ratio (anchor = 1.618) baseline for all optimization
  * Minimize gas fees through local computation
  * Batch operations for cost efficiency
  */
@@ -226,7 +226,7 @@ class FinancialOptimizer {
     
     // Calculate batching benefit
     const individualGas = batch.length * 21000; // Estimated individual gas
-    const batchedGas = individualGas * this.harmonicBaseline; // Apply harmonic baseline for batching efficiency
+    const batchedGas = individualGas * this.bridgingBaseline; // Apply bridging baseline for batching efficiency
     const batchingSavings = individualGas - batchedGas;
     
     this.optimizations.batchedOperations += batch.length;
@@ -348,8 +348,8 @@ class FinancialOptimizer {
     return {
       totalValue,
       allocations: optimizedAllocation,
-      goldenRatio: this.goldenRatio,
-      harmonicBaseline: this.harmonicBaseline
+      anchorRatio: this.anchorRatio,
+      bridgingBaseline: this.bridgingBaseline
     };
   }
   
@@ -394,8 +394,8 @@ class FinancialOptimizer {
       totalSavingsEth: this.precisionRound(this.optimizations.gasSavings * 30 * 1e-9, 8),
       averageGasPrice: this.precisionRound(this.calculateAverageGasPrice(), 2),
       medianGasPrice: this.precisionRound(this.calculateMedianGasPrice(), 2),
-      goldenRatio: this.goldenRatio,
-      harmonicBaseline: this.harmonicBaseline
+      anchorRatio: this.anchorRatio,
+      bridgingBaseline: this.bridgingBaseline
     };
   }
   
@@ -422,8 +422,8 @@ class FinancialOptimizer {
     console.log(`🔧 Optimized Transactions: ${metrics.optimizedTransactions}`);
     console.log(`📊 Avg Gas Price: ${metrics.averageGasPrice} Gwei`);
     console.log(`📈 Median Gas Price: ${metrics.medianGasPrice} Gwei`);
-    console.log(`🌟 Golden Ratio: ${metrics.goldenRatio}`);
-    console.log(`📊 Harmonic Baseline: ${metrics.harmonicBaseline}`);
+    console.log(`🌟 Anchor Ratio: ${metrics.anchorRatio}`);
+    console.log(`📊 Harmonic Baseline: ${metrics.bridgingBaseline}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
     
     if (this.batchQueue.length > 0) {

@@ -16,7 +16,7 @@
  * ======================================================
  * 
  * Core Financial Configuration System
- * Base ratio (φ = 1.618) baseline for all financial calculations
+ * Base ratio (anchor = 1.618) baseline for all financial calculations
  * Integrated with quantum coherence and safety systems
  */
 
@@ -299,9 +299,9 @@ class FinancialConfiguration {
       case 'multiply':
         return value * this.baseRatio;
       case 'divide':
-        return value / this.goldenRatio;
+        return value / this.anchorRatio;
       case 'harmonic':
-        return value * this.harmonicBaseline;
+        return value * this.bridgingBaseline;
       default:
         return value;
     }
