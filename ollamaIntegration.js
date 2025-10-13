@@ -208,7 +208,7 @@ ${safetyConfig.systemPrompt}
 SOLIDARITY PLATFORM CONTEXT:
 - Quantum Coherence Level: ${solidarityContext.quantumCoherence || 0.618}
 - System Safety Mode: ${safetyConfig.level}
-- Harmonic Processing: ${solidarityContext.harmonicMode || 'standard'}
+- Bridging Processing: ${solidarityContext.bridgingMode || 'standard'}
 - Golden Ratio Integration: Active (PHI = 1.618)
 
 User Query: ${query}
@@ -248,7 +248,7 @@ async function demo() {
   const testPrompts = [
     'Hello! How does the Solidarity Platform work?',
     'Explain quantum coherence in simple terms',
-    'Help me understand harmonic mathematics'
+    'Help me understand bridging mathematics'
   ];
   
   const safetyLevels = [0.03, 0.25, 0.618, 0.85, 0.97]; // Test various safety levels

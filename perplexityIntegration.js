@@ -3,17 +3,17 @@
 // No API keys or external dependencies needed!
 
 console.log('⚠️  Perplexity integration migrated to Ollama (free local AI)');
-console.log('🔄 Loading Ollama integration with harmonious safety controls...');
+console.log('🔄 Loading Ollama integration with bridging safety controls...');
 
 // Redirect all functionality to Ollama integration
 const ollamaIntegration = require('./ollamaIntegration');
 
-// Attempt to load harmonic formatter (soft dependency so this file can run standalone)
-let harmonicFormatter = null;
-let harmonicCache = null;
+// Attempt to load bridging formatter (soft dependency so this file can run standalone)
+let bridgingFormatter = null;
+let bridgingCache = null;
 try {
-  harmonicFormatter = require('./ai/HarmonicAIInputFormatter');
-  harmonicCache = require('./ai/HarmonicCache');
+  bridgingFormatter = require('./ai/BridgingAIInputFormatter');
+  bridgingCache = require('./ai/BridgingCache');
 } catch (_) {
   // ignore if not present - allows standalone operation
 }
@@ -29,7 +29,7 @@ const DEFAULT_MODEL_CANDIDATES = [
 ].filter(Boolean);
 
 /**
- * Low-level Perplexity query with fallback model attempts and harmonic integration.
+ * Low-level Perplexity query with fallback model attempts and bridging integration.
  * Supports the Solidarity platform's adaptive AI processing with barrier-like system controls.
  * @param {string} query Raw user question/content
  * @param {object} options Additional options for model selection and temperature control
@@ -41,14 +41,14 @@ async function queryPerplexity(query, options = {}) {
   const { modelCandidates = DEFAULT_MODEL_CANDIDATES, temperature = 0.2, dryRun = false, disableAdaptive = false } = options;
   let ordered = [...new Set(modelCandidates)];
   
-  // Adaptive ordering using harmonic formatter if available (Solidarity platform feature)
-  if (harmonicFormatter && !disableAdaptive) {
+  // Adaptive ordering using bridging formatter if available (Solidarity platform feature)
+  if (bridgingFormatter && !disableAdaptive) {
     try {
-      const features = harmonicFormatter.computeInputFeatures(query);
-      const adaptive = harmonicFormatter.chooseModelAndTemperature(features, ordered);
+      const features = bridgingFormatter.computeInputFeatures(query);
+      const adaptive = bridgingFormatter.chooseModelAndTemperature(features, ordered);
       ordered = adaptive.orderedModelCandidates;
     } catch (_) { 
-      // Graceful fallback if harmonic formatter fails
+      // Graceful fallback if bridging formatter fails
     }
   }
   
@@ -70,8 +70,8 @@ async function queryPerplexity(query, options = {}) {
     const payload = { ...basePayload, model };
     try {
       // Check cache first if available
-      if (harmonicCache) {
-        const cached = harmonicCache.getCachedResponse(payload);
+      if (bridgingCache) {
+        const cached = bridgingCache.getCachedResponse(payload);
         if (cached) {
           return { 
             modelUsed: model, 
@@ -90,9 +90,9 @@ async function queryPerplexity(query, options = {}) {
       });
       
       // Store in cache if available
-      if (harmonicCache) {
+      if (bridgingCache) {
         try { 
-          harmonicCache.storeResponse(payload, response.data); 
+          bridgingCache.storeResponse(payload, response.data); 
         } catch (_) {
           // Cache storage failure is non-critical
         }
@@ -126,15 +126,15 @@ async function queryPerplexity(query, options = {}) {
 }
 
 /**
- * Harmonic formatting powered query (uses HarmonicAIInputFormatter if available).
+ * Bridging formatting powered query (uses BridgingAIInputFormatter if available).
  * Falls back to plain text if formatter not found / disabled.
  * @param {string} rawText
- * @param {object} options { harmonic=true, temperature, modelCandidates }
+ * @param {object} options { bridging=true, temperature, modelCandidates }
  */
-async function queryPerplexityHarmonic(rawText, options = {}) {
-  const { harmonic = true, temperature = 0.25, modelCandidates = DEFAULT_MODEL_CANDIDATES, dryRun = false } = options;
-  if (!harmonic || !harmonicFormatter) return queryPerplexity(rawText, { temperature, modelCandidates });
-  const requestPayload = harmonicFormatter.buildPerplexityRequest(rawText, { modelCandidates, temperature });
+async function queryPerplexityBridging(rawText, options = {}) {
+  const { bridging = true, temperature = 0.25, modelCandidates = DEFAULT_MODEL_CANDIDATES, dryRun = false } = options;
+  if (!bridging || !bridgingFormatter) return queryPerplexity(rawText, { temperature, modelCandidates });
+  const requestPayload = bridgingFormatter.buildPerplexityRequest(rawText, { modelCandidates, temperature });
   if (dryRun) return { dryRun: true, payload: requestPayload };
   const tried = [];
   let lastError;
@@ -142,15 +142,15 @@ async function queryPerplexityHarmonic(rawText, options = {}) {
   for (const model of models) {
     const payload = { ...requestPayload, model };
     try {
-      if (harmonicCache) {
-        const cached = harmonicCache.getCachedResponse(payload);
+      if (bridgingCache) {
+        const cached = bridgingCache.getCachedResponse(payload);
         if (cached) {
-          return { modelUsed: model, cached: true, content: cached.response?.choices?.[0]?.message?.content || cached.response, harmonicFeatures: requestPayload._harmonicMeta };
+          return { modelUsed: model, cached: true, content: cached.response?.choices?.[0]?.message?.content || cached.response, bridgingFeatures: requestPayload._bridgingMeta };
         }
       }
       const response = await axios.post(PERPLEXITY_API_URL, payload, { headers: { 'Authorization': `Bearer ${PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json' }, timeout: 25000 });
-      if (harmonicCache) { try { harmonicCache.storeResponse(payload, response.data); } catch (_) {} }
-      return { modelUsed: model, content: response.data?.choices?.[0]?.message?.content || response.data, harmonicFeatures: requestPayload._harmonicMeta };
+      if (bridgingCache) { try { bridgingCache.storeResponse(payload, response.data); } catch (_) {} }
+      return { modelUsed: model, content: response.data?.choices?.[0]?.message?.content || response.data, bridgingFeatures: requestPayload._bridgingMeta };
     } catch (error) {
       const status = error.response?.status;
       const errBody = error.response?.data;
@@ -160,7 +160,7 @@ async function queryPerplexityHarmonic(rawText, options = {}) {
       if (!invalidModel) break;
     }
   }
-  const lines = [ 'Perplexity harmonic query failed:', ...tried.map(t => `  - ${t.model}: [${t.status}] ${t.message}`) ];
+  const lines = [ 'Perplexity bridging query failed:', ...tried.map(t => `  - ${t.model}: [${t.status}] ${t.message}`) ];
   const e = new Error(lines.join('\n'));
   e.cause = lastError;
   throw e;
@@ -171,7 +171,7 @@ function printUsage() {
   console.log(`Usage: node perplexityIntegration.js [options] "prompt text"
 Options:
   --plain              Force plain mode
-  --harmonic           Force harmonic mode (default if formatter present)
+  --bridging           Force bridging mode (default if formatter present)
   --dry-run            Show payload only, do not call API
   --inspect-cache      Show cache entry counts
   --disable-adaptive   Disable adaptive model ordering in plain mode
@@ -186,8 +186,8 @@ if (require.main === module) {
     const inspectCache = argv.includes('--inspect-cache');
     if (inspectCache) {
       const cacheDir = path.join(__dirname, '.cache');
-      const featureFile = path.join(__dirname, '.cache', 'harmonic-features.jsonl');
-      const respFile = path.join(__dirname, '.cache', 'harmonic-responses.jsonl');
+      const featureFile = path.join(__dirname, '.cache', 'bridging-features.jsonl');
+      const respFile = path.join(__dirname, '.cache', 'bridging-responses.jsonl');
       const stats = {
         cacheDirExists: fs.existsSync(cacheDir),
         featureEntries: fs.existsSync(featureFile) ? fs.readFileSync(featureFile, 'utf8').trim().split(/\n+/).filter(Boolean).length : 0,
@@ -199,15 +199,15 @@ if (require.main === module) {
     const dryRun = argv.includes('--dry-run');
     const plain = argv.includes('--plain');
     const disableAdaptive = argv.includes('--disable-adaptive');
-    const forceHarmonic = argv.includes('--harmonic');
-    const flags = ['--dry-run','--plain','--harmonic','--disable-adaptive','--inspect-cache'];
-    const text = argv.filter(a => !flags.includes(a)).join(' ') || 'Explain resonant synchronization in distributed audio systems.';
+    const forceBridging = argv.includes('--bridging');
+    const flags = ['--dry-run','--plain','--bridging','--disable-adaptive','--inspect-cache'];
+    const text = argv.filter(a => !flags.includes(a)).join(' ') || 'Explain resonant synchronization in distributed signal processing systems.';
     try {
-      const useHarmonic = forceHarmonic || (!plain && harmonicFormatter);
-      const result = useHarmonic
-        ? await queryPerplexityHarmonic(text, { dryRun })
+      const useBridging = forceBridging || (!plain && bridgingFormatter);
+      const result = useBridging
+        ? await queryPerplexityBridging(text, { dryRun })
         : await queryPerplexity(text, { dryRun, disableAdaptive });
-      console.log(JSON.stringify({ mode: useHarmonic ? 'harmonic' : 'plain', result }, null, 2));
+      console.log(JSON.stringify({ mode: useBridging ? 'bridging' : 'plain', result }, null, 2));
     } catch (err) {
       console.error('Error:', err.message);
       if (err.cause) console.error('Underlying:', err.cause.response?.data || err.cause.message);
@@ -217,13 +217,6 @@ if (require.main === module) {
 }
 
 module.exports = { queryPerplexity, queryPerplexityHarmonic };
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 require('dotenv').config();
 
 // Set your Perplexity API key in a .env file: PERPLEXITY_API_KEY=your_key_here
@@ -262,13 +255,3 @@ if (require.main === module) {
 }
 
 module.exports = { queryPerplexity };
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
