@@ -300,7 +300,7 @@ class FinancialConfiguration {
         return value * this.baseRatio;
       case 'divide':
         return value / this.anchorRatio;
-      case 'harmonic':
+      case 'bridging':
         return value * this.bridgingBaseline;
       default:
         return value;

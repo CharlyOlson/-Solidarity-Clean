@@ -343,7 +343,7 @@ class FinancialOptimizer {
       });
     });
     
-    console.log('✅ Allocation optimized with golden ratio');
+    console.log('✅ Allocation optimized with anchor ratio');
     
     return {
       totalValue,
@@ -423,7 +423,7 @@ class FinancialOptimizer {
     console.log(`📊 Avg Gas Price: ${metrics.averageGasPrice} Gwei`);
     console.log(`📈 Median Gas Price: ${metrics.medianGasPrice} Gwei`);
     console.log(`🌟 Anchor Ratio: ${metrics.anchorRatio}`);
-    console.log(`📊 Harmonic Baseline: ${metrics.bridgingBaseline}`);
+    console.log(`📊 Bridging Baseline: ${metrics.bridgingBaseline}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
     
     if (this.batchQueue.length > 0) {
@@ -479,7 +479,7 @@ async function demo() {
   // Local computation
   console.log('\n💻 Testing local computation:');
   const localResult = await optimizer.computeLocally({
-    type: 'golden_ratio',
+    type: 'anchor_ratio',
     value: 100
   });
   console.log(`  Result: ${localResult.result}`);

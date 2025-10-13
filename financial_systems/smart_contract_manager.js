@@ -289,9 +289,9 @@ class SmartContractManager {
     return Math.min(optimalPrice, this.config.maxGasPrice);
   }
   
-  // Apply golden ratio to gas optimization
-  optimizeGasWithGoldenRatio(estimatedGas) {
-    // Use golden ratio for conservative gas estimation
+  // Apply anchor ratio to gas optimization
+  optimizeGasWithAnchorRatio(estimatedGas) {
+    // Use anchor ratio for conservative gas estimation
     return Math.ceil(estimatedGas * this.anchorRatio);
   }
   

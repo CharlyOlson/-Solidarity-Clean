@@ -193,7 +193,7 @@ class WalletManager {
     };
   }
   
-  // Calculate portfolio value with golden ratio optimization
+  // Calculate portfolio value with anchor ratio optimization
   async calculatePortfolioValue() {
     console.log('📊 Calculating portfolio value...');
     
@@ -239,9 +239,9 @@ class WalletManager {
     return this.portfolio;
   }
   
-  // Optimize portfolio with golden ratio
+  // Optimize portfolio with anchor ratio
   optimizePortfolio() {
-    console.log('🌟 Optimizing portfolio with golden ratio...');
+    console.log('🌟 Optimizing portfolio with anchor ratio...');
     
     const optimization = {
       currentAllocation: new Map(),
@@ -255,9 +255,9 @@ class WalletManager {
       optimization.currentAllocation.set(asset, this.precisionRound(percentage, 2));
     }
     
-    // Apply golden ratio for recommended allocation
+    // Apply anchor ratio for recommended allocation
     // Major asset: bridgingBaseline (61.8%)
-    // Secondary assets: remaining split by golden ratio
+    // Secondary assets: remaining split by anchor ratio
     const sortedAssets = Array.from(this.portfolio.assets.entries())
       .sort((a, b) => b[1] - a[1]);
     
@@ -304,7 +304,7 @@ class WalletManager {
       ethereum: 2000,
       solana: 50,
       bitcoin: 40000,
-      SLDRT: 1.618, // Solidarity Token at golden ratio!
+      SLDRT: 1.618, // Solidarity Token at anchor ratio!
       USDC: 1,
       USDT: 1
     };
@@ -392,7 +392,7 @@ class WalletManager {
     console.log(`📊 Total Wallets: ${this.wallets.size}`);
     console.log(`💎 Portfolio Value: $${this.portfolio.totalValue}`);
     console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
-    console.log(`📊 Harmonic Baseline: ${this.bridgingBaseline}`);
+    console.log(`📊 Bridging Baseline: ${this.bridgingBaseline}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
     console.log(`🔒 Encryption: ${this.config.encryptionEnabled ? 'ENABLED' : 'DISABLED'}`);
     
