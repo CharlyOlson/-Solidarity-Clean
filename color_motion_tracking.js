@@ -46,7 +46,7 @@ class ComprehensiveSolidarityDiscovery {
             'README.md',
             'package.json',
             'launcher.js',
-            'src/goldenHarmonicSystem.js',
+            'src/anchorBridgingSystem.js',
             'src/ultimateSolidaritySystem.js',
             'multi-drive-manager.js'
         ];
@@ -127,7 +127,7 @@ class ComprehensiveSolidarityDiscovery {
         console.log(`   Solidarity installations: ${this.discoveredLocations.size}`);
     }
 
-    // Inter-AI orchestration using our harmonic system
+    // Inter-AI orchestration using our bridging system
     orchestrateAIResponses(query) {
         // Comprehensive OneDrive and drive scanning
     }
@@ -207,7 +207,7 @@ class ComprehensiveSolidarityDiscovery {
                     if (content.includes('Solidarity') || content.includes('Soul.Ed.Xchange.Fi')) {
                         score += 20;
                     }
-                    if (content.includes('golden ratio') || content.includes('harmonic')) {
+                    if (content.includes('anchor ratio') || content.includes('bridging')) {
                         score += 10;
                     }
                 } catch (error) {
@@ -411,7 +411,7 @@ discovery.scanAllLocations();
 class ColorMotionVisualizer {
     constructor() {
         this.colors = [];
-        this.palette = colorUtils.generateHarmonicPalette(240, 6); // Generate chakra-based harmonic palette
+        this.palette = colorUtils.generateBridgingPalette(240, 6); // Generate chakra-based bridging palette
         this.chakraColors = {
             root: '#FF0000',       // Red - stability layers
             sacral: '#FF6600',     // Orange - movement energy
