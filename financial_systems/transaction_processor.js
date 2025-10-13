@@ -17,14 +17,14 @@
  * 
  * Transaction Processing and Management
  * Confirmation handling and transaction history
- * Golden ratio (φ = 1.618) baseline for all operations
+ * Anchor ratio (anchor = 1.618) baseline for all operations
  */
 
 class TransactionProcessor {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.goldenRatio = 1.618;
-    this.harmonicBaseline = 0.618;
+    this.anchorRatio = 1.618;
+    this.bridgingBaseline = 0.618;
     
     // Configuration
     this.config = {
@@ -57,7 +57,7 @@ class TransactionProcessor {
     };
     
     console.log('⚙️ Transaction Processor initialized');
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
+    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
     console.log(`✅ Required Confirmations: ${this.config.requiredConfirmations}`);
   }
   
@@ -440,7 +440,7 @@ class TransactionProcessor {
     console.log(`⏱️ Avg Confirmation Time: ${metrics.averageConfirmationTime}`);
     console.log(`⛽ Total Gas Used: ${metrics.totalGasUsed}`);
     console.log(`💸 Total Fees: ${metrics.totalFeesEth} ETH`);
-    console.log(`🌟 Golden Ratio: ${this.goldenRatio}`);
+    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
     
     if (this.queue.length > 0) {

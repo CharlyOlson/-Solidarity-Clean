@@ -18,24 +18,12 @@ const MOTION_SAFETY_THRESHOLDS = {
   CRITICAL_UPPER: { min: 0.95, max: 1.00, mode: 'emergency_limits', fps: 5, colors: 'minimal' }
 };
 
-let globalMotionSafetyLevel = 0.618; // Golden Ratio PHI - harmonious starting point
+let globalMotionSafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 // Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');
 const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {
     constructor() {
@@ -46,7 +34,7 @@ class ComprehensiveSolidarityDiscovery {
             'README.md',
             'package.json',
             'launcher.js',
-            'src/goldenHarmonicSystem.js',
+            'src/anchorBridgingSystem.js',
             'src/ultimateSolidaritySystem.js',
             'multi-drive-manager.js'
         ];
@@ -127,7 +115,7 @@ class ComprehensiveSolidarityDiscovery {
         console.log(`   Solidarity installations: ${this.discoveredLocations.size}`);
     }
 
-    // Inter-AI orchestration using our harmonic system
+    // Inter-AI orchestration using our bridging system
     orchestrateAIResponses(query) {
         // Comprehensive OneDrive and drive scanning
     }
@@ -207,7 +195,7 @@ class ComprehensiveSolidarityDiscovery {
                     if (content.includes('Solidarity') || content.includes('Soul.Ed.Xchange.Fi')) {
                         score += 20;
                     }
-                    if (content.includes('golden ratio') || content.includes('harmonic')) {
+                    if (content.includes('anchor ratio') || content.includes('bridging')) {
                         score += 10;
                     }
                 } catch (error) {
@@ -403,15 +391,11 @@ class ComprehensiveSolidarityDiscovery {
 const discovery = new ComprehensiveSolidarityDiscovery();
 discovery.scanAllLocations();
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 // Color Motion Visualization Functions
 class ColorMotionVisualizer {
     constructor() {
         this.colors = [];
-        this.palette = colorUtils.generateHarmonicPalette(240, 6); // Generate chakra-based harmonic palette
+        this.palette = colorUtils.generateBridgingPalette(240, 6); // Generate chakra-based bridging palette
         this.chakraColors = {
             root: '#FF0000',       // Red - stability layers
             sacral: '#FF6600',     // Orange - movement energy
@@ -519,35 +503,10 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ComprehensiveSolidarityDiscovery,
         ColorMotionVisualizer
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-// Export for module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        ComprehensiveSolidarityDiscovery
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     };
 }
 
 // Auto-run if called directly
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 async function main() {
     const discovery = new ComprehensiveSolidarityDiscovery();
     await discovery.scanAllLocations();
@@ -555,22 +514,10 @@ async function main() {
     discovery.generateDiscoveryReport();
 }
 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 // Demo chakra visualization
 function demoChakraVisualization() {
     const visualizer = new ColorMotionVisualizer();
@@ -596,38 +543,14 @@ function demoChakraVisualization() {
 const venvPython = './venv/Scripts/python.exe'; // Windows path
 let pythonCommand = 'python3';
 
-=======
-// Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
-// Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
-// Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
-=======
-// Launcher automatically detects and uses virtual environment
->>>>>>> Stashed changes
 if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
 } else {
     console.log('💡 Run python:setup to create secure environment');
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 }
 
 // Run the demo if this file is executed directly
 if (require.main === module) {
     demoChakraVisualization();
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }
