@@ -9,6 +9,7 @@
     "test-server": "node backend-test-server.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
+    "test:security": "node security/security-tests.js",
     "test:colors": "node test_color_utils.js",
     "test:bridging": "python3 bridging_anchor_systems/bridging_anchor_processor.py",
     "test:advanced": "python3 bridging_anchor_systems/bridging_anchor_test_suite.py",

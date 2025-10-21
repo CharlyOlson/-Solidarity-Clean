@@ -192,25 +192,46 @@ class InputSanitizer {
 
   /**
    * Sanitize HTML - strip all tags and dangerous patterns
+   * Uses iterative approach to prevent incomplete sanitization
+   * 
+   * SECURITY NOTE: The iterative loop prevents incomplete multi-character sanitization
+   * issues by repeatedly applying replacements until no more changes occur. This ensures
+   * that nested patterns like <<script>script> are fully removed.
    */
   static sanitizeHTML(input) {
     if (!input) return '';
     let sanitized = String(input);
+    let previousLength;
+    let iterations = 0;
+    const maxIterations = 10; // Prevent infinite loops
     
-    // Remove script tags and their content
-    sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    
-    // Remove style tags and their content
-    sanitized = sanitized.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
-    
-    // Remove all other HTML tags
-    sanitized = sanitized.replace(/<[^>]*>/g, '');
-    
-    // Remove javascript: protocol
-    sanitized = sanitized.replace(/javascript:/gi, '');
-    
-    // Remove event handlers
-    sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+    // Iteratively remove dangerous patterns until no more changes occur
+    // This prevents bypass through nested/repeated patterns
+    do {
+      previousLength = sanitized.length;
+      iterations++;
+      
+      // Remove script tags and their content (with whitespace tolerance)
+      // Note: Iterative approach mitigates incomplete-multi-character-sanitization
+      sanitized = sanitized.replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, '');
+      
+      // Remove style tags and their content (with whitespace tolerance)
+      sanitized = sanitized.replace(/<\s*style\b[^>]*>[\s\S]*?<\s*\/\s*style\s*>/gi, '');
+      
+      // Remove all HTML tags (with whitespace tolerance)
+      sanitized = sanitized.replace(/<\s*[^>]+\s*>/g, '');
+      
+      // Remove dangerous URL protocols (data:, javascript:, vbscript:)
+      // Iterative removal prevents patterns like javascjavascript:ript:
+      sanitized = sanitized.replace(/javascript\s*:/gi, '');
+      sanitized = sanitized.replace(/data\s*:/gi, '');
+      sanitized = sanitized.replace(/vbscript\s*:/gi, '');
+      
+      // Remove event handlers (with whitespace tolerance)
+      // Iterative removal prevents patterns like oonclick=
+      sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+      
+    } while (sanitized.length < previousLength && iterations < maxIterations);
     
     return sanitized;
   }

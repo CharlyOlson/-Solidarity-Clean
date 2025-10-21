@@ -173,7 +173,13 @@ function testXSSPrevention() {
     '<input onfocus=alert(1) autofocus>',
     '<select onfocus=alert(1) autofocus>',
     '<textarea onfocus=alert(1) autofocus>',
-    '<details open ontoggle=alert(1)>'
+    '<details open ontoggle=alert(1)>',
+    // Nested patterns to test iterative sanitization
+    '<<script>script>alert(1)<</script>/script>',
+    'javascjavascript:ript:alert(1)',
+    'oonclick=alert(1)',
+    '<scr<script>ipt>alert(1)</script>',
+    'datdata:a:text/html,<script>alert(1)</script>'
   ];
 
   let passed = 0;
