@@ -49,6 +49,7 @@
     "docker:down": "docker-compose down",
     "security:audit": "npm audit --audit-level=high",
     "security:fix": "npm audit fix",
+    "security:test": "node security/security-tests.js",
     "performance:test": "node scripts/performanceTest.js",
     "load:test": "node scripts/loadTest.js",
     "stress:test": "node scripts/stressTest.js",
