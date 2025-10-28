@@ -120,10 +120,10 @@ npm run security:test
 The test suite includes:
 - URL validation tests (8 tests)
 - Input sanitization tests (6 tests)
-- XSS prevention tests (10 tests)
+- XSS prevention tests (15 tests)
 - SQL injection prevention tests (5 tests)
 
-**Total: 29 tests**
+**Total: 34 tests**
 
 ## Security Best Practices
 
