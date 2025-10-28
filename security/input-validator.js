@@ -230,6 +230,9 @@ class InputSanitizer {
       // Remove event handlers (with whitespace tolerance)
       // Iterative removal prevents patterns like oonclick=
       sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+
+      // Remove all angle brackets to ensure no tag fragments remain
+      sanitized = sanitized.replace(/<|>/g, '');
       
     } while (sanitized.length < previousLength && iterations < maxIterations);
     
