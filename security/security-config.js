@@ -148,7 +148,7 @@ class SecurityConfig {
         return next();
       }
 
-      const files = req.files || [req.file];
+      const files = req.files || (req.file ? [req.file] : []);
       
       for (const file of files) {
         // Check file size
