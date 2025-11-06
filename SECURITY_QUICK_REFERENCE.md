@@ -218,7 +218,7 @@ Location: `.github/workflows/security-scan.yml`
 ### If a Vulnerability is Discovered
 
 1. **DO NOT** open a public GitHub issue
-2. **Email**: contact@solidarity.com
+2. **Email**: security@yourdomain.com
 3. **Include**:
    - Description of vulnerability
    - Steps to reproduce
