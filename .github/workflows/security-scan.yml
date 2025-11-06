@@ -51,8 +51,7 @@ jobs:
       run: npm i --package-lock-only
       
     - name: Run npm audit
-      run: npm audit --audit-level=moderate
-      continue-on-error: true
+      run: npm audit --audit-level=high
       
     - name: Generate audit report
       run: npm audit --json > npm-audit-report.json || true
