@@ -114,9 +114,15 @@ class SecurityConfig {
       } else if (Array.isArray(value)) {
         sanitized[key] = value
           .slice(0, this.settings.validation.maxArrayLength)
-          .map(item => 
-            typeof item === 'object' ? this.sanitizeObject(item, depth + 1) : item
-          );
+          .map(item => {
+            if (typeof item === 'string') {
+              return InputSanitizer.sanitizeString(item, this.settings.validation.maxStringLength);
+            } else if (typeof item === 'object' && item !== null) {
+              return this.sanitizeObject(item, depth + 1);
+            } else {
+              return item;
+            }
+          });
       } else if (typeof value === 'object' && value !== null) {
         sanitized[key] = this.sanitizeObject(value, depth + 1);
       } else {
