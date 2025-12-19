@@ -20,11 +20,25 @@
  * Anchor ratio (anchor = 1.618) baseline for portfolio management
  */
 
+const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
+
 class WalletManager {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.anchorRatio = 1.618;
-    this.bridgingBaseline = 0.618;
+    this.baseRatio = 1.618; // φ for calculations
+    this.bridgingBaseline = 0.618; // Reciprocal for stability
+    
+    // 🛡️ Safety System Integration
+    this.safetyLevel = config.safetyLevel || 0.618;
+    this.safetyThresholds = {
+      CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, maxWallets: 1, operationsLimited: true },
+      WARNING_LEVEL: { min: 0.05, max: 0.15, maxWallets: 3, operationsLimited: true },
+      CAUTION_RANGE: { min: 0.15, max: 0.25, maxWallets: 5, operationsLimited: false },
+      OPTIMAL_RANGE: { min: 0.25, max: 0.75, maxWallets: 21, operationsLimited: false },
+      UPPER_CAUTION: { min: 0.75, max: 0.85, maxWallets: 14, operationsLimited: false },
+      UPPER_WARNING: { min: 0.85, max: 0.95, maxWallets: 7, operationsLimited: true },
+      CRITICAL_UPPER: { min: 0.95, max: 1.00, maxWallets: 3, operationsLimited: true }
+    };
     
     // Configuration
     this.config = {
@@ -32,6 +46,13 @@ class WalletManager {
       autoBackup: config.autoBackup !== undefined ? config.autoBackup : true,
       encryptionEnabled: config.encryptionEnabled !== undefined ? config.encryptionEnabled : true
     };
+    
+    // Initialize Core Mathematics Engine
+    this.coreEngine = new CoreMathematicsEngine({
+      precision: 49,
+      marketScale: 1e18, // 18 decimals for ETH/token precision
+      safetyLevel: this.safetyLevel
+    });
     
     // Wallet storage
     this.wallets = new Map();
@@ -47,8 +68,104 @@ class WalletManager {
     this.history = new Map();
     
     console.log('👛 Wallet Manager initialized');
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
+    console.log(`🌟 Base Ratio (φ): ${this.baseRatio}`);
+    console.log(`📊 Bridging Baseline: ${this.bridgingBaseline}`);
+    console.log(`🛡️ Safety Level: ${this.safetyLevel.toFixed(3)}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
+    console.log(`🧮 Core Engine: Initialized (precision=${this.coreEngine.defaultPrecision})`);
+  }
+  
+  // Get current safety configuration
+  getSafetyConfig() {
+    for (const [name, threshold] of Object.entries(this.safetyThresholds)) {
+      if (this.safetyLevel >= threshold.min && this.safetyLevel <= threshold.max) {
+        return { ...threshold, level: name };
+      }
+    }
+    return this.safetyThresholds.OPTIMAL_RANGE;
+  }
+  
+  // φ-ratio portfolio optimization using Core Mathematics Engine
+  optimizePortfolio() {
+    console.log('⚖️ Optimizing portfolio using Core Mathematics Engine...');
+    
+    const safetyConfig = this.getSafetyConfig();
+    if (safetyConfig.operationsLimited) {
+      console.log(`⚠️ Portfolio optimization limited at safety level ${safetyConfig.level}`);
+      return { optimized: false, reason: 'Safety restrictions active' };
+    }
+    
+    const totalValue = this.portfolio.totalValue;
+    const walletCount = this.wallets.size;
+    
+    if (walletCount === 0) {
+      return { optimized: false, reason: 'No wallets to optimize' };
+    }
+    
+    // Process total value through core engine (6-step framework)
+    const processedValue = this.coreEngine.processValue(totalValue, {
+      precision: 49,
+      marketScale: 1e18,
+      includeAlignment: true,
+      includeChargeBalance: true
+    });
+    
+    // Apply golden ratio distribution with fractal mirroring
+    const phiDistribution = [];
+    const optimizedAllocations = [];
+    let remaining = 1.0;
+    
+    for (let i = 0; i < walletCount; i++) {
+      // Basic φ-ratio allocation
+      const allocation = remaining / this.baseRatio;
+      phiDistribution.push(allocation);
+      
+      // Optimize each allocation through core engine
+      const optimized = this.coreEngine.optimizeCoilUnits(allocation * totalValue, 18);
+      optimizedAllocations.push({
+        wallet: i + 1,
+        rawAllocation: allocation,
+        optimizedValue: optimized.exact,
+        harmonyScore: this.coreEngine.calculateHarmonyScore(optimized.exact),
+        alignment: optimized.alignment
+      });
+      
+      remaining -= allocation;
+    }
+    
+    // Calculate exchange harmonization between wallets
+    const harmonizedRates = [];
+    for (let i = 0; i < optimizedAllocations.length - 1; i++) {
+      const rate = this.coreEngine.harmonizeExchangeRate(
+        optimizedAllocations[i].optimizedValue,
+        optimizedAllocations[i + 1].optimizedValue,
+        1e18
+      );
+      harmonizedRates.push({
+        fromWallet: i + 1,
+        toWallet: i + 2,
+        harmonizedRate: rate.harmonizedRate,
+        phiOptimal: rate.phiOptimal,
+        symmetryDeviation: rate.symmetryDeviation
+      });
+    }
+    
+    console.log(`✅ φ-ratio distribution calculated for ${walletCount} wallets`);
+    console.log(`💰 Total value: ${totalValue}`);
+    console.log(`🧮 Processed through Core Engine: ${processedValue.output}`);
+    console.log(`🎯 Portfolio harmony score: ${processedValue.chargeBalance.harmony.toFixed(6)}`);
+    
+    return {
+      optimized: true,
+      distribution: phiDistribution,
+      optimizedAllocations: optimizedAllocations,
+      harmonizedRates: harmonizedRates,
+      totalValue: totalValue,
+      processedValue: processedValue.output,
+      walletCount: walletCount,
+      safetyLevel: this.safetyLevel,
+      coreEngineMetadata: processedValue.metadata
+    };
   }
   
   // Create new wallet

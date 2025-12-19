@@ -23,8 +23,20 @@
 class TransactionProcessor {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.anchorRatio = 1.618;
+    this.baseRatio = 1.618; // φ for fee calculations
     this.bridgingBaseline = 0.618;
+    
+    // 🛡️ Safety System Integration
+    this.safetyLevel = config.safetyLevel || 0.618;
+    this.safetyThresholds = {
+      CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, maxConcurrent: 1, batchingDisabled: true },
+      WARNING_LEVEL: { min: 0.05, max: 0.15, maxConcurrent: 3, batchingDisabled: true },
+      CAUTION_RANGE: { min: 0.15, max: 0.25, maxConcurrent: 7, batchingDisabled: false },
+      OPTIMAL_RANGE: { min: 0.25, max: 0.75, maxConcurrent: 21, batchingDisabled: false },
+      UPPER_CAUTION: { min: 0.75, max: 0.85, maxConcurrent: 14, batchingDisabled: false },
+      UPPER_WARNING: { min: 0.85, max: 0.95, maxConcurrent: 7, batchingDisabled: true },
+      CRITICAL_UPPER: { min: 0.95, max: 1.00, maxConcurrent: 3, batchingDisabled: true }
+    };
     
     // Configuration
     this.config = {
@@ -57,8 +69,42 @@ class TransactionProcessor {
     };
     
     console.log('⚙️ Transaction Processor initialized');
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
+    console.log(`🌟 Base Ratio (φ): ${this.baseRatio}`);
+    console.log(`🛡️ Safety Level: ${this.safetyLevel.toFixed(3)}`);
     console.log(`✅ Required Confirmations: ${this.config.requiredConfirmations}`);
+  }
+  
+  // Get current safety configuration
+  getSafetyConfig() {
+    for (const [name, threshold] of Object.entries(this.safetyThresholds)) {
+      if (this.safetyLevel >= threshold.min && this.safetyLevel <= threshold.max) {
+        return { ...threshold, level: name };
+      }
+    }
+    return this.safetyThresholds.OPTIMAL_RANGE;
+  }
+  
+  // Optimize transaction fees using φ-ratio
+  optimizeTransactionFee(baseFee, priorityFee) {
+    const safetyConfig = this.getSafetyConfig();
+    
+    // Apply φ-ratio to fee calculation
+    const optimizedBase = Math.ceil(baseFee / this.baseRatio);
+    const optimizedPriority = Math.ceil(priorityFee * this.bridgingBaseline);
+    
+    const totalOriginal = baseFee + priorityFee;
+    const totalOptimized = optimizedBase + optimizedPriority;
+    const savings = totalOriginal - totalOptimized;
+    
+    console.log(`💰 Fee optimization: ${totalOriginal} → ${totalOptimized} (saved ${savings})`);
+    
+    return {
+      baseFee: optimizedBase,
+      priorityFee: optimizedPriority,
+      totalFee: totalOptimized,
+      savings: savings,
+      safetyLevel: safetyConfig.level
+    };
   }
   
   // Process a transaction

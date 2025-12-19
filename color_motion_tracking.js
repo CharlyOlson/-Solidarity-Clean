@@ -26,7 +26,23 @@ const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudi
 
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {
-    constructor() {
+    constructor(config = {}) {
+        // 🛡️ Safety System Integration (7-tier architecture)
+        this.safetyLevel = config.safetyLevel || 0.618; // Golden ratio baseline
+        this.baseRatio = 1.618;
+        this.bridgingBaseline = 0.618;
+        
+        // Define safety thresholds matching platform standard
+        this.safetyThresholds = {
+            CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, scanDepth: 1, scanTimeout: 5000 },
+            WARNING_LEVEL: { min: 0.05, max: 0.15, scanDepth: 2, scanTimeout: 10000 },
+            CAUTION_RANGE: { min: 0.15, max: 0.25, scanDepth: 3, scanTimeout: 15000 },
+            OPTIMAL_RANGE: { min: 0.25, max: 0.75, scanDepth: 5, scanTimeout: 30000 },
+            UPPER_CAUTION: { min: 0.75, max: 0.85, scanDepth: 4, scanTimeout: 20000 },
+            UPPER_WARNING: { min: 0.85, max: 0.95, scanDepth: 3, scanTimeout: 15000 },
+            CRITICAL_UPPER: { min: 0.95, max: 1.00, scanDepth: 2, scanTimeout: 10000 }
+        };
+        
         this.discoveredLocations = new Map();
         this.oneDriveLocations = new Set();
         this.mobileDevices = new Map();
@@ -98,8 +114,9 @@ class ComprehensiveSolidarityDiscovery {
                         totalFound++;
                     }
 
-                    // Recursive scan for Solidarity projects
-                    const foundProjects = await this.recursiveSolidarityScan(oneDrivePath, 2); // Max 2 levels deep
+                    // Recursive scan for Solidarity projects (safety-aware depth)
+                    const scanConfig = this.getSafetyConfig();
+                    const foundProjects = await this.recursiveSolidarityScan(oneDrivePath, scanConfig.scanDepth);
                     totalFound += foundProjects;
                 } else {
                     console.log(`   ❌ Not found: ${oneDrivePath}`);
@@ -125,6 +142,25 @@ class ComprehensiveSolidarityDiscovery {
         // Multi-pass correction for Solidarity text
     }
 
+    // Get current safety configuration
+    getSafetyConfig() {
+        for (const [name, threshold] of Object.entries(this.safetyThresholds)) {
+            if (this.safetyLevel >= threshold.min && this.safetyLevel <= threshold.max) {
+                return { ...threshold, level: name };
+            }
+        }
+        return this.safetyThresholds.OPTIMAL_RANGE; // Default to optimal
+    }
+    
+    // Update safety level with validation
+    setSafetyLevel(newLevel, reason = '') {
+        const oldLevel = this.safetyLevel;
+        this.safetyLevel = Math.max(0.0, Math.min(1.0, newLevel));
+        const config = this.getSafetyConfig();
+        console.log(`🛡️ Discovery Safety: ${oldLevel.toFixed(3)} → ${this.safetyLevel.toFixed(3)} (${config.level})${reason ? ' - ' + reason : ''}`);
+        return config;
+    }
+    
     // Scan specific location for Solidarity
     async scanForSolidarity(location, type) {
         try {

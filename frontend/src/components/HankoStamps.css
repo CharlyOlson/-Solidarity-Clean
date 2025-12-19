@@ -1,0 +1,580 @@
+/* Hanko Stamps Tab Styles */
+
+.hanko-stamps-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+  color: white;
+}
+
+.hanko-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.hanko-title h1 {
+  color: #FFD700;
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.hanko-subtitle {
+  color: #B0B0B0;
+  font-size: 0.95rem;
+}
+
+.btn-request-stamp {
+  padding: 12px 25px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.btn-request-stamp:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+}
+
+/* SVG Stamp Display */
+.stamp-svg-container {
+  width: 100%;
+  max-width: 200px;
+  height: 200px;
+  margin: 10px auto;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+}
+
+.stamp-svg-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.details-svg-large {
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  border: 3px solid rgba(255, 215, 0, 0.5);
+  border-radius: 15px;
+  overflow: hidden;
+  background: white;
+}
+
+.details-svg-large svg {
+  width: 100%;
+  height: 100%;
+}
+
+.stamp-crypto-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.crypto-info {
+  color: #B0B0B0;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.small-text {
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+/* Stamp Types Info */
+.stamp-types-info {
+  margin-bottom: 40px;
+}
+
+.stamp-types-info h3 {
+  color: #FFD700;
+  margin-bottom: 20px;
+}
+
+.stamp-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.stamp-type-card {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.stamp-type-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(5px);
+}
+
+.stamp-visual {
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.stamp-type-info {
+  flex: 1;
+}
+
+.stamp-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stamp-japanese {
+  font-size: 0.9rem;
+  color: #B0B0B0;
+  margin-bottom: 8px;
+}
+
+.stamp-description {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+/* User's Stamps Section */
+.user-stamps-section {
+  margin-top: 40px;
+}
+
+.user-stamps-section h3 {
+  color: #FFD700;
+  margin-bottom: 20px;
+}
+
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.stamp-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stamp-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.stamp-card.revoked {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.stamp-badge {
+  padding: 30px;
+  text-align: center;
+  color: white;
+}
+
+.stamp-visual-large {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.stamp-japanese-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.stamp-card-info {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.stamp-card-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.stamp-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.stamp-usage-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.usage-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #B0B0B0;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.revoked-badge {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid #F44336;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  color: #F44336;
+}
+
+/* No Stamps State */
+.no-stamps {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.no-stamps-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.no-stamps p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.btn-create-first {
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+}
+
+.btn-create-first:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* Request Dialog */
+.request-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.request-dialog {
+  background: #1a1a2e;
+  border: 2px solid #FFD700;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.request-dialog h2 {
+  color: #FFD700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.dialog-subtitle {
+  color: #B0B0B0;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.stamp-type-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stamp-type-option {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stamp-type-option:hover {
+  transform: scale(1.05);
+}
+
+.stamp-type-option.selected {
+  transform: scale(1.05);
+}
+
+.option-visual {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.option-name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.option-japanese {
+  font-size: 0.85rem;
+  color: #B0B0B0;
+  margin-bottom: 10px;
+}
+
+.option-description {
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-create-stamp,
+.btn-cancel {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.btn-create-stamp {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-create-stamp:hover,
+.btn-cancel:hover {
+  transform: scale(1.02);
+}
+
+/* Stamp Details Modal */
+.stamp-details-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.stamp-details-modal {
+  background: #1a1a2e;
+  border: 2px solid #FFD700;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-details {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-details:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+.stamp-details-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.details-badge {
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+}
+
+.details-visual {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.details-japanese {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.details-title h2 {
+  color: #FFD700;
+  margin-bottom: 5px;
+}
+
+.details-romaji {
+  color: #B0B0B0;
+  font-size: 0.9rem;
+}
+
+.stamp-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-section {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.detail-section label {
+  display: block;
+  color: #FFD700;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.detail-value {
+  color: white;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.detail-value.monospace {
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.usage-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: white;
+  font-size: 0.95rem;
+}
+
+.usage-details strong {
+  color: #FFD700;
+}
+
+.btn-revoke {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.btn-revoke:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 20px rgba(244, 67, 54, 0.4);
+}
+
+.revoked-warning {
+  padding: 15px;
+  background: rgba(244, 67, 54, 0.2);
+  border: 2px solid #F44336;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #F44336;
+}

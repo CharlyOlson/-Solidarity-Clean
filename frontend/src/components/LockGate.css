@@ -1,0 +1,353 @@
+/* LockGate Security Overlay Styles */
+
+.lockgate-overlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  min-width: 150px;
+}
+
+.lockgate-overlay.secured {
+  animation: greenFlash 0.5s ease;
+}
+
+@keyframes greenFlash {
+  0%, 100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.lockgate-overlay.warning {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.lockgate-overlay.critical {
+  animation: criticalFlash 0.5s infinite;
+}
+
+@keyframes criticalFlash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+.lockgate-icon {
+  font-size: 2rem;
+}
+
+.lockgate-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.lockgate-timestamp {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 3px;
+}
+
+/* Intrusion Popup (Orange State) */
+.intrusion-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.intrusion-popup {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 3px solid #FF9800;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 50px rgba(255, 152, 0, 0.5);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.intrusion-popup h2 {
+  color: #FF9800;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.alert-message {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.attempts-list {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.attempts-list h3 {
+  color: #FF9800;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.attempt-item {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #F44336;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.attempt-icon {
+  font-size: 1.5rem;
+}
+
+.attempt-details {
+  flex: 1;
+}
+
+.attempt-type {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.attempt-timestamp {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+}
+
+.attempt-info {
+  color: #B0B0B0;
+  font-size: 0.9rem;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.btn-block,
+.btn-investigate,
+.btn-dismiss {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.btn-block {
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  color: white;
+}
+
+.btn-investigate {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+}
+
+.btn-dismiss {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-block:hover,
+.btn-investigate:hover,
+.btn-dismiss:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.popup-note {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Burn Protocol Screen (Red State) */
+.burn-protocol-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100001;
+  animation: redFlash 1s infinite;
+}
+
+@keyframes redFlash {
+  0%, 100% {
+    background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #330000 0%, #1a0000 100%);
+  }
+}
+
+.burn-protocol-screen {
+  background: rgba(0, 0, 0, 0.8);
+  border: 5px solid #F44336;
+  border-radius: 20px;
+  padding: 50px;
+  max-width: 700px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 100px rgba(244, 67, 54, 0.8);
+}
+
+.burn-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  animation: burnPulse 0.5s infinite;
+}
+
+@keyframes burnPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.burn-protocol-screen h1 {
+  color: #F44336;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.burn-message {
+  color: white;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.burn-details {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.burn-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #F44336;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+}
+
+.burn-detail-item .icon {
+  font-size: 1.5rem;
+}
+
+.btn-burn {
+  padding: 20px 40px;
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 10px 30px rgba(244, 67, 54, 0.5);
+}
+
+.btn-burn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 40px rgba(244, 67, 54, 0.7);
+}
+
+.burn-warning {
+  margin-top: 20px;
+  color: #FF9800;
+  font-size: 0.9rem;
+  font-weight: bold;
+}

@@ -11,11 +11,15 @@
  * Trademarked by Scott Charles Olson
  */
 
+const CoreMathematicsEngine = require('./src/utils/CoreMathematicsEngine');
 const { QuantumCubicCalculationSystem } = require('./QuantumCubicCalculationSystem');
 const { QuantumMathUtils, QuantumProcessingPipeline } = require('./QuantumMathUtils');
 const { SacredNumericSequence } = require('./SacredNumericSequence');
 const { TIMBRCompressionSystem } = require('./TIMBRCompressionSystem');
 const { audioCommands, executeAudioCommand } = require('./enhancedAudioStudioCommands');
+const { GoldenRatioMath, MirrorNumberSystem } = require('./core/goldenRatioMath');
+const { FocusedPassCorrector } = require('./core/focusedPassCorrector');
+const { HarmonicPhraseParser } = require('./core/harmonicPhraseParser');
 const path = require('path');
 
 class CorrectedSolidaritySystem {
@@ -43,8 +47,23 @@ class CorrectedSolidaritySystem {
 			big_ask_threshold: 7.0
 		};
 		
+		// Initialize Core Mathematics Engine (unified calculation framework)
+		this.coreEngine = new CoreMathematicsEngine({
+			precision: config.quantumRecursionLevels || 49,
+			marketScale: 1e9,
+			safetyLevel: this.bridgingSafetyLevel
+		});
+		
 		// Initialize sacred sequence system
 		this.sacredSequence = new SacredNumericSequence();
+		
+		// Initialize golden ratio mathematics
+		this.goldenMath = new GoldenRatioMath();
+		this.mirrorSystem = new MirrorNumberSystem();
+		
+		// Initialize correction systems
+		this.focusedCorrector = new FocusedPassCorrector();
+		this.harmonicParser = new HarmonicPhraseParser();
 		
 		// Initialize TIMBR compression
 		this.timbrCompression = new TIMBRCompressionSystem({
@@ -124,6 +143,97 @@ class CorrectedSolidaritySystem {
 	 */
 	listZipPhrases() {
 		return Object.keys(audioCommands);
+	}
+	
+	/**
+	 * Process a harmonic phrase using the new harmonic phrase parser
+	 * Maps "silly names" to mathematical solutions
+	 * @param {string} phrase - Harmonic phrase (e.g., "Too fours", "Hard time making Cents")
+	 * @param {object} context - Processing context
+	 * @returns {Promise<object>} - Solution result
+	 */
+	async processHarmonicPhrase(phrase, context = {}) {
+		console.log(`\n🎵 Processing harmonic phrase through Solidarity System...`);
+		
+		// Add safety level to context
+		context.safetyLevel = context.safetyLevel || this.bridgingSafetyLevel;
+		
+		// Parse and execute using harmonic phrase parser
+		const result = await this.harmonicParser.parsePhrase(phrase, context);
+		
+		if (result.success) {
+			this.status.last_correction = phrase;
+			console.log(`   ✅ Solution applied: ${result.solution.type}`);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Apply focused correction to text
+	 * Symbol → Word → Line level correction
+	 * @param {string} text - Text to correct
+	 * @param {number} passes - Number of correction passes
+	 * @returns {object} - Correction result
+	 */
+	applyFocusedCorrection(text, passes = 1) {
+		console.log(`🔧 Applying focused correction (${passes} passes)...`);
+		const result = this.focusedCorrector.multiPassCorrection(text, passes);
+		
+		if (result.original !== result.final) {
+			console.log(`   Corrections made: ${this.focusedCorrector.getStatistics().totalPasses} total passes`);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Get all available harmonic phrases with descriptions
+	 * @returns {Array<object>} - Harmonic phrase information
+	 */
+	getHarmonicPhrases() {
+		return this.harmonicParser.getHarmonicPhrases();
+	}
+	
+	/**
+	 * Calculate golden ratio-based timing for operation
+	 * @param {number} dataSize - Size of data to process
+	 * @returns {number} - Optimal processing time in milliseconds
+	 */
+	calculateGoldenTiming(dataSize) {
+		return this.goldenMath.calculateGoldenTiming(dataSize);
+	}
+	
+	/**
+	 * Generate mirror repunits for harmonic analysis
+	 * @param {number} nDigits - Number of digits (1-9)
+	 * @returns {Array<number>} - Repunit sequence [1, 11, 111, ...]
+	 */
+	generateMirrorRepunits(nDigits = 5) {
+		return this.mirrorSystem.generateRepunits(nDigits);
+	}
+	
+	/**
+	 * Calculate Angel/Daemon force balance
+	 * Used by "Angel / Daemon Archetypes" harmonic phrase
+	 * @param {number} node - Sacred node number
+	 * @returns {object} - Force balance analysis
+	 */
+	calculateForceBalance(node) {
+		const angelForce = Math.sqrt(node * node + (node / 2) * (node / 2));
+		const daemonForce = Math.sqrt(Math.max(0, node * node - (node / 2) * (node / 2)));
+		const balance = daemonForce > 0 ? angelForce / daemonForce : angelForce;
+		const isStable = Math.abs(balance - this.goldenMath.PHI) < 0.1;
+		
+		return {
+			node,
+			angelForce,
+			daemonForce,
+			balance,
+			isStable,
+			phiTarget: this.goldenMath.PHI,
+			deviation: Math.abs(balance - this.goldenMath.PHI)
+		};
 	}
 	
 	/**

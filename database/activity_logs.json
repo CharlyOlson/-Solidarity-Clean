@@ -1,0 +1,56 @@
+[
+  {
+    "id": "log_1765964769591_zscpjkrqj",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"What can this platform do for me?\",\"responseLength\":164}",
+    "timestamp": "2025-12-17T09:46:09.591Z"
+  },
+  {
+    "id": "log_1765964781609_2f95fpwga",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"what can this platform do for me \",\"responseLength\":164}",
+    "timestamp": "2025-12-17T09:46:21.609Z"
+  },
+  {
+    "id": "log_1765964790347_utct7ueoi",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"yes\",\"responseLength\":164}",
+    "timestamp": "2025-12-17T09:46:30.347Z"
+  },
+  {
+    "id": "log_1765964884559_9saqvkg2o",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"What's the current state of crypto markets?\",\"responseLength\":164}",
+    "timestamp": "2025-12-17T09:48:04.559Z"
+  },
+  {
+    "id": "log_1765966581539_jfjtkhi2m",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"Show me investment opportunities within my budget\",\"responseLength\":164}",
+    "timestamp": "2025-12-17T10:16:21.539Z"
+  },
+  {
+    "id": "log_1765966593380_1u2rc6ch6",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"Explain how the φ-ratio works in this platform\",\"responseLength\":164}",
+    "timestamp": "2025-12-17T10:16:33.380Z"
+  }
+]

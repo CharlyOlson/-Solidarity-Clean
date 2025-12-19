@@ -1,37 +1,38 @@
 # Solidarity Platform - Clean Repository
 
-🚀 **Professional Bridging Anchor Processing & Financial Commerce Platform**
+🚀 **Bridging Anchor Processing & Financial Commerce Platform**
 
-A comprehensive solidarity platform implementing the Henry 7 Step 14 Trott Waltz numerological system with advanced safety architecture and quantum coherence integration.
+A solidarity platform implementing the Henry 7 Step 14 Trott Waltz numerological framework with safety architecture and a software-based mathematical coherence model.
+
+> **✨ NEW**: Safety system integration across components. See [SAFETY_INTEGRATION_SUMMARY.md](SAFETY_INTEGRATION_SUMMARY.md) and [.github/copilot-instructions.md](.github/copilot-instructions.md) for implementation patterns.
 
 ## 🌟 **Key Features**
 
 ### 🎯 **Safety System**
-- **Base Ratio Baseline**: All systems anchor at 0.618 for mathematical stability
-- **7-Tier Safety Architecture**: Ranges from 0.03 to 0.97 with smooth transitions
-- **Distributed Load Balancing**: Prevents system overload with intelligent flow control
-- **Real-time Safety Propagation**: Instant safety level synchronization across all components
+- **Base Ratio Baseline**: Systems default to 0.618 for mathematical stability
+- **7-Tier Safety Architecture**: Operational ranges with smooth transitions
+- **Rate Limiting & Validation**: Express middleware and validators to reduce risk
+- **Safety Propagation**: Safety level synchronization across components
 
-### 🆓 **Cost-Optimized AI Integration**
-- **Local Ollama AI**: Zero API costs with complete privacy control
-- **Free Alternative**: Replaces expensive external AI services
-- **No Licensing Restrictions**: Full local control and customization
+### 🆓 **Local AI Integration**
+- **Ollama (local)**: Runs models locally to avoid external API costs
+- **Privacy-focused**: No remote calls required by default
+- **Configurable**: Model selection and parameters are adjustable
 
-### ⚛️ **Quantum Coherence Framework**
-- **Mathematical Stability**: 0.618 (Base Ratio PHI per Henry 7 Step 14 Trott Waltz) provides quantum state anchoring
-- **Entanglement Simulation**: Sacred numeric sequences create correlation effects
-- **Stable Coherence**: Maintains optimal quantum states through all operations
+### ⚛️ **Mathematical Coherence Model**
+- **Stability**: 0.618 baseline provides a consistent mathematical anchor
+- **Correlations**: Sacred numeric sequences used for correlation modeling
+- **Operational Coherence**: A software model; not physical quantum hardware
 
-### 🌉 **Professional Bridging Anchor Processing**
-- Advanced base ratio analysis and processing
-- Real-time signal effects and manipulation
-- Professional-grade DSP pipeline
-- Python-based scientific computing with NumPy
+### 🌉 **Bridging Anchor Processing**
+- Base ratio analysis and processing
+- Signal effects and manipulation
+- DSP pipeline implemented in Python/NumPy
 
-### 💼 **Financial Commerce Platform**
-- Secure financial transaction processing
-- Commerce integration capabilities
-- Professional financial data handling
+### 💼 **Financial Commerce Components**
+- Transaction processing scaffolding
+- Integration points for commerce flows
+- Financial data handling utilities
 
 ## 🏗️ **Architecture Overview**
 
@@ -43,7 +44,7 @@ A comprehensive solidarity platform implementing the Henry 7 Step 14 Trott Waltz
 - `correctedSolidaritySystem.js` - Core solidarity system with safety protocols
 - `bridging_anchor_systems/` - Advanced DSP subsystem with Python/NumPy
 
-### **Safety Flow Architecture**
+### **Safety Flow Architecture (software)**
 ```
 Conservative Mode (0.03-0.25) → Balanced Mode (0.25-0.85) → Performance Mode (0.85-0.97)
                      ↓
@@ -77,7 +78,7 @@ python_env\Scripts\activate  # Windows
 # Install Python dependencies
 pip install numpy
 
-# Run the application
+# Run the API server
 npm start
 
 # Test bridging anchor system
@@ -105,10 +106,10 @@ Solidarity-Clean/
 
 ## 🔒 **Safety & Security**
 
-- **Safety Thresholds**: All operations maintain safe operational boundaries
-- **Base Ratio Stability**: Mathematical anchoring provides system resilience  
-- **Local AI Processing**: No external API dependencies for core AI functionality
-- **Comprehensive Logging**: Full system monitoring and debugging capabilities
+- **Safety Thresholds**: Operational boundaries enforced by software guards
+- **Base Ratio Stability**: Mathematical anchoring provides resilience
+- **Local AI Processing**: Core AI runs locally by default
+- **Logging**: Monitoring and debugging utilities
 
 ## 🧪 **Testing**
 

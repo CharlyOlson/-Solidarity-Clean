@@ -39,6 +39,18 @@ const OLLAMA_CHAT_URL = 'http://localhost:11434/api/chat';
 const OLLAMA_TAGS_URL = 'http://localhost:11434/api/tags';
 const OLLAMA_PULL_URL = 'http://localhost:11434/api/pull';
 
+// Load system context for enhanced AI responses
+const SYSTEM_CONTEXT_PATH = path.join(__dirname, 'ollama_system_context.md');
+let SYSTEM_CONTEXT = '';
+try {
+  if (fs.existsSync(SYSTEM_CONTEXT_PATH)) {
+    SYSTEM_CONTEXT = fs.readFileSync(SYSTEM_CONTEXT_PATH, 'utf8');
+    console.log('✅ Loaded Solidarity Platform system context for Ollama');
+  }
+} catch (error) {
+  console.warn('⚠️ Could not load system context:', error.message);
+}
+
 // 🛡️ Harmonious AI Safety Thresholds (matching quantum coherence system)
 const AI_SAFETY_THRESHOLDS = {
   CRITICAL_EMERGENCY: { 
@@ -125,7 +137,7 @@ function assessAISafety(safetyLevel = globalAISafetyLevel) {
   };
 }
 
-// 🤖 Main Ollama Query Function with Harmonious Safety Controls
+// 🤖 Main Ollama Query Function with Harmonious Safety Controls and Enhanced Context
 async function queryOllama(prompt, options = {}) {
   try {
     // Apply harmonious safety controls
@@ -137,22 +149,47 @@ async function queryOllama(prompt, options = {}) {
     // Select model based on safety level
     const selectedModel = options.model || safetyConfig.models[0];
     
+    // Build enhanced system prompt with mathematical context
+    let enhancedSystemPrompt = safetyConfig.systemPrompt;
+    
+    // Add mathematical context for OPTIMAL_RANGE and above
+    if (safetyLevel >= 0.25 && SYSTEM_CONTEXT && !options.skipContext) {
+      // Include condensed system context for optimal responses
+      enhancedSystemPrompt += `\n\nSolidarity Platform Context (φ=1.618, baseline=0.618, Henry 7→14→49):\n`;
+      enhancedSystemPrompt += `- Golden Ratio Foundation: φ=1.618, reciprocal=0.618 (bridging baseline)\n`;
+      enhancedSystemPrompt += `- Henry Framework: 7→14→49 progression, sacred nodes: 1,3,4,7,14,21,49\n`;
+      enhancedSystemPrompt += `- Safety System: 7 tiers, current=${safetyLevel.toFixed(3)} (${safetyConfig.level})\n`;
+      enhancedSystemPrompt += `- Pythagorean Allocation: Government fund optimization, real-time metrics\n`;
+      enhancedSystemPrompt += `- Quantum Software: φ-based patterns, 49-level recursion, 0.618 coherence\n`;
+      enhancedSystemPrompt += `- Financial: TEST MODE default, multi-chain, φ-optimization\n`;
+      
+      if (options.includeFullContext) {
+        enhancedSystemPrompt += `\n--- Full System Context ---\n${SYSTEM_CONTEXT.substring(0, 2000)}\n`;
+      }
+    }
+    
+    // Calculate complexity-based adjustments
+    const complexity = options.complexity || 7; // Default to base Henry level
+    const complexityFactor = Math.min(complexity / 49, 1.0); // Normalize to 0-1
+    const adjustedTokens = Math.floor(safetyConfig.maxTokens * (0.5 + complexityFactor * 0.5));
+    
     const requestData = {
       model: selectedModel,
-      prompt: `${safetyConfig.systemPrompt}\n\nUser: ${prompt}`,
+      prompt: `${enhancedSystemPrompt}\n\nUser Query: ${prompt}`,
       stream: false,
       options: {
         temperature: Math.min(options.temperature || safetyConfig.temperature, safetyConfig.temperature),
-        num_predict: Math.min(options.maxTokens || safetyConfig.maxTokens, safetyConfig.maxTokens),
+        num_predict: Math.min(options.maxTokens || adjustedTokens, safetyConfig.maxTokens),
         top_p: options.topP || 0.9,
         repeat_penalty: 1.1
       }
     };
 
     console.log(`🤖 Using model: ${selectedModel} (Safety Mode: ${safetyConfig.mode})`);
+    console.log(`📊 Complexity: ${complexity}/49, Tokens: ${requestData.options.num_predict}`);
     
     const response = await axios.post(OLLAMA_API_URL, requestData, {
-      timeout: options.timeout || 30000,
+      timeout: options.timeout || 60000, // Increased for complex queries
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -162,8 +199,10 @@ async function queryOllama(prompt, options = {}) {
       model: selectedModel,
       safetyLevel: safetyLevel,
       safetyMode: safetyConfig.mode,
+      complexity: complexity,
       tokensUsed: response.data.eval_count || 0,
       baseRatio: safetyConfig.baseRatio,
+      bridgingBaseline: 0.618,
       metadata: {
         done: response.data.done,
         context: response.data.context,
@@ -181,7 +220,7 @@ async function queryOllama(prompt, options = {}) {
       return {
         success: false,
         error: 'Ollama not running. Please install and start Ollama: https://ollama.ai',
-        fallbackSuggestion: 'Install Ollama and run: ollama pull llama3.2:1b',
+        fallbackSuggestion: 'Install Ollama and run: ollama pull llama3.2:3b',
         emergencyStabilization: 'Call emergencyAIStabilization() to restore bridging baseline'
       };
     }

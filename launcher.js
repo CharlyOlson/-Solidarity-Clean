@@ -76,6 +76,23 @@ class SolidarityPlatformLauncher {
             console.log(`   Fibonacci anchor ratio approximation: ${sequenceReport.sequences.fibonacci.anchor_approximation}`);
             this.components.set('sacred_sequence', true);
             
+            // Initialize Golden Ratio Mathematics
+            console.log('\n🌟 Initializing Golden Ratio Mathematics...');
+            console.log(`   φ (Phi): ${this.quantumSystem.goldenMath.PHI.toFixed(15)}`);
+            console.log(`   φ reciprocal: ${this.quantumSystem.goldenMath.PHI_RECIPROCAL.toFixed(15)}`);
+            console.log(`   Golden Angle: ${this.quantumSystem.goldenMath.GOLDEN_ANGLE_DEGREES.toFixed(6)}°`);
+            console.log(`   Sacred Nodes: ${this.quantumSystem.goldenMath.SACRED_NODES.join(', ')}`);
+            this.components.set('golden_ratio_math', true);
+            
+            // Initialize Harmonic Phrase Parser
+            console.log('\n🎵 Initializing Harmonic Phrase Parser...');
+            const harmonicPhrases = this.quantumSystem.getHarmonicPhrases();
+            console.log(`   Loaded ${harmonicPhrases.length} harmonic phrases:`);
+            harmonicPhrases.forEach(p => {
+                console.log(`      "${p.phrase}" → ${p.trigger} (Node ${p.node})`);
+            });
+            this.components.set('harmonic_phrase_parser', true);
+            
             // Initialize TIMBR Compression System
             console.log('\n🔄 Initializing TIMBR Compression System...');
             const compressionMetrics = this.timbrCompression.getCompressionMetrics();
@@ -373,6 +390,10 @@ async function main() {
         const depth = args[2] ? parseInt(args[2]) : 14;
         await launcher.calculateQuantumCubic(value, depth);
         
+    } else if (args[0] === 'core-engine') {
+        console.log('🧮 Running Core Mathematics Engine Demo...\n');
+        require('./core_engine_demo.js');
+        
     } else {
         console.log('Usage:');
         console.log('  node launcher.js start              - Initialize all systems');
@@ -380,6 +401,7 @@ async function main() {
         console.log('  node launcher.js quantum            - Run quantum cubic calculation demo');
         console.log('  node launcher.js bigask [question]  - Process big ask quantum question');
         console.log('  node launcher.js cubic [value] [depth] - Calculate quantum cubic root');
+        console.log('  node launcher.js core-engine        - Run Core Mathematics Engine demo');
         console.log('  node launcher.js report             - Generate system report');
     }
 }

@@ -93,8 +93,8 @@ async function demonstrateIntegratedSystem() {
   console.log('✅ Financial Configuration initialized');
   console.log(`🧪 Test Mode: ${financialConfig.config.testMode ? 'ENABLED' : 'DISABLED'}`);
   
-  // Calculate safety limits
-  const safetyLimits = financialConfig.calculateSafetyLimits(HARMONIC_BASELINE);
+  // Calculate safety limits using bridging baseline
+  const safetyLimits = financialConfig.calculateSafetyLimits(BRIDGING_BASELINE);
   console.log(`💳 Daily Limit: $${safetyLimits.dailyLimit}`);
   console.log(`💳 Single Transaction: $${safetyLimits.singleTransactionLimit}`);
   console.log(`🛡️ Risk Level: ${safetyLimits.riskLevel}`);

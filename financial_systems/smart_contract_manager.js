@@ -23,8 +23,23 @@
 class SmartContractManager {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.anchorRatio = 1.618;
+    this.baseRatio = 1.618; // φ for gas calculations
     this.bridgingBaseline = 0.618;
+    
+    // 🛡️ Safety System Integration
+    this.safetyLevel = config.safetyLevel || 0.618;
+    this.safetyThresholds = {
+      CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, deploymentsAllowed: false, maxGasLimit: 100000 },
+      WARNING_LEVEL: { min: 0.05, max: 0.15, deploymentsAllowed: false, maxGasLimit: 300000 },
+      CAUTION_RANGE: { min: 0.15, max: 0.25, deploymentsAllowed: true, maxGasLimit: 500000 },
+      OPTIMAL_RANGE: { min: 0.25, max: 0.75, deploymentsAllowed: true, maxGasLimit: 5000000 },
+      UPPER_CAUTION: { min: 0.75, max: 0.85, deploymentsAllowed: true, maxGasLimit: 3000000 },
+      UPPER_WARNING: { min: 0.85, max: 0.95, deploymentsAllowed: true, maxGasLimit: 1000000 },
+      CRITICAL_UPPER: { min: 0.95, max: 1.00, deploymentsAllowed: false, maxGasLimit: 500000 }
+    };
+    
+    // Sacred nodes for gas optimization (7, 14, 21, 49)
+    this.sacredNodes = [7, 14, 21, 49];
     
     // Configuration
     this.config = {
@@ -55,8 +70,40 @@ class SmartContractManager {
     };
     
     console.log('📜 Smart Contract Manager initialized');
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
+    console.log(`🌟 Base Ratio (φ): ${this.baseRatio}`);
+    console.log(`🛡️ Safety Level: ${this.safetyLevel.toFixed(3)}`);
+    console.log(`🔢 Sacred Nodes: ${this.sacredNodes.join(', ')}`);
     console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
+  }
+  
+  // Get current safety configuration
+  getSafetyConfig() {
+    for (const [name, threshold] of Object.entries(this.safetyThresholds)) {
+      if (this.safetyLevel >= threshold.min && this.safetyLevel <= threshold.max) {
+        return { ...threshold, level: name };
+      }
+    }
+    return this.safetyThresholds.OPTIMAL_RANGE;
+  }
+  
+  // Apply φ-ratio to gas estimation with sacred node optimization
+  applyPhiGasOptimization(estimatedGas) {
+    // Find closest sacred node
+    const targetNode = this.sacredNodes.reduce((prev, curr) => 
+      Math.abs(curr * 10000 - estimatedGas) < Math.abs(prev * 10000 - estimatedGas) ? curr : prev
+    );
+    
+    // Apply φ-ratio safety margin
+    const optimizedGas = Math.ceil(estimatedGas * this.baseRatio / targetNode) * targetNode;
+    
+    console.log(`⚡ Gas optimization: ${estimatedGas} → ${optimizedGas} (node ${targetNode})`);
+    
+    return {
+      original: estimatedGas,
+      optimized: optimizedGas,
+      sacredNode: targetNode,
+      margin: ((optimizedGas - estimatedGas) / estimatedGas * 100).toFixed(2) + '%'
+    };
   }
   
   // Register a contract
