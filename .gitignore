@@ -170,3 +170,6 @@ ipython_config.py
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

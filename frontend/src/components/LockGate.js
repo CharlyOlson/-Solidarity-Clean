@@ -12,6 +12,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './LockGate.css';
+import { API_BASE_URL } from '../config/api';
 
 const LockGate = ({ safetyLevel = 0.618 }) => {
   const [securityState, setSecurityState] = useState('locked'); // locked, secured, warning, critical
@@ -58,7 +59,7 @@ const LockGate = ({ safetyLevel = 0.618 }) => {
   useEffect(() => {
     const checkSecurity = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/security/status');
+        const response = await fetch(`${API_BASE_URL}/api/security/status`);
         const data = await response.json();
 
         // Update security state based on threats
@@ -96,13 +97,13 @@ const LockGate = ({ safetyLevel = 0.618 }) => {
 
     try {
       // Step 1: Secure logs
-      await fetch('http://localhost:3001/api/security/secure-logs', { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/security/secure-logs`, { method: 'POST' });
 
       // Step 2: Erase content
-      await fetch('http://localhost:3001/api/security/erase-content', { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/security/erase-content`, { method: 'POST' });
 
       // Step 3: Clean rebuild
-      await fetch('http://localhost:3001/api/security/rebuild-clean', { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/security/rebuild-clean`, { method: 'POST' });
 
       // Step 4: Restart
       alert('🔥 Burn protocol complete. System will restart...');
@@ -173,7 +174,7 @@ const LockGate = ({ safetyLevel = 0.618 }) => {
               <button 
                 className="btn-block"
                 onClick={() => {
-                  fetch('http://localhost:3001/api/security/block-threat', { method: 'POST' });
+                  fetch(`${API_BASE_URL}/api/security/block-threat`, { method: 'POST' });
                   dismissPopup();
                 }}
               >

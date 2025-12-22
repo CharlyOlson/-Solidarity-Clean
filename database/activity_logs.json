@@ -52,5 +52,14 @@
     "action": "ai_response",
     "details": "{\"prompt\":\"Explain how the φ-ratio works in this platform\",\"responseLength\":164}",
     "timestamp": "2025-12-17T10:16:33.380Z"
+  },
+  {
+    "id": "log_1766397248620_1y0u8ioh0",
+    "userId": "test-user",
+    "type": "ollama",
+    "actor": "ollama",
+    "action": "ai_response",
+    "details": "{\"prompt\":\"Show me investment opportunities within my budget\",\"responseLength\":164}",
+    "timestamp": "2025-12-22T09:54:08.620Z"
   }
 ]

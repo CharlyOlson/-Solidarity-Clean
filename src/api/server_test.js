@@ -241,7 +241,24 @@ app.post('/api/device/register', simpleAuth, async (req, res) => {
 // HANKO ROUTES (SIMPLIFIED - Python integration coming soon)
 
 function resolvePythonCmd() {
+  // Priority 1: Explicit environment variable
   if (process.env.PYTHON_BIN) return process.env.PYTHON_BIN;
+  
+  // Priority 2: Check for project venv (Windows path)
+  const venvPythonWin = path.join(__dirname, '../../.venv/Scripts/python.exe');
+  const venvPythonUnix = path.join(__dirname, '../../.venv/bin/python');
+  
+  const fs = require('fs');
+  if (fs.existsSync(venvPythonWin)) {
+    console.log('[PYTHON] Using venv:', venvPythonWin);
+    return venvPythonWin;
+  }
+  if (fs.existsSync(venvPythonUnix)) {
+    console.log('[PYTHON] Using venv:', venvPythonUnix);
+    return venvPythonUnix;
+  }
+  
+  // Priority 3: System python3 / python
   const probe = spawnSync('python3', ['--version'], { stdio: 'ignore' });
   if (!probe.error && probe.status === 0) return 'python3';
   return 'python';

@@ -12,6 +12,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import './OllamaHome.css';
+import { API_BASE_URL } from '../config/api';
 
 const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
   const [messages, setMessages] = useState([]);
@@ -41,7 +42,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
   const fetchLiveData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/ai/live-context', {
+      const response = await fetch(`${API_BASE_URL}/api/ai/live-context`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -67,7 +68,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/ai/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/ai/chat`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -91,7 +92,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
       setMessages(prev => [...prev, aiMessage]);
 
       // Log interaction
-      await fetch('http://localhost:3001/api/logs/activity', {
+      await fetch(`${API_BASE_URL}/api/logs/activity`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -267,7 +268,7 @@ const SettingsPanel = ({ onClose }) => {
   useEffect(() => {
     // Load user settings
     const token = localStorage.getItem('token');
-    fetch('http://localhost:3001/api/user/settings', {
+    fetch(`${API_BASE_URL}/api/user/settings`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.json())
@@ -280,7 +281,7 @@ const SettingsPanel = ({ onClose }) => {
 
   const saveSettings = async () => {
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:3001/api/user/settings', {
+    await fetch(`${API_BASE_URL}/api/user/settings`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,

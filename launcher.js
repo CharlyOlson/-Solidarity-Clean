@@ -14,6 +14,7 @@ const { EnhancedBridgingPhraseParser } = require('./src/EnhancedBridgingPhrasePa
 const { MobileDeviceManager } = require('./src/MobileDeviceManager');
 const { SacredNumericSequence } = require('./src/SacredNumericSequence');
 const { TIMBRCompressionSystem } = require('./src/TIMBRCompressionSystem');
+const { QuantumEngine } = require('./src/QuantumEngine');
 const { CorrectedSolidaritySystem } = require('./src/correctedSolidaritySystem');
 
 class SolidarityPlatformLauncher {
@@ -50,6 +51,15 @@ class SolidarityPlatformLauncher {
             quantumDepth: 14,
             cubitBase: 697,
             quantumRecursionLevels: 49
+        });
+
+        // Initialize real quantum engine (simulator-first)
+        const quantumShots = Number(process.env.SOLIDARITY_QUANTUM_SHOTS) || 256;
+        this.enableRealQuantum = process.env.SOLIDARITY_USE_REAL_QUANTUM === '1';
+        this.userApprovedQuantum = process.env.SOLIDARITY_USER_APPROVED === '1';
+        this.quantumEngine = new QuantumEngine({
+            pythonPath: process.env.SOLIDARITY_PYTHON,
+            shots: quantumShots
         });
         
         this.systemStatus = 'INITIALIZING';
@@ -196,6 +206,37 @@ class SolidarityPlatformLauncher {
     async runQuantumDemo() {
         console.log('\n🧮 Quantum Cubic Calculation System Demo');
         console.log('═'.repeat(50));
+
+        console.log('\n🔬 Quantum Simulator Experiments (real circuits):');
+        if (!this.enableRealQuantum || !this.userApprovedQuantum) {
+            console.log('   ℹ️ Real quantum sampling disabled. Required: SOLIDARITY_USE_REAL_QUANTUM=1 and SOLIDARITY_USER_APPROVED=1');
+        } else {
+            const experiments = [
+                { label: 'Bell', name: 'bell' },
+                { label: 'GHZ-3', name: 'ghz3' },
+                { label: 'Parity-2', name: 'parity2' },
+                { label: 'Phase-Flip-3', name: 'phaseflip3' }
+            ];
+
+            try {
+                const formatCounts = (label, payload) => {
+                    const ordered = Object.entries(payload.counts)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([state, count]) => `${state}:${count}`)
+                        .join(', ');
+                    console.log(`   ${label} → backend=${payload.backend}, shots=${payload.shots}`);
+                    console.log(`      counts: ${ordered}`);
+                };
+
+                for (const exp of experiments) {
+                    const payload = this.quantumEngine.runExperiment(exp.name, this.quantumEngine.defaultShots);
+                    formatCounts(exp.label, payload);
+                }
+            } catch (err) {
+                console.log('   ⚠️ Quantum engine unavailable; using fallback math.');
+                console.log(`   Reason: ${err.message}`);
+            }
+        }
         
         // Test quantum cubic root calculations
         console.log('\n📐 Quantum Cubic Root Calculations:');

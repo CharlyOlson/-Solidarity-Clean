@@ -31,12 +31,14 @@ const mathematicalRoutes = require('./routes/mathematical');
 const lockgateRoutes = require('./routes/lockgate');
 const devicesRoutes = require('./routes/devices');
 const financialRoutes = require('./routes/financial');
+const calculatorRoutes = require('./routes/calculator');
 
 // API Routes
 app.use('/api/mathematical', mathematicalRoutes);
 app.use('/api/lockgate', lockgateRoutes);
 app.use('/devices', devicesRoutes);
 app.use('/api/financial', financialRoutes);
+app.use('/api/calculator', calculatorRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

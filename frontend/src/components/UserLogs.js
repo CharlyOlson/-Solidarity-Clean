@@ -12,6 +12,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './UserLogs.css';
+import { API_BASE_URL } from '../config/api';
 
 const UserLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -44,7 +45,7 @@ const UserLogs = () => {
 
   const fetchLogs = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/logs/activity');
+      const response = await fetch(`${API_BASE_URL}/api/logs/activity`);
       const data = await response.json();
       setLogs(data.logs || []);
       applyFilters(data.logs || []);
@@ -103,7 +104,7 @@ const UserLogs = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/logs/email', {
+      const response = await fetch(`${API_BASE_URL}/api/logs/email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -128,7 +129,7 @@ const UserLogs = () => {
   // Log activity helper
   const logActivity = async (actor, action, details) => {
     try {
-      await fetch('http://localhost:3001/api/logs/activity', {
+      await fetch(`${API_BASE_URL}/api/logs/activity`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -149,7 +150,7 @@ const UserLogs = () => {
     if (!window.confirm('Are you sure you want to delete this log entry?')) return;
 
     try {
-      await fetch(`http://localhost:3001/api/logs/activity/${logId}`, {
+      await fetch(`${API_BASE_URL}/api/logs/activity/${logId}`, {
         method: 'DELETE'
       });
       fetchLogs();
@@ -164,7 +165,7 @@ const UserLogs = () => {
     if (!window.confirm('⚠️ WARNING: This will permanently delete ALL logs. Are you sure?')) return;
 
     try {
-      await fetch('http://localhost:3001/api/logs/clear', {
+      await fetch(`${API_BASE_URL}/api/logs/clear`, {
         method: 'DELETE'
       });
       setLogs([]);

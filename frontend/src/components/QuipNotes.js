@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './QuipNotes.css';
+import { API_BASE_URL } from '../config/api';
 
 const QuipNotes = ({ safetyLevel = 0.618 }) => {
   const [currentUrl, setCurrentUrl] = useState('');
@@ -46,7 +47,7 @@ const QuipNotes = ({ safetyLevel = 0.618 }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/ai/scan-url', {
+      const response = await fetch(`${API_BASE_URL}/api/ai/scan-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

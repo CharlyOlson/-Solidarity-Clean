@@ -11,6 +11,11 @@ import OllamaHome from './components/OllamaHome';
 import QuipNotes from './components/QuipNotes';
 import UserLogs from './components/UserLogs';
 import HankoStamps from './components/HankoStamps';
+import WalletManager from './components/WalletManager';
+import Discover from './components/Discover';
+import TrustedDevices from './components/TrustedDevices';
+import ConnectedBanks from './components/ConnectedBanks';
+import PaymentCalculator from './components/PaymentCalculator';
 import LockGate from './components/LockGate';
 import { ensureDemoToken } from './utils/auth';
 
@@ -32,6 +37,16 @@ function App() {
         return <UserLogs />;
       case 'hanko':
         return <HankoStamps />;
+      case 'wallet':
+        return <WalletManager />;
+      case 'discover':
+        return <Discover />;
+      case 'devices':
+        return <TrustedDevices />;
+      case 'banks':
+        return <ConnectedBanks />;
+      case 'calculator':
+        return <PaymentCalculator />;
       default:
         return <OllamaHome />;
     }
@@ -69,6 +84,36 @@ function App() {
             onClick={() => setActiveTab('hanko')}
           >
             🎴 Hanko Stamps
+          </button>
+          <button
+            className={activeTab === 'wallet' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('wallet')}
+          >
+            💰 Wallet
+          </button>
+          <button
+            className={activeTab === 'discover' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('discover')}
+          >
+            📊 Discover
+          </button>
+          <button
+            className={activeTab === 'devices' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('devices')}
+          >
+            📱 Devices
+          </button>
+          <button
+            className={activeTab === 'banks' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('banks')}
+          >
+            🏦 Banks
+          </button>
+          <button
+            className={activeTab === 'calculator' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('calculator')}
+          >
+            🧮 Calculator
           </button>
         </div>
       </nav>

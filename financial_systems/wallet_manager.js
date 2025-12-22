@@ -585,6 +585,9 @@ async function demo() {
   manager.printStatusReport();
 }
 
+// Export the class
+module.exports = WalletManager;
+
 // Auto-run demo if called directly
 if (require.main === module) {
   demo().catch(console.error);
