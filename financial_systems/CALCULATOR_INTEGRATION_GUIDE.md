@@ -177,7 +177,7 @@ const htmlTable = calculator.generateHTMLTable([
         <p>That's ${data.savingsPercentage.toFixed(1)}% reduction in fees</p>
         <p>Break-even in just ${data.breakEvenMonths.toFixed(1)} months</p>
       `;
-    }
+    } 
   </script>
 </body>
 </html>

@@ -7,11 +7,10 @@
  * Location: Kansas, USA 66210
  */
 
+
 import React, { useState, useEffect } from 'react';
 import './TrustedDevices.css';
-
-const BASE_RATIO = 1.618;
-const BRIDGING_BASELINE = 0.618;
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 
 // Demo devices for display
 const DEMO_DEVICES = [

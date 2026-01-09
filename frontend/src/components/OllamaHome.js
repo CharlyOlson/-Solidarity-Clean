@@ -11,6 +11,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 import './OllamaHome.css';
 import { API_BASE_URL } from '../config/api';
 
@@ -76,7 +77,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
         },
         body: JSON.stringify({
           message: prompt,
-          safetyLevel,
+          safetyLevel: BRIDGING_BASELINE,
           liveData,
           userPermissions
         })

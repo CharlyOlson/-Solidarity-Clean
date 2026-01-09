@@ -11,6 +11,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { BASE_RATIO } from '../config/constants';
 import './HankoStamps.css';
 import { API_BASE_URL } from '../config/api';
 
@@ -22,7 +23,7 @@ const HankoStamps = () => {
   const [creationStep, setCreationStep] = useState(1); // 1: type, 2: inputs, 3: preview
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPreview, setGeneratedPreview] = useState(null);
-  const [convergencePoint, setConvergencePoint] = useState(null);
+  // Removed unused convergencePoint state
   
   // ============================================================================
   // 7 USER INPUTS (Hanko Stamp Identity Data)
@@ -90,7 +91,7 @@ const HankoStamps = () => {
 
     // Find convergence point: intersect row/col patterns across grids
     // Rule: Sum each position across all grids, find the position with value closest to φ×7
-    const PHI_TARGET = 1.618 * 7; // ≈ 11.326
+    const PHI_TARGET = BASE_RATIO * 7; // ≈ 11.326
     let bestPos = 4; // Center (0-indexed)
     let bestDiff = Infinity;
 
@@ -110,7 +111,7 @@ const HankoStamps = () => {
     // Calculate spoke count and rotation based on convergence
     const totalSum = grids.flat().reduce((a, b) => a + b, 0);
     const spokeCount = (totalSum % 7) + 7; // 7-14 spokes
-    const rotation = (totalSum * 1.618) % 360;
+    const rotation = (totalSum * BASE_RATIO) % 360;
 
     return {
       x,
@@ -269,14 +270,14 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
     setShowRequestDialog(false);
     setCreationStep(1);
     setGeneratedPreview(null);
-    setConvergencePoint(null);
+    // setConvergencePoint(null); // Removed unused state
   };
 
   // Generate preview based on inputs
   const generatePreview = async () => {
     setIsGenerating(true);
     const convergence = calculateSudokuConvergence();
-    setConvergencePoint(convergence);
+    // setConvergencePoint(convergence); // Removed unused state
     
     if (convergence) {
       const aiDesc = await generateWithOllama(convergence);
@@ -294,11 +295,10 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
   const calculateColorRatios = (convergence) => {
     if (!convergence) return { bw: 50, r: 33, y: 33, b: 34 };
     
-    const total = convergence.gridSums.reduce((a, b) => a + b, 0);
-    const phi = 1.618;
+    // Removed unused total and phi variables
     
     // B/W ratio based on convergence position
-    const bw = Math.round((convergence.position + 1) / 9 * 100 * phi) % 100;
+    const bw = Math.round((convergence.position + 1) / 9 * 100 * BASE_RATIO) % 100;
     
     // R/Y/B ratios based on grid sums
     const rybTotal = convergence.gridSums.slice(0, 3).reduce((a, b) => a + b, 0);

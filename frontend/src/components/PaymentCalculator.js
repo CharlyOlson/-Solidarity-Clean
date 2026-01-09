@@ -13,10 +13,7 @@
 
 import React, { useState, useMemo } from 'react';
 import './PaymentCalculator.css';
-
-// Constants
-const BASE_RATIO = 1.618;
-const BRIDGING_BASELINE = 0.618;
+import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS } from '../config/constants';
 
 // Industry standard fee rates
 const INDUSTRY_RATES = {
@@ -28,17 +25,6 @@ const INDUSTRY_RATES = {
   stablecoin: { rate: 0.05, label: 'Stablecoin', icon: '💵' },
   bank_transfer: { rate: 0.5, label: 'Bank Transfer', icon: '🏦' },
   lightning: { rate: 0.01, label: 'Lightning', icon: '⚡' }
-};
-
-// Safety thresholds from financial optimizer
-const SAFETY_THRESHOLDS = {
-  CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, optimizationLevel: 'minimal', discount: 0.05 },
-  WARNING_LEVEL: { min: 0.05, max: 0.15, optimizationLevel: 'conservative', discount: 0.15 },
-  CAUTION_RANGE: { min: 0.15, max: 0.25, optimizationLevel: 'standard', discount: 0.25 },
-  OPTIMAL_RANGE: { min: 0.25, max: 0.75, optimizationLevel: 'aggressive', discount: 0.40 },
-  UPPER_CAUTION: { min: 0.75, max: 0.85, optimizationLevel: 'standard', discount: 0.30 },
-  UPPER_WARNING: { min: 0.85, max: 0.95, optimizationLevel: 'conservative', discount: 0.20 },
-  CRITICAL_UPPER: { min: 0.95, max: 1.00, optimizationLevel: 'minimal', discount: 0.10 }
 };
 
 // Preset business sizes

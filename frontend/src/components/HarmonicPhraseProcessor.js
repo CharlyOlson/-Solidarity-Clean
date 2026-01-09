@@ -1,3 +1,4 @@
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 /**
  * SOLIDARITY PLATFORM - HARMONIC PHRASE PROCESSOR
  * Process "silly names" into mathematical solutions
@@ -82,6 +83,7 @@ export function HarmonicPhraseProcessor() {
   });
 
   // Process harmonic phrase
+  // BASE_RATIO and BRIDGING_BASELINE available for future use in calculations or UI
   async function processPhrase(text) {
     try {
       processResult.textContent = '⏳ Processing harmonic phrase...';
@@ -173,6 +175,8 @@ export function HarmonicPhraseProcessor() {
 
   // Render phrase library
   function renderLibrary() {
+    // Example usage of BASE_RATIO and BRIDGING_BASELINE for demonstration (can be used in UI or logic)
+    // console.log('Phi:', BASE_RATIO, 'Baseline:', BRIDGING_BASELINE);
     const phrases = [
       { name: "Goose's Archive", desc: 'Archive correction solution', color: '#ffb703' },
       { name: "BYTES BLYTES LYTS", desc: 'Bytes progression pattern', color: '#4CAF50' },

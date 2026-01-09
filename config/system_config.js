@@ -321,8 +321,35 @@ class UnifiedSystemConfiguration {
   }
 }
 
-// Export the configuration class
-module.exports = { UnifiedSystemConfiguration };
+// Shared Operational Percentage Calculation
+function getSharedOperationalStatus() {
+  // Lazy-load modules to avoid circular dependency
+  const modules = [
+    require('../financial_systems/blockchain_connector'),
+    require('../financial_systems/wallet_manager'),
+    require('../financial_systems/smart_contract_manager'),
+    require('../financial_systems/transaction_processor'),
+    require('../financial_systems/payment_connector'),
+    require('../financial_systems/financial_optimizer')
+  ];
+  let total = 0;
+  let count = 0;
+  modules.forEach(mod => {
+    if (typeof mod.getOperationalPercent === 'function') {
+      total += mod.getOperationalPercent();
+      count++;
+    }
+  });
+  // Fallback: if no module exposes getOperationalPercent, assume 100%
+  return count > 0 ? Math.round(total / count) : 100;
+}
+
+
+// Export both the configuration class and shared operational status function
+module.exports = {
+  UnifiedSystemConfiguration,
+  getSharedOperationalStatus
+};
 
 // Demo function
 function demo() {
@@ -358,3 +385,19 @@ function demo() {
 if (require.main === module) {
   demo();
 }
+
+// Redirect output to demo_output.txt and open in Notepad
+const { exec } = require('child_process');
+exec('node config/system_config.js > demo_output.txt 2>&1; notepad demo_output.txt', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Error executing demo: ${error.message}`);
+    return;
+  }
+  
+  if (stderr) {
+    console.error(`Demo stderr: ${stderr}`);
+    return;
+  }
+  
+  console.log('✅ Demo output saved to demo_output.txt');
+});

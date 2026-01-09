@@ -67,187 +67,22 @@ class HankoEngine:
     Integrates with Solidarity Platform's φ-ratio (1.618) harmonic system.
     """
 
-    def __init__(self, server_salt: bytes, signing_sk: ed25519.Ed25519PrivateKey):
-        self._server_salt = server_salt
-        self._signing_sk = signing_sk
-        self._signing_pk = signing_sk.public_key()
-        
-        # Solidarity Platform φ-ratio constants
-        self.PHI = 1.618033988749
-        self.PHI_RECIPROCAL = 0.618
-        self.SAFETY_LEVEL = 0.618  # Optimal bridging anchor
-
-    @property
-    def public_key_b64(self) -> str:
-        return base64.b64encode(
-            self._signing_pk.public_bytes(
-                encoding=serialization.Encoding.Raw,
-                format=serialization.PublicFormat.Raw
-            )
-        ).decode("ascii")
-
-    # ---- Core hashing / KDF helpers ----
-
-    @staticmethod
-    def _sha3_512(data: bytes) -> bytes:
-        return hashlib.sha3_512(data).digest()
-
-    @staticmethod
-    def _sha3_256(data: bytes) -> bytes:
-        return hashlib.sha3_256(data).digest()
-
-    def _derive_base_hash(
-        self,
-        profile: IdentityProfile,
-        date: str,
-        daily_counter: int
-    ) -> bytes:
+    def __init__(self, server_salt: bytes, signing_sk: ed25519.Ed25519PrivateKey) -> None:
         """
-        Base hash: SHA3-512(user_id || device_pubkey || date || counter || server_salt).
+        Initialize the HankoEngine with server salt and signing key.
         """
-        m = hashlib.sha3_512()
-        m.update(profile.user_id.encode("utf-8"))
-        m.update(base64.b64decode(profile.device_pubkey_b64))
-        m.update(date.encode("ascii"))
-        m.update(daily_counter.to_bytes(8, "big"))
-        m.update(self._server_salt)
-        return m.digest()
-
-    def _hkdf_expand(self, base_hash: bytes, info: bytes, length: int) -> bytes:
-        """
-        HKDF-SHA3-256 expand from base_hash.
-        """
-        hkdf = HKDF(
-            algorithm=hashes.SHA3_256(),
-            length=length,
-            salt=None,
-            info=info,
-        )
-        return hkdf.derive(base_hash)
-
-    # ---- Visual parameter derivation ----
-
-    @staticmethod
-    def _bytes_to_int(b: bytes) -> int:
-        return int.from_bytes(b, "big")
-
-    def _derive_visual_params(
-        self, base_hash: bytes, grid_size: int = 3, stamp_type: str = "personal"
-    ) -> Dict[str, Any]:
-        """
-        Turn base_hash into:
-          - grid_digits: grid_size^2 digits 0-9
-          - wheel: spokes, rotation, thicknesses
-        
-        Integrates φ-ratio for harmonic visual patterns.
-        """
-        # Get a long integer stream from base_hash
-        stream_int = self._bytes_to_int(base_hash)
-        digits = []
-        temp = stream_int
-        for _ in range(grid_size * grid_size + 64):  # 64 extra for wheel params
-            digits.append(temp % 10)
-            temp //= 10
-        grid_digits = digits[: grid_size * grid_size]
-        wheel_digits = digits[grid_size * grid_size :]
-
-        # φ-ratio based parameters
-        base_spokes = int(8 * self.PHI_RECIPROCAL)  # ~5 base spokes
-        spokes = base_spokes + (wheel_digits[0] % 9)  # 5–13 spokes
-        rotation_deg = (wheel_digits[1] * 13) % 360
-        
-        # Apply φ-ratio to radial levels for harmonic coherence
-        radial_levels = [1 + int((d % 3) * self.PHI_RECIPROCAL) for d in wheel_digits[2 : 2 + spokes]]
-        thickness_levels = [1 + (d % 3) for d in wheel_digits[2 + spokes : 2 + 2 * spokes]]
-
-        # Stamp type specific adjustments
-        type_modifiers = {
-            'personal': {'grid_complexity': 1.0, 'wheel_density': 1.0},
-            'registered': {'grid_complexity': 1.2, 'wheel_density': 1.3},
-            'bank': {'grid_complexity': 0.8, 'wheel_density': 1.5},
-            'company': {'grid_complexity': 1.5, 'wheel_density': 1.2}
-        }
-        modifier = type_modifiers.get(stamp_type, type_modifiers['personal'])
-
-        return {
-            "grid_size": grid_size,
-            "grid_digits": grid_digits,
-            "spokes": spokes,
-            "rotation_deg": rotation_deg,
-            "radial_levels": radial_levels,
-            "thickness_levels": thickness_levels,
-            "type_modifier": modifier,
-            "stamp_type": stamp_type
-        }
-
-    # ---- SVG Rendering ----
-
-    def _render_svg(
-        self,
-        profile: IdentityProfile,
-        date: str,
-        stamp_id: str,
-        params: Dict[str, Any],
-        algo_version: str = "hanko-v1",
-        size_px: int = 512,
-    ) -> str:
-        """
-        Render the hanko as a square SVG with:
-          - outer border
-          - central radial wheel (φ-ratio based)
-          - corner grid patch
-          - micro-text band
-          - stamp type indicator
-        """
-        g = params["grid_size"]
-        gd = params["grid_digits"]
-        spokes = params["spokes"]
-        rotation = params["rotation_deg"]
-        radial = params["radial_levels"]
-        thick = params["thickness_levels"]
-        stamp_type = params.get("stamp_type", "personal")
-
-        half = size_px / 2
-        radius = size_px * 0.38 * self.PHI_RECIPROCAL  # φ-ratio scaled radius
-
-        # Color palette by stamp type (Solidarity Platform harmonics)
-        palettes = {
-            'personal': ["#111111", "#4CAF50", "#8BC34A", "#CDDC39", "#FFC107"],  # Green/Yellow
-            'registered': ["#111111", "#e63946", "#d62828", "#9d0208", "#370617"],  # Red
-            'bank': ["#111111", "#457b9d", "#1d3557", "#14213d", "#0077b6"],  # Blue
-            'company': ["#111111", "#FF9800", "#F57C00", "#E65100", "#BF360C"]   # Orange
-        }
-        palette = palettes.get(stamp_type, palettes['personal'])
-
-        svg_parts = []
-        svg_parts.append(
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{size_px}" height="{size_px}" viewBox="0 0 {size_px} {size_px}">'
-        )
-
-        # Background
-        svg_parts.append(f'<rect x="0" y="0" width="{size_px}" height="{size_px}" fill="#fdfcf8"/>')
-
-        # Outer border
-        border_width = int(4 * self.PHI_RECIPROCAL)
-        svg_parts.append(
-            f'<rect x="8" y="8" width="{size_px-16}" height="{size_px-16}" '
-            f'stroke="#111" stroke-width="{border_width}" fill="none" />'
-        )
-
-        # Grid patch in bottom-left
-        cell = size_px * 0.12 / g
-        offset_x = size_px * 0.08
-        offset_y = size_px * 0.72
-
-        for row in range(g):
-            for col in range(g):
-                idx = row * g + col
-                d = gd[idx]
-                cx = offset_x + col * cell
-                cy = offset_y + row * cell
-                # Background cell
-                svg_parts.append(
-                    f'<rect x="{cx}" y="{cy}" width="{cell}" height="{cell}" '
+        def _render_svg(
+            self,
+            profile: 'IdentityProfile',
+            date: str,
+            stamp_id: str,
+            params: dict,
+            algo_version: str = "hanko-v1",
+            size_px: int = 512,
+        ) -> str:
+            from .svg_renderer import HankoSVGRenderer
+            renderer = HankoSVGRenderer(self.PHI, self.PHI_RECIPROCAL)
+            return renderer.render_svg(profile, date, stamp_id, params, algo_version, size_px)
                     f'stroke="#111" stroke-width="0.5" fill="#ffffff"/>'
                 )
                 # Fill style based on digit
@@ -276,7 +111,6 @@ class HankoEngine:
         )
 
         import math
-
         for i in range(spokes):
             angle_deg = rotation + (360.0 / spokes) * i
             angle_rad = math.radians(angle_deg)
@@ -337,13 +171,6 @@ class HankoEngine:
     ) -> HankoStamp:
         """
         Generate a hanko for a given identity, date, and counter.
-        
-        Args:
-            profile: User identity profile
-            date: YYYY-MM-DD date string (defaults to today)
-            daily_counter: Monotonic counter for multiple stamps per day
-            grid_size: Grid patch size (3 or 4)
-            stamp_type: One of: personal, registered, bank, company
         """
         if date is None:
             date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -533,4 +360,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    print("[hanko_engine.py] This module is not intended to be run directly. Use hanko_cli.py for CLI operations.")

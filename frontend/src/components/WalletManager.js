@@ -12,14 +12,12 @@
 
 import React, { useMemo, useState } from 'react';
 import './WalletManager.css';
-
-const BASE_RATIO = 1.618;
-const BRIDGING_BASELINE = 0.618;
+import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS, SACRED_NODES } from '../config/constants';
 
 const initialWallets = [
   { id: 'wlt-1', name: 'Primary', symbol: 'SOL', chain: 'Solidarity', balance: 2618.42, safetyLevel: BRIDGING_BASELINE },
-  { id: 'wlt-2', name: 'Ops', symbol: 'USDC', chain: 'Sepolia (test)', balance: 1480.0, safetyLevel: 0.75 },
-  { id: 'wlt-3', name: 'Research', symbol: 'ETH', chain: 'Sepolia (test)', balance: 8.14, safetyLevel: 0.42 }
+  { id: 'wlt-2', name: 'Ops', symbol: 'USDC', chain: 'Sepolia (test)', balance: 1480.0, safetyLevel: SAFETY_THRESHOLDS.UPPER_CAUTION.max },
+  { id: 'wlt-3', name: 'Research', symbol: 'ETH', chain: 'Sepolia (test)', balance: 8.14, safetyLevel: SAFETY_THRESHOLDS.CAUTION_RANGE.max }
 ];
 
 const activitySeed = [
@@ -29,7 +27,8 @@ const activitySeed = [
 ];
 
 function calculatePhiSplit(total, buckets) {
-  const weights = buckets.map((_, i) => Math.pow(BRIDGING_BASELINE, i));
+  // Use sacred nodes for phi split if available
+  const weights = buckets.map((_, i) => SACRED_NODES[i % SACRED_NODES.length]);
   const sum = weights.reduce((acc, w) => acc + w, 0);
   return buckets.map((_, i) => (weights[i] / sum) * total);
 }

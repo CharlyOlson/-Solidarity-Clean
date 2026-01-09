@@ -4,6 +4,7 @@
  */
 
 import { sha256Hex } from '../utils/crypto.js';
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 
 export function LockGateUI() {
   const root = document.createElement('div');
@@ -71,8 +72,8 @@ export function LockGateUI() {
       action, 
       notes, 
       timestamp,
-      safetyLevel: 0.618,  // φ-ratio baseline
-      phi: 1.618033988749895
+      safetyLevel: BRIDGING_BASELINE,  // φ-ratio baseline
+      phi: BASE_RATIO
     }, null, 2);
     
     const hex = await sha256Hex(payload);
@@ -124,7 +125,7 @@ export function LockGateUI() {
         body: JSON.stringify({ 
           payload, 
           clientHash: hex,
-          safetyLevel: 0.618
+          safetyLevel: BRIDGING_BASELINE
         })
       });
       

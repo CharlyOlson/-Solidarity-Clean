@@ -23,7 +23,7 @@ class SolidarityPlatformLauncher {
         this.architect = 'Scott Charles Olson (Charly)';
         this.platform = 'Soul.Ed.Xchange.Fi';
         this.location = 'Kansas, USA 66210';
-        
+
         // 🛡️ Harmonious Safety System Integration
         this.safetyLevel = 0.618; // Anchor Ratio - optimal starting point
         this.safetyThresholds = {
@@ -35,7 +35,7 @@ class SolidarityPlatformLauncher {
             UPPER_WARNING: { min: 0.85, max: 0.95 },
             CRITICAL_UPPER: { min: 0.95, max: 1.00 }
         };
-        
+
         this.discovery = new ComprehensiveSolidarityDiscovery();
         this.bridgingParser = new EnhancedBridgingPhraseParser();
         this.mobileManager = new MobileDeviceManager();
@@ -44,7 +44,7 @@ class SolidarityPlatformLauncher {
             compressionLevel: 7, // Solidarity node 7
             useOmegaLock: true
         });
-        
+
         // Initialize Quantum Cubic Calculation System
         this.quantumSystem = new CorrectedSolidaritySystem({
             cubicPrecision: 64,
@@ -61,9 +61,62 @@ class SolidarityPlatformLauncher {
             pythonPath: process.env.SOLIDARITY_PYTHON,
             shots: quantumShots
         });
-        
+
         this.systemStatus = 'INITIALIZING';
         this.components = new Map();
+
+        // === SESSION LOGGING AND PATHWAYS ===
+        const fs = require('fs');
+        const path = require('path');
+        this.sessionId = Date.now();
+        this.sessionLogPath = path.join(process.cwd(), 'logs', `session_${this.sessionId}.json`);
+        this.sessionBinPath = path.join(process.cwd(), 'logs', `bin_${this.sessionId}.gz`);
+        this.sessionHistory = [];
+        this.sessionFocusLog = [];
+        this.sessionIrrelevantBin = [];
+
+        // Ensure logs directory exists
+        try {
+            fs.mkdirSync(path.join(process.cwd(), 'logs'), { recursive: true });
+        } catch (e) {}
+
+        // Load previous session history if available
+        if (fs.existsSync(this.sessionLogPath)) {
+            try {
+                const prev = fs.readFileSync(this.sessionLogPath, 'utf8');
+                this.sessionHistory = JSON.parse(prev).history || [];
+            } catch (e) {
+                this.sessionHistory = [];
+            }
+        }
+    }
+    // Add a session log entry (prompt/response)
+    addSessionLogEntry(entry) {
+        const fs = require('fs');
+        this.sessionHistory.push(entry);
+        fs.writeFileSync(this.sessionLogPath, JSON.stringify({ history: this.sessionHistory }, null, 2));
+    }
+
+    // Add to focus log (for session task tracking)
+    addFocusLog(entry) {
+        this.sessionFocusLog.push(entry);
+    }
+
+    // Add to irrelevant bin (compressed)
+    addIrrelevantBin(data) {
+        const zlib = require('zlib');
+        this.sessionIrrelevantBin.push(data);
+        const compressed = zlib.gzipSync(JSON.stringify(this.sessionIrrelevantBin));
+        require('fs').writeFileSync(this.sessionBinPath, compressed);
+    }
+
+    // Retrieve session context for Ollama
+    getSessionContext() {
+        return {
+            history: this.sessionHistory,
+            focus: this.sessionFocusLog,
+            bin: this.sessionIrrelevantBin
+        };
     }
 
     async initialize() {
@@ -96,172 +149,164 @@ class SolidarityPlatformLauncher {
             
             // Initialize Harmonic Phrase Parser
             console.log('\n🎵 Initializing Harmonic Phrase Parser...');
-            const harmonicPhrases = this.quantumSystem.getHarmonicPhrases();
-            console.log(`   Loaded ${harmonicPhrases.length} harmonic phrases:`);
-            harmonicPhrases.forEach(p => {
-                console.log(`      "${p.phrase}" → ${p.trigger} (Node ${p.node})`);
-            });
-            this.components.set('harmonic_phrase_parser', true);
-            
-            // Initialize TIMBR Compression System
-            console.log('\n🔄 Initializing TIMBR Compression System...');
-            const compressionMetrics = this.timbrCompression.getCompressionMetrics();
-            console.log(`   Compression level: ${compressionMetrics.compressionLevel} (Node ${compressionMetrics.compressionLevel})`);
-            console.log(`   Omega Lock: ${compressionMetrics.omegaLockEnabled ? 'Enabled' : 'Disabled'}`);
-            this.components.set('timbr_compression', true);
 
-            // Run discovery scan
-            console.log('\n🔍 Running Comprehensive Discovery...');
-            const discoveryResults = await this.discovery.scanAllLocations();
-            this.components.set('discovery', discoveryResults);
+            // ===============================
+            // Solidarity Session Launcher
+            // ===============================
 
-            // Detect mobile devices
-            console.log('\n📱 Detecting Mobile Devices...');
-            await this.mobileManager.detectMobileDevices();
-            this.components.set('mobile_manager', true);
+            const fs = require('fs');
+            const path = require('path');
+            const zlib = require('zlib');
+            let askOllama;
 
-            // System status
-            const allComponentsReady = Array.from(this.components.values()).every(status => status);
-            this.systemStatus = allComponentsReady ? 'OPERATIONAL' : 'LIMITED_FUNCTIONALITY';
-
-            console.log(`\n✅ Solidarity Platform Status: ${this.systemStatus}`);
-            
-            if (this.systemStatus === 'OPERATIONAL') {
-                await this.runDemo();
+            // 1. Config loader (can be extended for settings menu)
+            function loadConfig() {
+                // In a real app, load from file or env
+                return {
+                    logsDir: path.join(__dirname, 'logs'),
+                    useOllama: true,
+                    logSessions: true,
+                    maxContextTokens: 4000
+                };
             }
 
-            return this.systemStatus;
+            const CONFIG = loadConfig();
 
-        } catch (error) {
-            console.error(`❌ Initialization error: ${error.message}`);
-            this.systemStatus = 'ERROR';
-            return this.systemStatus;
-        }
-    }
-
-    async runDemo() {
-        console.log('\n🎭 Running Solidarity Demo...');
-        
-        // Demo ZIP phrases
-        console.log('\n📝 Demonstrating ZIP Phrases:');
-        const phrases = [
-            'Angel / Daemon Archetypes',
-            'Hiccup Notifier',
-            'Water reacting to gusts',
-            'Too fours'
-        ];
-
-        for (const phrase of phrases) {
-            console.log(`\n--- Processing: "${phrase}" ---`);
-            const result = this.bridgingParser.parsePhrase(phrase);
-            if (result) {
-                console.log(`✅ Processed successfully for node ${result.node}`);
+            // 2. Ensure logs directory exists
+            function ensureLogsDir() {
+                if (!fs.existsSync(CONFIG.logsDir)) {
+                    fs.mkdirSync(CONFIG.logsDir, { recursive: true });
+                }
             }
-            await this.delay(1000);
-        }
-        
-        // Demo Sacred Numeric Sequence
-        console.log('\n🔢 Demonstrating Sacred Numeric Sequence:');
-        const nodeId = 7; // Solidarity node 7
-        
-        // Generate and display sequence-based bridging frequencies
-        console.log(`\n--- Generating bridging frequencies for Node ${nodeId} ---`);
-        const fibBridging = this.sacredSequence.generateBridgingFrequencies('fibonacci', nodeId);
-        console.log(`Fibonacci-based fundamental: ${fibBridging.fundamental.toFixed(2)}Hz`);
-        console.log(`First 3 anchor ratios: ${fibBridging.anchor_ratios.slice(0, 3).map(h => h.toFixed(1)).join(', ')}...`);
-        
-        const primeBridging = this.sacredSequence.generateBridgingFrequencies('prime', nodeId);
-        console.log(`Prime-based fundamental: ${primeBridging.fundamental.toFixed(2)}Hz`);
-        console.log(`First 3 anchor ratios: ${primeBridging.anchor_ratios.slice(0, 3).map(h => h.toFixed(1)).join(', ')}...`);
-        
-        await this.delay(1000);
-        
-        // Demo TIMBR Compression
-        console.log('\n🔄 Demonstrating TIMBR Compression System:');
-        
-        // Create test data for compression demo
-        const testData = Buffer.from("This is a demonstration of the TIMBR Compression System " +
-            "integrated with the Solidarity Platform. It uses Sacred Numeric Sequence and " +
-            "Anchor Ratio principles for optimal compression with Omega Lock verification.");
-        
-        // Compress and decompress test data
-        console.log('\n--- Compressing test data ---');
-        const compressed = this.timbrCompression.compress(testData);
-        console.log(`Original size: ${testData.length} bytes`);
-        console.log(`Compressed size: ${compressed.data.length} bytes`);
-        console.log(`Compression ratio: ${compressed.metadata.compressionRatio.toFixed(4)}`);
-        
-        console.log('\n--- Decompressing test data ---');
-        const decompressed = this.timbrCompression.decompress(compressed.data);
-        
-        // Verify data integrity
-        const originalString = testData.toString();
-        const decompressedString = decompressed.data.toString();
-        const integrity = originalString === decompressedString ? '✅ Perfect' : '❌ Failed';
-        console.log(`Data integrity: ${integrity}`);
-        
-        await this.delay(1000);
-    }
 
-    async runQuantumDemo() {
-        console.log('\n🧮 Quantum Cubic Calculation System Demo');
-        console.log('═'.repeat(50));
+            // 3. Create a new session object
+            function initSession() {
+                ensureLogsDir();
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const sessionId = `session_${timestamp}`;
+                const sessionLogPath = path.join(CONFIG.logsDir, `${sessionId}.json`);
+                const binPath = path.join(CONFIG.logsDir, `${sessionId}_bin.gz`);
 
-        console.log('\n🔬 Quantum Simulator Experiments (real circuits):');
-        if (!this.enableRealQuantum || !this.userApprovedQuantum) {
-            console.log('   ℹ️ Real quantum sampling disabled. Required: SOLIDARITY_USE_REAL_QUANTUM=1 and SOLIDARITY_USER_APPROVED=1');
-        } else {
-            const experiments = [
-                { label: 'Bell', name: 'bell' },
-                { label: 'GHZ-3', name: 'ghz3' },
-                { label: 'Parity-2', name: 'parity2' },
-                { label: 'Phase-Flip-3', name: 'phaseflip3' }
-            ];
-
-            try {
-                const formatCounts = (label, payload) => {
-                    const ordered = Object.entries(payload.counts)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([state, count]) => `${state}:${count}`)
-                        .join(', ');
-                    console.log(`   ${label} → backend=${payload.backend}, shots=${payload.shots}`);
-                    console.log(`      counts: ${ordered}`);
+                const session = {
+                    id: sessionId,
+                    startedAt: new Date().toISOString(),
+                    logPath: sessionLogPath,
+                    binPath,
+                    history: [],
+                    focusLog: []
                 };
 
-                for (const exp of experiments) {
-                    const payload = this.quantumEngine.runExperiment(exp.name, this.quantumEngine.defaultShots);
-                    formatCounts(exp.label, payload);
+                if (CONFIG.logSessions) {
+                    fs.writeFileSync(sessionLogPath, JSON.stringify({ session, interactions: [] }, null, 2));
                 }
-            } catch (err) {
-                console.log('   ⚠️ Quantum engine unavailable; using fallback math.');
-                console.log(`   Reason: ${err.message}`);
+
+                return session;
             }
-        }
-        
-        // Test quantum cubic root calculations
-        console.log('\n📐 Quantum Cubic Root Calculations:');
-        const testValues = [7, 14, 49, 343, 697];
-        
-        for (const value of testValues) {
-            const result = this.quantumSystem.calculateQuantumCubicRoot(value, 14);
-            console.log(`∛${value} (quantum scaled) = ${result.toFixed(6)}`);
-        }
-        
-        // Test big ask processing
-        console.log('\n🚀 Big Ask Quantum Processing:');
-        const testQuestions = [
-            { q: "What is the cubic relationship between anchor ratio and pi?", c: 14 },
-            { q: "Calculate 697-cubit dimensional scaling for quantum coherence", c: 21 },
-            { q: "Determine quantum scaling factors for 7→14→49 progression", c: 49 }
-        ];
-        
-        for (const test of testQuestions) {
-            const result = this.quantumSystem.processBigAskQuestion(test.q, test.c);
-            console.log(`\nQ: ${test.q}`);
-            console.log(`   Complexity: ${result.complexity}`);
-            console.log(`   Quantum Factor: ${result.quantumFactor.toFixed(4)}`);
-            console.log(`   Cubic Volume: ${result.cubicDimensions.volume.toFixed(4)}`);
-            console.log(`   Coherence: ${result.coherenceLevel.toFixed(4)}`);
+
+            // 4. Load previous history (for context)
+            function loadHistory(limit = 3) {
+                ensureLogsDir();
+                const files = fs.readdirSync(CONFIG.logsDir)
+                    .filter(f => f.startsWith('session_') && f.endsWith('.json'))
+                    .sort()
+                    .slice(-limit);
+
+                const historyChunks = [];
+                for (const file of files) {
+                    const fullPath = path.join(CONFIG.logsDir, file);
+                    try {
+                        const content = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+                        const interactions = content.interactions || [];
+                        historyChunks.push(...interactions);
+                    } catch (e) {
+                        console.warn('Could not parse history file:', file, e.message);
+                    }
+                }
+                return historyChunks;
+            }
+
+            // 5. Initialize Ollama client (require only if needed)
+            function initOllamaClient() {
+                if (!askOllama) {
+                    askOllama = require('./ai_integration/ollama_integration').queryOllama;
+                }
+                return askOllama;
+            }
+
+            // 6. Log a single interaction
+            function logInteraction(session, prompt, response, meta = {}) {
+                if (!CONFIG.logSessions) return;
+                let currentLog;
+                try {
+                    currentLog = JSON.parse(fs.readFileSync(session.logPath, 'utf8'));
+                } catch {
+                    currentLog = { session, interactions: [] };
+                }
+                const entry = {
+                    timestamp: new Date().toISOString(),
+                    prompt,
+                    response,
+                    meta
+                };
+                currentLog.interactions.push(entry);
+                fs.writeFileSync(session.logPath, JSON.stringify(currentLog, null, 2));
+                session.history.push(entry);
+            }
+
+            // 7. Push “irrelevant” data into compressed bin
+            function pushToBin(session, dataChunk) {
+                const serialized = typeof dataChunk === 'string' ? dataChunk : JSON.stringify(dataChunk);
+                const gz = zlib.gzipSync(serialized);
+                fs.appendFileSync(session.binPath, gz);
+            }
+
+            // 8. Build context for Ollama from history
+            function buildContext(history) {
+                const recent = history.slice(-20);
+                const contextLines = [];
+                for (const h of recent) {
+                    contextLines.push(`User: ${h.prompt}`);
+                    contextLines.push(`Assistant: ${h.response}`);
+                }
+                return contextLines.join('\n');
+            }
+
+            // 9. Main session loop (for CLI or UI)
+            async function startSession(initialPrompt) {
+                const session = initSession();
+                const pastInteractions = loadHistory();
+                const context = buildContext(pastInteractions);
+                session.focusLog.push({
+                    startedAt: new Date().toISOString(),
+                    description: 'Ollama conversation with Solidarity logging'
+                });
+                const userPrompt = initialPrompt || 'Hello, world!';
+                let answer;
+                if (CONFIG.useOllama) {
+                    const ollama = initOllamaClient();
+                    const result = await ollama(userPrompt, { context });
+                    answer = result && result.content ? result.content : String(result);
+                } else {
+                    answer = 'Ollama disabled in settings.';
+                }
+                const meta = { engine: 'ollama', relevant: true };
+                logInteraction(session, userPrompt, answer, meta);
+                if (pastInteractions.length > 50) {
+                    const oldStuff = pastInteractions.slice(0, pastInteractions.length - 50);
+                    pushToBin(session, oldStuff);
+                }
+                return { session, answer };
+            }
+
+            module.exports = {
+                loadConfig,
+                initSession,
+                loadHistory,
+                initOllamaClient,
+                logInteraction,
+                pushToBin,
+                startSession
+            };
             console.log(`   Cubit Calc: ${result.cubitCalculation.toFixed(2)}`);
         }
         

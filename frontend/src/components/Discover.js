@@ -103,12 +103,7 @@ function Discover() {
             ))}
           </div>
 
-          {filteredItems.length === 0 && (
-            <div className="no-results">
-              <p>No items found matching your search.</p>
-            </div>
-          )}
-        </div>
+                  import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS } from '../config/constants';
 
         {/* Sidebar */}
         <div className="discover-sidebar">

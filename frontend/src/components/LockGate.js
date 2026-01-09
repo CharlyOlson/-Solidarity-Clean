@@ -10,11 +10,13 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+
 import React, { useState, useEffect } from 'react';
 import './LockGate.css';
 import { API_BASE_URL } from '../config/api';
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 
-const LockGate = ({ safetyLevel = 0.618 }) => {
+const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
   const [securityState, setSecurityState] = useState('locked'); // locked, secured, warning, critical
   const [lastScanTime, setLastScanTime] = useState(null);
   const [intrustionAttempts, setIntrusionAttempts] = useState([]);

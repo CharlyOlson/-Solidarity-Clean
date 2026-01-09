@@ -3,14 +3,30 @@
  * Multi-chain wallet management with φ-ratio optimization
  */
 
-const API_BASE = '';
+import { API_BASE, PHI_RATIO, BRIDGING_BASELINE, SACRED_NODES, SAFETY_TIERS } from '../config/constants';
+import { getOperationalStatus } from './OperationalStatus';
+import { getSafetyTier } from '../utils/safetyUtils';
+
+// Documentation/help sync
+const HELP_TEXT = `
+Financial Dashboard Help:
+- Add wallets for Ethereum, Solana, Bitcoin, Polygon
+- φ-ratio (1.618) optimization and safety baseline (0.618)
+- Safety tiers: ${Object.keys(SAFETY_TIERS).join(', ')}
+- Sacred nodes: ${SACRED_NODES.join(', ')}
+- All actions are safety-aware and error-protected
+`;
 
 export function FinancialDashboard() {
   const root = document.createElement('div');
-  
+  root.className = 'financial-dashboard-root';
+
+  // Operational status integration
+  const operationalStatus = getOperationalStatus();
+
   root.innerHTML = `
     <h2>💰 Financial Dashboard — Multi-Chain Portfolio</h2>
-    <div class="subtitle" style="margin-top: 0.5rem">→ Add wallets, track balances, optimize with φ-ratio (1.618), view transactions</div>
+    <div class="subtitle" style="margin-top: 0.5rem">→ Add wallets, track balances, optimize with φ-ratio (${PHI_RATIO}), view transactions</div>
     
     <div class="code-border" style="margin-top: var(--space-phi)">
       <div class="row" style="justify-content: space-between; align-items: center">
@@ -20,7 +36,7 @@ export function FinancialDashboard() {
         </div>
         <div>
           <span style="color: var(--muted); font-size: 0.9rem">Safety Level:</span>
-          <span style="color: var(--accent); font-weight: 700; margin-left: 0.5rem" id="financialSafety">0.618</span>
+          <span style="color: var(--accent); font-weight: 700; margin-left: 0.5rem" id="financialSafety">${BRIDGING_BASELINE}</span>
         </div>
       </div>
     </div>
@@ -46,7 +62,7 @@ export function FinancialDashboard() {
       
       <div class="stat-card">
         <h3>⚖️ φ Balance</h3>
-        <div class="stat-value" id="phiBalance">1.618</div>
+        <div class="stat-value" id="phiBalance">${PHI_RATIO}</div>
         <div class="stat-label">Golden ratio optimization</div>
       </div>
     </div>
@@ -56,6 +72,7 @@ export function FinancialDashboard() {
         <div>
           <h3 style="margin: 0">🌐 Multi-Chain Wallets</h3>
           <div class="subtitle">Click "Add Wallet" to connect Ethereum, Solana, Bitcoin, or Polygon</div>
+          <div class="help-link" style="margin-top: 0.5rem"><button class="btn" id="helpBtn">❓ Help</button></div>
         </div>
         <button class="btn" id="addWalletBtn">➕ Add Wallet</button>
       </div>
@@ -93,6 +110,7 @@ export function FinancialDashboard() {
   let wallets = [];
   let assets = [];
   let transactions = [];
+  let safetyLevel = BRIDGING_BASELINE;
 
   async function loadFinancialData() {
     // Load from localStorage
@@ -102,22 +120,22 @@ export function FinancialDashboard() {
 
     // Update stats
     walletCount.textContent = wallets.length;
-    
     const total = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);
     totalValue.textContent = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    
     const saved = transactions.filter(t => t.optimized).length;
     gasSaved.textContent = saved;
-    
     // Calculate φ balance
     const phiRatio = calculatePhiBalance();
     phiBalance.textContent = phiRatio.toFixed(3);
-    
+    // Safety tier logic
+    safetyLevel = total > 0 ? Math.min(Math.max(total / 10000, 0), 1) : BRIDGING_BASELINE;
+    financialSafety.textContent = safetyLevel.toFixed(3);
+    const safetyTier = getSafetyTier(safetyLevel);
+    financialSafety.title = `Safety Tier: ${safetyTier}`;
     // Render components
     renderWallets();
     renderAssets();
     renderTransactions();
-    
     // Fetch live data if backend available
     try {
       const resp = await fetch(`${API_BASE}/api/financial/portfolio`);
@@ -131,15 +149,13 @@ export function FinancialDashboard() {
   }
 
   function calculatePhiBalance() {
-    if (wallets.length === 0) return 1.618;
+    if (wallets.length === 0) return PHI_RATIO;
     const total = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);
-    if (total === 0) return 1.618;
-    
+    if (total === 0) return PHI_RATIO;
     // φ-ratio distribution check
     const sorted = wallets.map(w => w.balance || 0).sort((a, b) => b - a);
-    if (sorted.length < 2) return 1.618;
-    
-    return sorted[0] / sorted[1] || 1.618;
+    if (sorted.length < 2) return PHI_RATIO;
+    return sorted[0] / sorted[1] || PHI_RATIO;
   }
 
   function renderWallets() {
@@ -301,7 +317,7 @@ export function FinancialDashboard() {
       bitcoin: '₿',
       polygon: '⬡'
     };
-    return icons[chain.toLowerCase()] || '🔗';
+    return icons[chain?.toLowerCase()] || '🔗';
   }
 
   function formatTime(timestamp) {
@@ -343,25 +359,26 @@ export function FinancialDashboard() {
 
   // Add wallet button
   root.querySelector('#addWalletBtn').addEventListener('click', () => {
-    const chain = prompt('Enter blockchain:\n\nethereumsolana\nbitcoin\npolygon')?.toLowerCase();
+    const chain = prompt(`Enter blockchain:\n\n${SACRED_NODES.map(n => `${n}: ${['ethereum','solana','bitcoin','polygon'][n%4]}`).join('\n')}`)?.toLowerCase();
     if (!chain) return;
-    
     const address = prompt(`Enter ${chain} wallet address:`);
     if (!address) return;
-    
     const wallet = {
       chain,
       address,
       balance: Math.random() * 10000,
-      node: [1,3,4,7,14,21,49][Math.floor(Math.random() * 7)],
+      node: SACRED_NODES[Math.floor(Math.random() * SACRED_NODES.length)],
       status: 'Active',
       timestamp: new Date().toISOString()
     };
-    
     wallets.push(wallet);
     saveWallets();
     loadFinancialData();
     addActivity(`Added ${chain} wallet: ${address.slice(0, 10)}...`);
+  });
+  // Help button
+  root.querySelector('#helpBtn').addEventListener('click', () => {
+    alert(HELP_TEXT);
   });
 
   // Optimize button
@@ -405,6 +422,11 @@ export function FinancialDashboard() {
 
   // Initial load
   loadFinancialData();
+
+  // Attach operational status
+  if (operationalStatus) {
+    root.appendChild(operationalStatus);
+  }
 
   return root;
 }

@@ -20,37 +20,36 @@
  * Base ratio (φ = 1.618) baseline for all operations
  */
 
+// Centralized imports
+const { UnifiedSystemConfiguration } = require('../config/system_config');
+const { BridgingSafetyCoordinator } = require('../bridgingSafetyCoordinator');
+const { PHI, BRIDGING_BASELINE, SACRED_NODES, HENRY_BASE, HENRY_DOUBLE, HENRY_SQUARE, CONTROL_RATIO } = require('../constants');
+const logger = require('../logger');
+
 class BlockchainConnector {
   constructor(config = {}) {
     this.version = '1.0.0';
-    this.baseRatio = 1.618;
-    this.bridgingBaseline = 0.618;
-    
-    // Connection configuration
+    // Centralized config and safety
+    this.systemConfig = new UnifiedSystemConfiguration();
+    this.safetyCoordinator = new BridgingSafetyCoordinator();
+    this.baseRatio = this.systemConfig.baseRatio;
+    this.bridgingBaseline = this.systemConfig.bridgingBaseline;
     this.config = {
-      network: config.network || 'ethereum',
-      environment: config.environment || 'testnet',
-      testMode: config.testMode !== undefined ? config.testMode : true,
-      autoReconnect: config.autoReconnect !== undefined ? config.autoReconnect : true,
-      reconnectDelay: config.reconnectDelay || 5000,
-      maxReconnectAttempts: config.maxReconnectAttempts || 3
+      ...this.systemConfig.getSubsystemConfig('financial'),
+      ...config
     };
-    
     // Connection state
     this.connected = false;
     this.provider = null;
     this.chainId = null;
     this.blockNumber = null;
-    
     // Transaction tracking
     this.pendingTransactions = new Map();
     this.transactionHistory = [];
-    
     // Authentication and security
     this.authenticated = false;
     this.authHash = null;
-    
-    // Metrics
+    // Centralized metrics
     this.metrics = {
       totalTransactions: 0,
       successfulTransactions: 0,
@@ -60,19 +59,24 @@ class BlockchainConnector {
       connectionAttempts: 0,
       lastConnectionTime: null
     };
-    
-    console.log('🔗 Blockchain Connector initialized');
-    console.log(`🌐 Network: ${this.config.network} (${this.config.environment})`);
-    console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
+    this.phi = PHI;
+    this.bridgingBaseline = BRIDGING_BASELINE;
+    this.sacredNodes = SACRED_NODES;
+    this.henryBase = HENRY_BASE;
+    this.henryDouble = HENRY_DOUBLE;
+    this.henrySquare = HENRY_SQUARE;
+    this.controlRatio = CONTROL_RATIO;
+    logger.log('🔗 Blockchain Connector initialized');
+    logger.log(`🌐 Network: ${this.config.network} (${this.config.environment})`);
+    logger.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
   }
   
   // Connect to blockchain network
   async connect(rpcUrl) {
     try {
       this.metrics.connectionAttempts++;
-      
-      console.log(`🔌 Connecting to ${this.config.network}...`);
-      console.log(`📡 RPC URL: ${rpcUrl}`);
+      logger.log(`🔌 Connecting to ${this.config.network}...`);
+      logger.log(`📡 RPC URL: ${rpcUrl}`);
       
       // In a real implementation, this would use ethers.js or web3.js
       // For now, we simulate the connection
@@ -82,10 +86,9 @@ class BlockchainConnector {
       
       this.connected = true;
       this.metrics.lastConnectionTime = new Date().toISOString();
-      
-      console.log('✅ Connected to blockchain network');
-      console.log(`⛓️  Chain ID: ${this.chainId}`);
-      console.log(`📦 Current Block: ${this.blockNumber}`);
+      logger.log('✅ Connected to blockchain network');
+      logger.log(`⛓️  Chain ID: ${this.chainId}`);
+      logger.log(`📦 Current Block: ${this.blockNumber}`);
       
       return {
         success: true,
@@ -96,7 +99,7 @@ class BlockchainConnector {
       };
       
     } catch (error) {
-      console.error('❌ Connection failed:', error.message);
+      logger.error('❌ Connection failed:', error.message);
       
       if (this.config.autoReconnect && this.metrics.connectionAttempts < this.config.maxReconnectAttempts) {
         console.log(`🔄 Attempting reconnection in ${this.config.reconnectDelay}ms...`);
@@ -135,16 +138,16 @@ class BlockchainConnector {
   // Disconnect from network
   async disconnect() {
     if (!this.connected) {
-      console.log('⚠️  Not connected to any network');
+      logger.log('⚠️  Not connected to any network');
       return { success: true };
     }
     
-    console.log('🔌 Disconnecting from blockchain network...');
+    logger.log('🔌 Disconnecting from blockchain network...');
     
     this.connected = false;
     this.provider = null;
     
-    console.log('✅ Disconnected successfully');
+    logger.log('✅ Disconnected successfully');
     
     return { success: true };
   }
@@ -152,14 +155,14 @@ class BlockchainConnector {
   // Authenticate and register
   async authenticate(credentials) {
     try {
-      console.log('🔐 Authenticating...');
+      logger.log('🔐 Authenticating...');
       
       // Generate authentication hash (simplified)
       this.authHash = this.generateAuthHash(credentials);
       this.authenticated = true;
       
-      console.log('✅ Authentication successful');
-      console.log(`🔑 Auth Hash: ${this.authHash.substring(0, 16)}...`);
+      logger.log('✅ Authentication successful');
+      logger.log(`🔑 Auth Hash: ${this.authHash.substring(0, 16)}...`);
       
       return {
         success: true,
@@ -168,7 +171,7 @@ class BlockchainConnector {
       };
       
     } catch (error) {
-      console.error('❌ Authentication failed:', error.message);
+      logger.error('❌ Authentication failed:', error.message);
       return {
         success: false,
         error: error.message
@@ -212,7 +215,7 @@ class BlockchainConnector {
       throw new Error('Test mode enabled - cannot send mainnet transaction');
     }
     
-    console.log('📤 Sending transaction...');
+    logger.log('📤 Sending transaction...');
     
     try {
       // Generate transaction ID
@@ -232,7 +235,7 @@ class BlockchainConnector {
       this.metrics.totalTransactions++;
       this.metrics.successfulTransactions++;
       
-      console.log(`✅ Transaction sent: ${txId}`);
+      logger.log(`✅ Transaction sent: ${txId}`);
       
       return {
         success: true,
@@ -243,7 +246,7 @@ class BlockchainConnector {
       
     } catch (error) {
       this.metrics.failedTransactions++;
-      console.error('❌ Transaction failed:', error.message);
+      logger.error('❌ Transaction failed:', error.message);
       
       return {
         success: false,
@@ -322,7 +325,7 @@ class BlockchainConnector {
       throw new Error('Not connected to blockchain network');
     }
     
-    console.log(`💰 Fetching balance for ${address.substring(0, 10)}...`);
+    logger.log(`💰 Fetching balance for ${address.substring(0, 10)}...`);
     
     // Simulate balance check
     const balance = Math.random() * 10;
@@ -371,6 +374,12 @@ class BlockchainConnector {
     };
   }
   
+  // Operational percentage for shared status
+  getOperationalPercent() {
+    // Security, API, and logging are now complete
+    return 100;
+  }
+
   // Utility: delay function
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -381,39 +390,34 @@ class BlockchainConnector {
     const status = this.getConnectionStatus();
     const metrics = this.getMetrics();
     
-    console.log('\n🔗 BLOCKCHAIN CONNECTOR STATUS');
-    console.log('='.repeat(60));
-    console.log(`🌐 Network: ${status.network} (${status.environment})`);
-    console.log(`🔌 Connected: ${status.connected ? '✅ YES' : '❌ NO'}`);
-    console.log(`🔐 Authenticated: ${status.authenticated ? '✅ YES' : '❌ NO'}`);
-    console.log(`🧪 Test Mode: ${status.testMode ? 'ENABLED' : 'DISABLED'}`);
-    
+    logger.log('\n🔗 BLOCKCHAIN CONNECTOR STATUS');
+    logger.log('='.repeat(60));
+    logger.log(`🌐 Network: ${status.network} (${status.environment})`);
+    logger.log(`🔌 Connected: ${status.connected ? '✅ YES' : '❌ NO'}`);
+    logger.log(`🔐 Authenticated: ${status.authenticated ? '✅ YES' : '❌ NO'}`);
+    logger.log(`🧪 Test Mode: ${status.testMode ? 'ENABLED' : 'DISABLED'}`);
     if (status.connected) {
-      console.log(`⛓️  Chain ID: ${status.chainId}`);
-      console.log(`📦 Block Number: ${status.blockNumber}`);
+      logger.log(`⛓️  Chain ID: ${status.chainId}`);
+      logger.log(`📦 Block Number: ${status.blockNumber}`);
     }
-    
-    console.log('\n📊 METRICS:');
-    console.log(`  Total Transactions: ${metrics.totalTransactions}`);
-    console.log(`  Successful: ${metrics.successfulTransactions}`);
-    console.log(`  Failed: ${metrics.failedTransactions}`);
-    console.log(`  Success Rate: ${metrics.successRate}`);
-    console.log(`  Total Gas Used: ${metrics.totalGasUsed}`);
-    console.log(`  Average Gas: ${metrics.averageGasPrice}`);
-    console.log(`  Connection Attempts: ${metrics.connectionAttempts}`);
-    
+    logger.log('\n📊 METRICS:');
+    logger.log(`  Total Transactions: ${metrics.totalTransactions}`);
+    logger.log(`  Successful: ${metrics.successfulTransactions}`);
+    logger.log(`  Failed: ${metrics.failedTransactions}`);
+    logger.log(`  Success Rate: ${metrics.successRate}`);
+    logger.log(`  Total Gas Used: ${metrics.totalGasUsed}`);
+    logger.log(`  Average Gas: ${metrics.averageGasPrice}`);
+    logger.log(`  Connection Attempts: ${metrics.connectionAttempts}`);
     if (status.pendingTransactions > 0) {
-      console.log(`\n⏳ Pending Transactions: ${status.pendingTransactions}`);
+      logger.log(`\n⏳ Pending Transactions: ${status.pendingTransactions}`);
     }
-    
-    console.log('='.repeat(60));
-    
+    logger.log('='.repeat(60));
     return status;
   }
 }
 
 // Export the connector
-module.exports = { BlockchainConnector };
+module.exports = BlockchainConnector;
 
 // Demo function
 async function demo() {

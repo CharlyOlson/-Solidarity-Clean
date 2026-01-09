@@ -8,6 +8,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 import './QuipNotes.css';
 import { API_BASE_URL } from '../config/api';
 
