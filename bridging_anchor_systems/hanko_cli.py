@@ -113,12 +113,11 @@ def main():
             import tempfile
             import shutil
             from datetime import datetime as dt
-            # Save .chd (raw SVG as example) and .jpeg (convert SVG to JPEG if possible)
+            # Save .chd, .jpeg, and metadata.json
             out_dir = tempfile.mkdtemp()
             chd_path = os.path.join(out_dir, f"{username}_hanko.chd")
             with open(chd_path, "w", encoding="utf-8") as f:
                 f.write(stamp.svg)
-            # Try to convert SVG to JPEG (requires PIL and cairosvg)
             jpeg_path = os.path.join(out_dir, f"{username}_hanko.jpg")
             try:
                 import cairosvg
@@ -129,25 +128,47 @@ def main():
                 rgb_img.save(jpeg_path, "JPEG")
                 os.remove(jpeg_path+".png")
             except Exception:
-                # If conversion fails, just save SVG as JPEG (not a real JPEG)
                 with open(jpeg_path, "w", encoding="utf-8") as f:
                     f.write(stamp.svg)
-            # Generate 4-digit passcode
             passcode = ''.join(random.choices(string.digits, k=4))
-            # Build zip filename
             now = dt.now()
             zip_name = f"{username}sHankoStamp-{now.strftime('%m-%d-%y-%I-%M%p')}.zip"
             zip_path = os.path.join(os.getcwd(), zip_name)
-            # Create password-protected zip (using shutil.make_archive then pyminizip if available)
+            # Geolocation (optional)
+            geolocation = args.get("geolocation", None)
+            # Multi-factor unlock methods
+            unlock_methods = {
+                "passcode": passcode,
+                "qr_code": daily_segment,
+                "daily_code": daily_segment,
+                "usb": args.get("usb_id", None)
+            }
+            # Metadata
+            metadata = {
+                "username": username,
+                "date": date_str,
+                "stamp_id": stamp.stamp_id,
+                "descriptor": descriptor,
+                "geolocation": geolocation,
+                "unlock_methods": {k: v for k, v in unlock_methods.items() if v},
+                "status": "active",
+                "last_login": now.isoformat(),
+                "login_history": [],
+                "qr_code_data": qr_code_string,
+                "sudoku_outline": sudoku_outline
+            }
+            meta_path = os.path.join(out_dir, f"{username}_metadata.json")
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump(metadata, f, indent=2)
+            # Create password-protected zip (pyminizip if available)
             try:
                 import pyminizip
-                pyminizip.compress_multiple([chd_path, jpeg_path], [], zip_path, passcode, 5)
+                pyminizip.compress_multiple([chd_path, jpeg_path, meta_path], [], zip_path, passcode, 5)
             except Exception:
-                # Fallback: create normal zip (not password protected)
                 with zipfile.ZipFile(zip_path, 'w') as zf:
                     zf.write(chd_path, os.path.basename(chd_path))
                     zf.write(jpeg_path, os.path.basename(jpeg_path))
-            # Clean up temp dir
+                    zf.write(meta_path, os.path.basename(meta_path))
             shutil.rmtree(out_dir)
             result = {
                 "stamp_id": stamp.stamp_id,
@@ -165,9 +186,40 @@ def main():
                 "qr_code_data": qr_code_string,
                 "download_zip": zip_path,
                 "zip_passcode": passcode,
-                "zip_note": "If pyminizip is not installed, the zip is not password protected."
+                "zip_note": "If pyminizip is not installed, the zip is not password protected.",
+                "metadata": metadata
             }
             print(json.dumps(result))
+
+        elif command == "unlock":
+            # Unlock logic: user provides any valid unlock method (passcode, qr, daily, usb)
+            meta_path = args.get("metadata_path")
+            if not meta_path or not os.path.exists(meta_path):
+                print(json.dumps({"error": "metadata.json not found"}))
+                sys.exit(1)
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+            provided = args.get("unlock_value")
+            allowed = meta.get("unlock_methods", {})
+            if provided and provided in allowed.values():
+                print(json.dumps({"unlocked": True, "method": [k for k, v in allowed.items() if v == provided][0]}))
+            else:
+                print(json.dumps({"unlocked": False, "reason": "Invalid unlock value"}))
+
+        elif command == "reset":
+            # Reset logic: require full login, deactivate previous codes, generate new QR/daily code
+            meta_path = args.get("metadata_path")
+            if not meta_path or not os.path.exists(meta_path):
+                print(json.dumps({"error": "metadata.json not found"}))
+                sys.exit(1)
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+            meta["status"] = "deactivated"
+            meta["deactivated_at"] = dt.now().isoformat()
+            # Save deactivated metadata
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump(meta, f, indent=2)
+            print(json.dumps({"reset": True, "message": "Previous codes deactivated. Please log in fully to generate a new stamp."}))
         elif command == "verify":
             profile = IdentityProfile(
                 user_id=args["user_id"],
