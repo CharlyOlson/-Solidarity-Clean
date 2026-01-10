@@ -16,7 +16,7 @@
  */
 
 // Import enhanced systems with safety integration
-const { BridgingSafetyCoordinator } = require('../bridgingSafetyCoordinator.js');
+const { BridgingSafetyCoordinator } = require('../src/safety/BridgingSafetyCoordinator.js');
 const { WalletManager } = require('../financial_systems/wallet_manager.js');
 const { SmartContractManager } = require('../financial_systems/smart_contract_manager.js');
 const { TransactionProcessor } = require('../financial_systems/transaction_processor.js');

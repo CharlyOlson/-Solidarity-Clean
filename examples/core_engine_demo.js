@@ -13,7 +13,7 @@
  * all Solidarity Platform calculations.
  */
 
-const CoreMathematicsEngine = require('./src/utils/CoreMathematicsEngine');
+const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
 
 console.log('\n='.repeat(70));
 console.log('SOLIDARITY PLATFORM - CORE MATHEMATICS ENGINE DEMO');

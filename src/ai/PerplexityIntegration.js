@@ -6,7 +6,7 @@ console.log('⚠️  Perplexity integration migrated to Ollama (free local AI)')
 console.log('🔄 Loading Ollama integration with bridging safety controls...');
 
 // Redirect all functionality to Ollama integration
-const ollamaIntegration = require('./ollamaIntegration');
+const ollamaIntegration = require('./OllamaIntegration');
 
 // Attempt to load bridging formatter (soft dependency so this file can run standalone)
 let bridgingFormatter = null;

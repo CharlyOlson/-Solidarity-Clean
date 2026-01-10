@@ -3,7 +3,7 @@
  * Unbiased evaluation of actual capabilities vs claims
  */
 
-const CoreMathematicsEngine = require('./src/utils/CoreMathematicsEngine');
+const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
 const fs = require('fs');
 const path = require('path');
 

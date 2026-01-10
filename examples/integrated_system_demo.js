@@ -20,14 +20,14 @@
  */
 
 // Import AI systems
-const { AISafetyCoordinator } = require('./ai_integration/ai_safety_coordinator.js');
+const { AISafetyCoordinator } = require('../ai_integration/ai_safety_coordinator.js');
 
 // Import Financial systems
-const { FinancialConfiguration } = require('./financial_systems/financial_config.js');
-const { BlockchainConnector } = require('./financial_systems/blockchain_connector.js');
-const { WalletManager } = require('./financial_systems/wallet_manager.js');
-const { SmartContractManager } = require('./financial_systems/smart_contract_manager.js');
-const { TransactionProcessor } = require('./financial_systems/transaction_processor.js');
+const { FinancialConfiguration } = require('../financial_systems/financial_config.js');
+const { BlockchainConnector } = require('../financial_systems/blockchain_connector.js');
+const { WalletManager } = require('../financial_systems/wallet_manager.js');
+const { SmartContractManager } = require('../financial_systems/smart_contract_manager.js');
+const { TransactionProcessor } = require('../financial_systems/transaction_processor.js');
 const { FinancialOptimizer } = require('./financial_systems/financial_optimizer.js');
 
 // Import Unified Config

@@ -14,7 +14,7 @@
 const express = require('express');
 const router = express.Router();
 const { UnifiedSystemConfiguration } = require('../../config/system_config');
-const logger = require('../../logger');
+const logger = require('../utils/logger');
 const axios = require('axios');
 
 // Load config

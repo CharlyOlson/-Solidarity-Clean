@@ -14,5 +14,9 @@ module.exports = {
   SolidarityEngine: require('./SolidarityEngine'),
   QuantumMathUtils: require('./QuantumMathUtils'),
   QuantumCubicCalculationSystem: require('./QuantumCubicCalculationSystem'),
-  SacredNumericSequence: require('./SacredNumericSequence')
+  SacredNumericSequence: require('./SacredNumericSequence'),
+  ComprehensiveSolidarityDiscovery: require('./ComprehensiveSolidarityDiscovery'),
+  MobileDeviceManager: require('./MobileDeviceManager'),
+  QuantumEngine: require('./QuantumEngine'),
+  focusedPassCorrector: require('./focusedPassCorrector')
 };

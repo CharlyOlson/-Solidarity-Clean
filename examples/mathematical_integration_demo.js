@@ -10,7 +10,7 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
-const { CorrectedSolidaritySystem } = require('./correctedSolidaritySystem');
+const { SolidarityEngine } = require('../src/core/SolidarityEngine');
 
 async function runMathematicalIntegrationDemo() {
     console.log('\n🌟 SOLIDARITY MATHEMATICAL INTEGRATION DEMO 🌟');
@@ -20,7 +20,7 @@ async function runMathematicalIntegrationDemo() {
     console.log('═'.repeat(70));
 
     // Initialize system
-    const system = new CorrectedSolidaritySystem({
+    const system = new SolidarityEngine({
         cubicPrecision: 64,
         quantumDepth: 14,
         quantumRecursionLevels: 49

@@ -18,11 +18,11 @@
 
 
 const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
-const { BridgingSafetyCoordinator } = require('../bridgingSafetyCoordinator');
+const { BridgingSafetyCoordinator } = require('../src/safety/BridgingSafetyCoordinator');
 const { UnifiedSystemConfiguration } = require('../config/system_config');
 // Centralized constants and logger
 const { PHI, BRIDGING_BASELINE, SACRED_NODES, HENRY_BASE, HENRY_DOUBLE, HENRY_SQUARE, CONTROL_RATIO } = require('../constants');
-const logger = require('../logger');
+const logger = require('../src/utils/logger');
 // Add API integration for payment connector
 const apiRouter = require('../src/api/api_router');
 // Enhanced Security Integration
