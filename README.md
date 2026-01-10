@@ -1,6 +1,20 @@
-# Bridging Anchor Systems
+# Solidarity Platform
 
-## Overview
+## Repository Organization
+
+This repository has been reorganized for clarity and maintainability:
+- **`docs/`** - All documentation (architecture, guides, security, financial, status, reference, integration, business, inventory)
+- **`src/`** - Source code (core, harmonic, safety, financial, security, utils, devices, ai, audio)
+- **`frontend/`** - Frontend components, styles, and public assets
+- **`server/`** - Server-side code and APIs
+- **`python/`** - Python modules and utilities
+- **`scripts/`** - Build and runtime scripts
+- **`examples/`** - Example code and demos
+- **`tests/`** - Test files
+- **`config/`** - Configuration files
+- **`java/`** - Java source files
+
+## Overview - Bridging Anchor Systems
 
 The Bridging Anchor Systems module implements advanced signal processing using the **Henry 7 Step 14 Trott Waltz methodology** with bridging and anchoring techniques for professional-grade DSP operations.
 
@@ -40,11 +54,45 @@ The Bridging Anchor Systems module implements advanced signal processing using t
 ## Architecture
 
 ```
-bridging_anchor_systems/
+Solidarity Platform Repository Structure:
+
+Root/
+├── docs/                           # Documentation
+│   ├── architecture/               # System architecture docs
+│   ├── guides/                     # User guides and tutorials
+│   ├── security/                   # Security documentation
+│   ├── financial/                  # Financial system docs
+│   ├── status/                     # Status reports and assessments
+│   ├── reference/                  # Reference materials
+│   ├── integration/                # Integration guides
+│   ├── business/                   # Business documentation
+│   └── inventory/                  # System inventories
+├── src/                            # Source code
+│   ├── core/                       # Core engines and systems
+│   ├── harmonic/                   # Harmonic processing
+│   ├── safety/                     # Safety coordination
+│   ├── financial/                  # Financial modules
+│   ├── security/                   # Security utilities
+│   ├── utils/                      # General utilities
+│   ├── devices/                    # Device management
+│   ├── ai/                         # AI integration
+│   └── audio/                      # Audio processing
+├── frontend/                       # Frontend application
+│   ├── components/                 # React components
+│   ├── styles/                     # CSS stylesheets
+│   └── public/                     # Static assets
+├── server/                         # Server-side code
+├── python/                         # Python modules
+├── scripts/                        # Build and runtime scripts
+├── examples/                       # Example code
+├── tests/                          # Test suites
+└── config/                         # Configuration files
+
+bridging_anchor_systems/            # DSP Processing Module
 ├── bridging_anchor_processor.py    # Main processing engine
 ├── bridging_anchor_config.json     # Configuration settings
 ├── bridging_anchor_test_suite.py   # Comprehensive test suite
-└── README.md                        # This file
+└── README.md                        # DSP module documentation
 ```
 
 ## Installation

@@ -9,12 +9,12 @@
  * @version 6.5.0
  */
 
-const { ComprehensiveSolidarityDiscovery } = require('./src/ComprehensiveSolidarityDiscovery');
-const { EnhancedBridgingPhraseParser } = require('./src/EnhancedBridgingPhraseParser');
-const { MobileDeviceManager } = require('./src/MobileDeviceManager');
-const { SacredNumericSequence } = require('./src/SacredNumericSequence');
-const { TIMBRCompressionSystem } = require('./src/TIMBRCompressionSystem');
-const { CorrectedSolidaritySystem } = require('./src/correctedSolidaritySystem');
+const { ComprehensiveSolidarityDiscovery } = require('../frontend/components/ComprehensiveSolidarityDiscovery');
+const { EnhancedBridgingPhraseParser } = require('../src/harmonic/EnhancedBridgingPhraseParser');
+const { MobileDeviceManager } = require('../src/devices/MobileDeviceManager');
+const { SacredNumericSequence } = require('../src/core/SacredNumericSequence');
+const { TIMBRCompressionSystem } = require('../src/audio/TIMBRCompressionSystem');
+const { CorrectedSolidaritySystem } = require('../src/core/correctedSolidaritySystem');
 
 class SolidarityPlatformLauncher {
     constructor() {
