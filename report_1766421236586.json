@@ -1,0 +1,88 @@
+{
+  "business": {
+    "name": "Demo E-Commerce Store",
+    "annualVolume": 5000000,
+    "monthlyTransactions": 10000,
+    "avgTransaction": 41.666666666666664,
+    "paymentMix": {
+      "credit_card": 50,
+      "paypal": 30,
+      "crypto": 10,
+      "bank_transfer": 10
+    }
+  },
+  "fees": {
+    "traditional": 126500,
+    "optimized": 19485.93222302378,
+    "difference": 107014.06777697621,
+    "percentage": 84.59610100946736
+  },
+  "savings": {
+    "annual": 107014.06777697621,
+    "monthly": 8917.838981414685,
+    "perTransaction": 0.8917838981414684
+  },
+  "roi": {
+    "implementationCost": 5000,
+    "breakEvenMonths": 0.5606739491955732,
+    "breakEvenDays": 17,
+    "firstYearROI": 2040.2813555395242
+  },
+  "projection": {
+    "years": 5,
+    "growthRate": 0.1,
+    "yearlyBreakdown": [
+      {
+        "year": 1,
+        "volume": 5000000,
+        "savings": 107014.06777697621,
+        "cumulative": 107014.06777697621
+      },
+      {
+        "year": 2,
+        "volume": 5500000,
+        "savings": 117827.1327502646,
+        "cumulative": 224841.2005272408
+      },
+      {
+        "year": 3,
+        "volume": 6050000.000000001,
+        "savings": 129731.39658106295,
+        "cumulative": 354572.59710830374
+      },
+      {
+        "year": 4,
+        "volume": 6655000.000000002,
+        "savings": 142836.86272625826,
+        "cumulative": 497409.45983456203
+      },
+      {
+        "year": 5,
+        "volume": 7320500.000000003,
+        "savings": 157264.61445733492,
+        "cumulative": 654674.074291897
+      }
+    ],
+    "totalSavings": 654674.074291897
+  },
+  "safety": {
+    "level": 0.618,
+    "threshold": "OPTIMAL_RANGE",
+    "mode": "aggressive",
+    "discount": 0.4,
+    "multiplier": 0.7528
+  },
+  "benefits": {
+    "employeesAffordable": 2,
+    "marketingBudget": 74910,
+    "customerCashback": "2.14",
+    "revenuePercentFreed": "2.14"
+  },
+  "terminal": {
+    "version": "1.0.0",
+    "sessionId": "ST-MJHDLH6C-L2XMZV",
+    "safetyLevel": 0.618,
+    "safetyMode": "OPTIMAL_RANGE",
+    "timestamp": "2025-12-22T16:33:56.586Z"
+  }
+}

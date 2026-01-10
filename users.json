@@ -1,0 +1,13 @@
+[
+  {
+    "id": "1",
+    "username": "admin",
+    "email": "admin@solidarity.local",
+    "passwordHash": "$2b$10$Za0WY6uz38LT9WFtoDyOfOqYW.rGFl72HGgOltrvW9hYv9DZ0MJey",
+    "role": "admin",
+    "hankoStamps": [],
+    "safetyLevel": 0.618,
+    "createdAt": "2025-12-16T20:47:16.506Z",
+    "lastLogin": null
+  }
+]
