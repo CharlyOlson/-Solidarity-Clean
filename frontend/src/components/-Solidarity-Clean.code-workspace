@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"inlineChat.finishOnType": true,
+		"chat.viewWelcome.enabled": false,
+		"workbench.commandPalette.history": 59,
+		"workbench.editor.preferHistoryBasedLanguageDetection": true,
+		"search.quickOpen.history.filterSortOrder": "recency",
+		"terminal.integrated.shellIntegration.history": 1000,
+		"terminal.integrated.suggest.upArrowNavigatesHistory": true,
+		"task.quickOpen.history": 30,
+		"gitlens.advanced.fileHistoryShowAllBranches": true,
+		"gitlens.advanced.fileHistoryShowMergeCommits": true
+	}
+}
