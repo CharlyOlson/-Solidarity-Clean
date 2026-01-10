@@ -21,8 +21,8 @@ const MOTION_SAFETY_THRESHOLDS = {
 let globalMotionSafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
 // Import Solidarity platform utilities
-const colorUtils = require('./src/utils/colorUtils');
-const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
+// const colorUtils = require('./src/utils/colorUtils'); // TODO: Create colorUtils module
+const { audioCommands, executeAudioCommand } = require('./AudioStudioCommands');
 
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {

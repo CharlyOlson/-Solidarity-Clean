@@ -11,8 +11,8 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
-const { GoldenRatioMath, MirrorNumberSystem } = require('./goldenRatioMath');
-const { FocusedPassCorrector } = require('./focusedPassCorrector');
+const { GoldenRatioMath, MirrorNumberSystem } = require('./GoldenRatioMath');
+const { FocusedPassCorrector } = require('../core/focusedPassCorrector');
 
 class HarmonicPhraseParser {
     constructor() {

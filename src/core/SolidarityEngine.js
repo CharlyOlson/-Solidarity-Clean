@@ -14,11 +14,11 @@
 const { QuantumCubicCalculationSystem } = require('./QuantumCubicCalculationSystem');
 const { QuantumMathUtils, QuantumProcessingPipeline } = require('./QuantumMathUtils');
 const { SacredNumericSequence } = require('./SacredNumericSequence');
-const { TIMBRCompressionSystem } = require('./TIMBRCompressionSystem');
-const { audioCommands, executeAudioCommand } = require('./enhancedAudioStudioCommands');
+const { TIMBRCompressionSystem } = require('../audio/TIMBRCompressionSystem');
+const { audioCommands, executeAudioCommand } = require('../audio/AudioStudioCommands');
 const path = require('path');
 
-class CorrectedSolidaritySystem {
+class SolidarityEngine {
 	constructor(config = {}) {
 		this.config = config;
 		
@@ -741,4 +741,4 @@ if (require.main === module) {
 	console.log('\n📊 System Status:', system.getSystemStatus());
 }
 
-module.exports = { CorrectedSolidaritySystem };
+module.exports = { SolidarityEngine };
