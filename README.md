@@ -1,160 +1,257 @@
-# Solidarity Platform - Clean Repository
+# Security Module
 
-🚀 **Professional Bridging Anchor Processing & Financial Commerce Platform**
+## Overview
 
-A comprehensive solidarity platform implementing the Henry 7 Step 14 Trott Waltz numerological system with advanced safety architecture and quantum coherence integration.
+This module provides comprehensive security features for the Solidarity Platform, including input validation, sanitization, XSS prevention, SQL injection prevention, and security headers.
 
-## 🌟 **Key Features**
+## Features
 
-### 🎯 **Safety System**
-- **Base Ratio Baseline**: All systems anchor at 0.618 for mathematical stability
-- **7-Tier Safety Architecture**: Ranges from 0.03 to 0.97 with smooth transitions
-- **Distributed Load Balancing**: Prevents system overload with intelligent flow control
-- **Real-time Safety Propagation**: Instant safety level synchronization across all components
+### 1. Enhanced URL Validation
+- **SecureURLValidator** - Multi-layer URL validation addressing GHSA-9965-vmph-33xx
+  - Protocol validation (only http/https allowed)
+  - Dangerous pattern detection (javascript:, data:, etc.)
+  - XSS pattern detection
+  - Private IP and localhost filtering
+  - SSRF protection
 
-### 🆓 **Cost-Optimized AI Integration**
-- **Local Ollama AI**: Zero API costs with complete privacy control
-- **Free Alternative**: Replaces expensive external AI services
-- **No Licensing Restrictions**: Full local control and customization
+### 2. Input Sanitization
+- **InputSanitizer** - Comprehensive input sanitization
+  - HTML tag stripping
+  - Script content removal
+  - SQL injection prevention
+  - Path traversal prevention
+  - Email validation and sanitization
+  - Number validation with min/max constraints
 
-### ⚛️ **Quantum Coherence Framework**
-- **Mathematical Stability**: 0.618 (Base Ratio PHI per Henry 7 Step 14 Trott Waltz) provides quantum state anchoring
-- **Entanglement Simulation**: Sacred numeric sequences create correlation effects
-- **Stable Coherence**: Maintains optimal quantum states through all operations
+### 3. Security Headers
+- **SecurityHeaders** - HTTP security headers
+  - Content-Security-Policy
+  - X-Frame-Options
+  - X-XSS-Protection
+  - Strict-Transport-Security
+  - X-Content-Type-Options
+  - Referrer-Policy
+  - Permissions-Policy
 
-### 🌉 **Professional Bridging Anchor Processing**
-- Advanced base ratio analysis and processing
-- Real-time signal effects and manipulation
-- Professional-grade DSP pipeline
-- Python-based scientific computing with NumPy
+### 4. Rate Limiting
+- **RateLimitHelper** - Request rate limiting
+  - Configurable time windows
+  - Per-identifier tracking
+  - Automatic cleanup
 
-### 💼 **Financial Commerce Platform**
-- Secure financial transaction processing
-- Commerce integration capabilities
-- Professional financial data handling
+### 5. Security Configuration
+- **SecurityConfig** - Central security configuration
+  - Express middleware integration
+  - File upload validation
+  - Blockchain transaction security
+  - Security event logging
 
-## 🏗️ **Architecture Overview**
+## Usage
 
-### **Core Components**
-- `harmoniousSafetyCoordinator.js` - Central safety orchestration system
-- `ollamaIntegration.js` - Local AI integration with safety controls
-- `launcher.js` - Main application launcher with safety integration
-- `color_motion_tracking.js` - Safety-aware motion tracking with caps
-- `correctedSolidaritySystem.js` - Core solidarity system with safety protocols
-- `bridging_anchor_systems/` - Advanced DSP subsystem with Python/NumPy
+### Basic Usage
 
-### **Safety Flow Architecture**
+```javascript
+const { SecureURLValidator, InputSanitizer, SecurityHeaders } = require('./security/input-validator');
+
+// URL Validation
+const urlValidator = new SecureURLValidator();
+const result = urlValidator.validateURL('https://example.com');
+if (result.valid) {
+  console.log('URL is safe:', result.sanitized);
+} else {
+  console.log('URL validation failed:', result.errors);
+}
+
+// Input Sanitization
+const clean = InputSanitizer.sanitizeHTML('<script>alert(1)</script>Hello');
+console.log(clean); // Output: "Hello"
+
+const email = InputSanitizer.sanitizeEmail('TEST@EXAMPLE.COM');
+console.log(email); // Output: "test@example.com"
+
+const num = InputSanitizer.sanitizeNumber(150, { min: 0, max: 100 });
+console.log(num); // Output: 100
 ```
-Conservative Mode (0.03-0.25) → Balanced Mode (0.25-0.85) → Performance Mode (0.85-0.97)
-                     ↓
-              Base Ratio Anchor (0.618)
-                     ↓
-            Emergency Stabilization Protocols
+
+### Express Middleware
+
+```javascript
+const { securityConfig } = require('./security/security-config');
+const express = require('express');
+const app = express();
+
+// Apply security headers to all responses
+app.use(securityConfig.getSecurityHeadersMiddleware());
+
+// Sanitize all incoming requests
+app.use(securityConfig.getSanitizationMiddleware());
+
+// Validate file uploads
+app.use('/upload', securityConfig.getFileUploadValidationMiddleware());
+
+// Blockchain transaction security
+app.use('/blockchain', securityConfig.getBlockchainSecurityMiddleware());
 ```
 
-## 🛠️ **Installation**
+### Custom Validation
 
-### **Prerequisites**
-- Node.js (v16 or higher)
-- Python 3.8+
-- Git
+```javascript
+const { securityConfig } = require('./security/security-config');
 
-### **Quick Start**
+// Validate URL with custom options
+const result = securityConfig.validateURL('http://localhost:3000', {
+  allowLocalhost: true,
+  allowRelative: false
+});
+
+if (result.valid) {
+  console.log('URL is valid');
+}
+```
+
+## Testing
+
+Run the security test suite:
+
 ```bash
-# Clone the repository
-git clone https://github.com/CharlyOlson/Solidarity-Clean.git
-cd Solidarity-Clean
-
-# Install dependencies
-npm install
-
-# Set up Python environment (for bridging anchor processing)
-python3 -m venv python_env
-source python_env/bin/activate  # Linux/macOS
-# or
-python_env\Scripts\activate  # Windows
-
-# Install Python dependencies
-pip install numpy
-
-# Run the application
-npm start
-
-# Test bridging anchor system
-npm run test:bridging
+npm run security:test
 ```
 
-## 📁 **Project Structure**
+The test suite includes:
+- URL validation tests (8 tests)
+- Input sanitization tests (6 tests)
+- XSS prevention tests (15 tests)
+- SQL injection prevention tests (5 tests)
 
-```
-Solidarity-Clean/
-├── bridging_anchor_systems/  # Advanced DSP subsystem
-│   ├── bridging_anchor_processor.py
-│   ├── bridging_anchor_test_suite.py
-│   ├── bridging_anchor_config.json
-│   └── README.md
-├── harmoniousSafetyCoordinator.js  # Safety system coordinator
-├── ollamaIntegration.js   # Local AI integration
-├── launcher.js            # Main launcher
-├── config/               # Configuration files
-├── docs/                # Documentation
-├── tests/               # Test suites
-├── scripts/             # Utility scripts
-└── README.md           # This file
-```
+**Total: 34 tests**
 
-## 🔒 **Safety & Security**
+## Security Best Practices
 
-- **Safety Thresholds**: All operations maintain safe operational boundaries
-- **Base Ratio Stability**: Mathematical anchoring provides system resilience  
-- **Local AI Processing**: No external API dependencies for core AI functionality
-- **Comprehensive Logging**: Full system monitoring and debugging capabilities
+### 1. Always Validate User Input
+```javascript
+// Good
+const email = InputSanitizer.sanitizeEmail(req.body.email);
+if (email) {
+  // Process email
+}
 
-## 🧪 **Testing**
-
-```bash
-# Run all tests
-npm test
-
-# Run specific test suites
-npm run test:safety
-npm run test:ai
-npm run test:bridging
-npm run test:advanced
+// Bad
+const email = req.body.email; // No validation!
 ```
 
-## 📚 **Documentation**
+### 2. Use URL Validator for External URLs
+```javascript
+// Good
+const validator = new SecureURLValidator();
+const result = validator.validateURL(req.body.url);
+if (result.valid) {
+  // Safe to use result.sanitized
+}
 
-- **[Complete System Documentation](COMPLETE_SYSTEM_DOCUMENTATION.md)** - Comprehensive system overview
-- **[AI & Financial Systems](AI_FINANCIAL_SYSTEMS_README.md)** - AI and financial integration
-- **[Bridging Anchor Systems](bridging_anchor_systems/README.md)** - Advanced DSP subsystem documentation
+// Bad
+const url = req.body.url; // Could be javascript:alert(1)
+```
 
-## 🤝 **Contributing**
+### 3. Sanitize Before Database Operations
+```javascript
+// Good
+const query = 'SELECT * FROM users WHERE name = ?';
+const sanitizedName = InputSanitizer.sanitizeSQL(req.body.name);
+db.execute(query, [sanitizedName]);
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+// Bad
+const query = `SELECT * FROM users WHERE name = '${req.body.name}'`; // SQL injection!
+```
 
-## 📄 **License**
+### 4. Apply Security Headers
+```javascript
+// Good
+app.use(securityConfig.getSecurityHeadersMiddleware());
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+// Or manually
+SecurityHeaders.applyHeaders(res);
+```
 
-## 🎯 **Version History**
+## Configuration
 
-- **v3.0.0** - Nuclear Clean Migration with Harmonious Safety System
-- **v2.41.0** - Advanced quantum platform enhancements
-- **v2.40.0** - Complete unified documentation system
+Security settings can be configured via environment variables:
 
-## 🔗 **Links**
+```env
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX_REQUESTS=100
 
-- [Original Repository](https://github.com/CharlyOlson/Solidarity)
-- [Documentation](https://github.com/CharlyOlson/Solidarity-Clean/docs)
-- [Issues](https://github.com/CharlyOlson/Solidarity-Clean/issues)
+# File Upload
+MAX_FILE_SIZE=5242880
+ALLOWED_FILE_TYPES=image/jpeg,image/png
+
+# Blockchain Security
+FINANCIAL_TEST_MODE=true
+MAX_GAS_PRICE=100
+```
+
+## Known Vulnerabilities
+
+### Validator.js URL Validation Bypass (GHSA-9965-vmph-33xx)
+- **Severity**: Moderate
+- **Status**: Mitigated by SecureURLValidator
+- **Details**: See [SECURITY.md](../SECURITY.md)
+
+## API Reference
+
+### SecureURLValidator
+
+#### `validateURL(url, options)`
+Validates a URL with comprehensive security checks.
+
+**Parameters:**
+- `url` (string): URL to validate
+- `options` (object):
+  - `allowRelative` (boolean): Allow relative URLs
+  - `allowLocalhost` (boolean): Allow localhost URLs
+  - `allowPrivateIP` (boolean): Allow private IP addresses
+
+**Returns:** Object with properties:
+- `valid` (boolean): Whether URL is valid
+- `sanitized` (string): Sanitized URL
+- `errors` (array): Validation errors
+- `protocol` (string): URL protocol
+- `hostname` (string): URL hostname
+- `pathname` (string): URL pathname
+
+### InputSanitizer
+
+#### `sanitizeString(input, maxLength)`
+Sanitizes string input with length limits.
+
+#### `sanitizeHTML(input)`
+Removes HTML tags and dangerous patterns.
+
+#### `sanitizeSQL(input)`
+Escapes SQL special characters.
+
+#### `sanitizeFilePath(input)`
+Removes path traversal attempts.
+
+#### `sanitizeEmail(input)`
+Validates and normalizes email addresses.
+
+#### `sanitizeNumber(input, options)`
+Validates and constrains numeric input.
+
+## Contributing
+
+When adding new security features:
+
+1. Add tests to `security-tests.js`
+2. Update this README
+3. Document in [SECURITY.md](../SECURITY.md)
+4. Run test suite: `npm run security:test`
+
+## License
+
+See [LICENSE](../LICENSE) file.
 
 ---
-
-**🌉 Built with mathematical precision using Base Ratio principles (Henry 7 Step 14 Trott Waltz) for optimal stability.**
 
 **TRADEMARKED BY SCOTT CHARLES OLSON**

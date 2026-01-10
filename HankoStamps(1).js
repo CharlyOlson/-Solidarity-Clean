@@ -1,137 +1,4 @@
 /*
- * SOLIDARITY PLATFORM - MAIN APP WITH TAB NAVIGATION
- * ===================================================
- * 
- * TRADEMARK: Scott Charles Olson - March 31, 1997
- */
-
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import OllamaHome from './components/OllamaHome';
-import QuipNotes from './components/QuipNotes';
-import UserLogs from './components/UserLogs';
-import HankoStamps from './components/HankoStamps';
-import WalletManager from './components/WalletManager';
-import Discover from './components/Discover';
-import TrustedDevices from './components/TrustedDevices';
-import ConnectedBanks from './components/ConnectedBanks';
-import PaymentCalculator from './components/PaymentCalculator';
-import LockGate from './components/LockGate';
-import { ensureDemoToken } from './utils/auth';
-
-function App() {
-  const [activeTab, setActiveTab] = useState('home');
-
-  // Ensure demo token exists on app load
-  useEffect(() => {
-    ensureDemoToken();
-  }, []);
-
-  const renderTab = () => {
-    switch (activeTab) {
-      case 'home':
-        return <OllamaHome />;
-      case 'quipnotes':
-        return <QuipNotes />;
-      case 'logs':
-        return <UserLogs />;
-      case 'hanko':
-        return <HankoStamps />;
-      case 'wallet':
-        return <WalletManager />;
-      case 'discover':
-        return <Discover />;
-      case 'devices':
-        return <TrustedDevices />;
-      case 'banks':
-        return <ConnectedBanks />;
-      case 'calculator':
-        return <PaymentCalculator />;
-      default:
-        return <OllamaHome />;
-    }
-  };
-
-  return (
-    <div className="app">
-      {/* Main Navigation */}
-      <nav className="main-nav">
-        <div className="nav-brand">
-          <h1>SOLIDARITY PLATFORM</h1>
-          <p className="trademark">© Scott Charles Olson - φ = 1.618</p>
-        </div>
-        <div className="nav-tabs">
-          <button
-            className={activeTab === 'home' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('home')}
-          >
-            🏠 HOME
-          </button>
-          <button
-            className={activeTab === 'quipnotes' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('quipnotes')}
-          >
-            🌐 QuipNotes
-          </button>
-          <button
-            className={activeTab === 'logs' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('logs')}
-          >
-            📊 User Logs
-          </button>
-          <button
-            className={activeTab === 'hanko' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('hanko')}
-          >
-            🎴 Hanko Stamps
-          </button>
-          <button
-            className={activeTab === 'wallet' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('wallet')}
-          >
-            💰 Wallet
-          </button>
-          <button
-            className={activeTab === 'discover' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('discover')}
-          >
-            📊 Discover
-          </button>
-          <button
-            className={activeTab === 'devices' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('devices')}
-          >
-            📱 Devices
-          </button>
-          <button
-            className={activeTab === 'banks' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('banks')}
-          >
-            🏦 Banks
-          </button>
-          <button
-            className={activeTab === 'calculator' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('calculator')}
-          >
-            🧮 Calculator
-          </button>
-        </div>
-      </nav>
-
-      {/* Tab Content */}
-      <main className="tab-content">
-        {renderTab()}
-      </main>
-
-      {/* LockGate Security Overlay (always visible) */}
-      <LockGate />
-    </div>
-  );
-}
-
-export default App;
-
-/*
  * SOLIDARITY PLATFORM - HANKO STAMPS TAB
  * =======================================
  * 
@@ -529,18 +396,84 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
             {stamps.map((stamp) => {
               const type = stampTypes[stamp.stamp_type] || stampTypes.personal;
               return (
-                <div 
-                  key={stamp.stamp_id}
-                  className={`stamp-card ${stamp.revoked ? 'revoked' : ''}`}
-                  onClick={() => viewStampDetails(stamp)}
-                  style={{ borderColor: type.color }}
-                >
-                  {/* Display actual SVG from Python hanko engine */}
-                  {stamp.svg ? (
-                    <div 
-                      className="stamp-svg-container"
-                      dangerouslySetInnerHTML={{ __html: stamp.svg }}
-                    />
+                /*
+                 * SOLIDARITY PLATFORM - HANKO STAMPS TAB
+                 * =======================================
+                 * 
+                 * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
+                 * Owner: Scott Charles Olson
+                 * DOB: March 31, 1997
+                 * Phone: +1 (913) 548-5715
+                 * Location: Kansas, USA 66210
+                 * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+                 */
+
+                import React, { useState } from 'react';
+
+                function HankoStamps() {
+                  const [username, setUsername] = useState('');
+                  const [descriptor, setDescriptor] = useState('');
+                  const [result, setResult] = useState(null);
+                  const [loading, setLoading] = useState(false);
+                  const [error, setError] = useState(null);
+
+                  async function generateHankoStamp() {
+                    setLoading(true);
+                    setError(null);
+                    setResult(null);
+                    try {
+                      const response = await fetch('/api/hanko/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, descriptor })
+                      });
+                      const data = await response.json();
+                      if (data.success) {
+                        setResult(data.result || data.output);
+                      } else {
+                        setError(data.error || 'Unknown error');
+                      }
+                    } catch (e) {
+                      setError(e.message);
+                    }
+                    setLoading(false);
+                  }
+
+                  return (
+                    <div className="hanko-stamps-container">
+                      <h1>Hanko Stamp Generator</h1>
+                      <div style={{ marginBottom: 16 }}>
+                        <input
+                          type="text"
+                          placeholder="Username"
+                          value={username}
+                          onChange={e => setUsername(e.target.value)}
+                          style={{ marginRight: 8 }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Descriptor (optional)"
+                          value={descriptor}
+                          onChange={e => setDescriptor(e.target.value)}
+                        />
+                        <button onClick={generateHankoStamp} disabled={loading || !username} style={{ marginLeft: 8 }}>
+                          {loading ? 'Generating...' : 'Generate Stamp'}
+                        </button>
+                      </div>
+                      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+                      {result && (
+                        <div style={{ marginTop: 24 }}>
+                          <h2>Stamp Result</h2>
+                          <pre style={{ background: '#f4f4f4', padding: 12, borderRadius: 4, maxWidth: 600, overflowX: 'auto' }}>
+                            {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                export default HankoStamps;
                   ) : (
                     <div className="stamp-badge" style={{ backgroundColor: type.color }}>
                       <div className="stamp-visual-large">
@@ -990,5 +923,5 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
   );
 };
 
-// export default HankoStamps;
+export default HankoStamps;
 

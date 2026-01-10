@@ -1,39 +1,87 @@
-1.1.2 / 2017-09-23
+2.0.2 / 2025-06-06
 ==================
 
-  * perf: improve header token parsing speed
+  * Migrate to `String.prototype.slice()`
 
-1.1.1 / 2017-03-20
+2.0.1 / 2021-01-03
 ==================
 
-  * perf: hoist regular expression
+  * Fix returning values from `Object.prototype`
 
-1.1.0 / 2015-09-29
+2.0.0 / 2020-04-19
 ==================
 
-  * Only accept valid field names in the `field` argument
-    - Ensures the resulting string is a valid HTTP header value
+  * Drop support for Node.js 0.6
+  * Fix messaging casing of `418 I'm a Teapot`
+  * Remove code 306
+  * Remove `status[code]` exports; use `status.message[code]`
+  * Remove `status[msg]` exports; use `status.code[msg]`
+  * Rename `425 Unordered Collection` to standard `425 Too Early`
+  * Rename `STATUS_CODES` export to `message`
+  * Return status message for `statuses(code)` when given code
 
-1.0.1 / 2015-07-08
+1.5.0 / 2018-03-27
 ==================
 
-  * Fix setting empty header from empty `field`
+  * Add `103 Early Hints`
+
+1.4.0 / 2017-10-20
+==================
+
+  * Add `STATUS_CODES` export
+
+1.3.1 / 2016-11-11
+==================
+
+  * Fix return type in JSDoc
+
+1.3.0 / 2016-05-17
+==================
+
+  * Add `421 Misdirected Request`
   * perf: enable strict mode
-  * perf: remove argument reassignments
 
-1.0.0 / 2014-08-10
+1.2.1 / 2015-02-01
 ==================
 
-  * Accept valid `Vary` header string as `field`
-  * Add `vary.append` for low-level string manipulation
-  * Move to `jshttp` orgainzation
+  * Fix message for status 451
+    - `451 Unavailable For Legal Reasons`
 
-0.1.0 / 2014-06-05
+1.2.0 / 2014-09-28
 ==================
 
-  * Support array of fields to set
+  * Add `208 Already Repored`
+  * Add `226 IM Used`
+  * Add `306 (Unused)`
+  * Add `415 Unable For Legal Reasons`
+  * Add `508 Loop Detected`
 
-0.0.0 / 2014-06-04
+1.1.1 / 2014-09-24
+==================
+
+  * Add missing 308 to `codes.json`
+
+1.1.0 / 2014-09-21
+==================
+
+  * Add `codes.json` for universal support
+
+1.0.4 / 2014-08-20
+==================
+
+  * Package cleanup
+
+1.0.3 / 2014-06-08
+==================
+
+  * Add 308 to `.redirect` category
+
+1.0.2 / 2014-03-13
+==================
+
+  * Add `.retry` category
+
+1.0.1 / 2014-03-12
 ==================
 
   * Initial release

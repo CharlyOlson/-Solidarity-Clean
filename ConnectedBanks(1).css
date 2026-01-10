@@ -1,0 +1,371 @@
+/*
+ * SOLIDARITY PLATFORM - CONNECTED BANKS STYLES
+ * =============================================
+ * 
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
+ * Owner: Scott Charles Olson
+ * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+ */
+
+.connected-banks {
+  padding: 1.5rem;
+  color: #e8ecff;
+}
+
+.cb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cb-kicker {
+  font-size: 0.85rem;
+  color: #9bb6ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cb-header h2 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0;
+  color: #fff6b0;
+}
+
+.cb-sub {
+  color: #bcd3ff;
+  max-width: 380px;
+}
+
+.cb-overview {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.cb-overview-item {
+  text-align: right;
+}
+
+.cb-overview-item span {
+  display: block;
+  font-size: 0.85rem;
+  color: #9bb6ff;
+}
+
+.cb-overview-item strong {
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.cb-overview-item strong.positive {
+  color: #7cffe0;
+}
+
+.cb-overview-item strong.negative {
+  color: #ff9b9b;
+}
+
+.cb-actions {
+  margin-bottom: 1.5rem;
+}
+
+.cb-link-btn {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 237, 78, 0.14) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  color: #ffd700;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cb-link-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.2);
+}
+
+.cb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.cb-bank {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border 0.2s ease;
+}
+
+.cb-bank:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.cb-bank-icon {
+  font-size: 1.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cb-bank-info {
+  flex: 1;
+}
+
+.cb-bank-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.cb-bank-meta {
+  color: #9bb6ff;
+  font-size: 0.9rem;
+}
+
+.cb-bank-balance {
+  text-align: right;
+  min-width: 120px;
+}
+
+.cb-bank-balance strong {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.cb-bank-balance strong.positive {
+  color: #7cffe0;
+}
+
+.cb-bank-balance strong.negative {
+  color: #ff9b9b;
+}
+
+.cb-bank-balance span {
+  font-size: 0.85rem;
+  color: #7a8cb8;
+}
+
+.cb-bank-status {
+  min-width: 130px;
+}
+
+.cb-status {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cb-status.connected {
+  background: rgba(124, 255, 212, 0.12);
+  border: 1px solid rgba(124, 255, 212, 0.4);
+  color: #7cffe0;
+}
+
+.cb-status.attention {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #ffd700;
+}
+
+.cb-status.disconnected {
+  background: rgba(255, 155, 155, 0.12);
+  border: 1px solid rgba(255, 155, 155, 0.4);
+  color: #ff9b9b;
+}
+
+.cb-bank-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cb-refresh,
+.cb-disconnect {
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cb-refresh {
+  background: rgba(123, 178, 255, 0.1);
+  border: 1px solid rgba(123, 178, 255, 0.4);
+  color: #8fb8ff;
+}
+
+.cb-refresh:hover {
+  background: rgba(123, 178, 255, 0.18);
+}
+
+.cb-disconnect {
+  background: rgba(255, 155, 155, 0.08);
+  border: 1px solid rgba(255, 155, 155, 0.3);
+  color: #ff9b9b;
+}
+
+.cb-disconnect:hover {
+  background: rgba(255, 155, 155, 0.15);
+}
+
+.cb-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #8a9dc9;
+}
+
+.cb-empty button {
+  margin-top: 1rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  color: #ffd700;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cb-security-note {
+  background: rgba(124, 255, 212, 0.05);
+  border: 1px solid rgba(124, 255, 212, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.cb-security-note h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #7cffe0;
+}
+
+.cb-security-note p {
+  margin: 0;
+  color: #a8b8e0;
+  font-size: 0.95rem;
+}
+
+.cb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.cb-modal {
+  background: linear-gradient(135deg, #1a1f3d 0%, #0d1225 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 90%;
+}
+
+.cb-modal h3 {
+  margin: 0 0 0.25rem;
+  color: #fff6b0;
+}
+
+.cb-modal > p {
+  color: #bcd3ff;
+  margin-bottom: 1rem;
+}
+
+.cb-bank-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cb-bank-option {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  color: #cfd6ff;
+  transition: all 0.2s ease;
+}
+
+.cb-bank-option:hover {
+  border-color: rgba(255, 215, 0, 0.5);
+  color: #ffd700;
+}
+
+.cb-bank-logo {
+  font-size: 1.5rem;
+}
+
+.cb-modal-footer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cb-modal-footer input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: #f5f7ff;
+}
+
+.cb-modal-footer input::placeholder {
+  color: #7a8cb8;
+}
+
+.cb-modal-cancel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  color: #cfd6ff;
+  cursor: pointer;
+}
+
+.cb-modal-cancel:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 800px) {
+  .cb-header {
+    flex-direction: column;
+  }
+  .cb-overview {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .cb-bank {
+    flex-wrap: wrap;
+  }
+  .cb-bank-balance,
+  .cb-bank-status,
+  .cb-bank-actions {
+    width: auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .cb-bank-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
