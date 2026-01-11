@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build (Babel)",
+			"type": "shell",
+			"command": "npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$babel"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build (Babel)",
+			"type": "shell",
+			"command": "npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$babel"
+			],
+			"group": "build"
+		}
+	]
+}

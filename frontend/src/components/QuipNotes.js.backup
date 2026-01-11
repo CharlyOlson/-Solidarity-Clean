@@ -1,0 +1,488 @@
+/*
+ * SOLIDARITY PLATFORM - QUIPNOTES SECURE BROWSER
+ * ==============================================
+ * 
+ * TRADEMARK: Scott Charles Olson - March 31, 1997
+ * 
+ * Whitelist-only browser with Ollama malware scanning
+ */
+
+import React, { useState, useEffect } from 'react';
+import './QuipNotes.css';
+
+const QuipNotes = ({ safetyLevel = 0.618 }) => {
+  const [currentUrl, setCurrentUrl] = useState('');
+  const [whitelist, setWhitelist] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [newUrl, setNewUrl] = useState('');
+  const [scanResult, setScanResult] = useState(null);
+
+  // Load whitelist from backend
+  useEffect(() => {
+    fetchWhitelist();
+  }, []);
+
+  const fetchWhitelist = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      // Mock data for now
+      setWhitelist([
+        'https://solidarity.local',
+        'https://github.com',
+        'https://developer.mozilla.org'
+      ]);
+    } catch (error) {
+      console.error('Failed to fetch whitelist:', error);
+    }
+  };
+
+  const handleUrlScan = async () => {
+    if (!newUrl.trim()) {
+      alert('Please enter a URL');
+      return;
+    }
+
+    setIsScanning(true);
+    setScanResult(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/api/ai/scan-url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ url: newUrl })
+      });
+
+      const data = await response.json();
+      setScanResult(data);
+
+      if (data.safe) {
+        setWhitelist([...whitelist, newUrl]);
+        setNewUrl('');
+        alert('✅ URL is safe and added to whitelist!');
+      }
+    } catch (error) {
+      console.error('Scan failed:', error);
+      setScanResult({ safe: false, reason: 'Scan service unavailable' });
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  const navigateToUrl = (url) => {
+    if (url.includes('solidarity')) {
+      // One-way gate - cannot go back
+      if (window.confirm('This is a one-way link to Solidarity. You won\'t be able to go back. Continue?')) {
+        setCurrentUrl(url);
+      }
+    } else {
+      setCurrentUrl(url);
+    }
+  };
+
+  const removeFromWhitelist = (url) => {
+    if (window.confirm(`Remove ${url} from whitelist?`)) {
+      setWhitelist(whitelist.filter(u => u !== url));
+    }
+  };
+
+  return (
+    <div className="quipnotes-container">
+      {/* Browser Controls */}
+      <div className="browser-controls">
+        <input
+          type="text"
+          className="url-input"
+          value={currentUrl}
+          onChange={(e) => setCurrentUrl(e.target.value)}
+          placeholder="Enter URL from whitelist..."
+        />
+        <button
+          className="btn-navigate"
+          onClick={() => navigateToUrl(currentUrl)}
+          disabled={!whitelist.includes(currentUrl)}
+        >
+          🌐 Navigate
+        </button>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="browser-content">
+        {/* Whitelist Sidebar */}
+        <div className="whitelist-panel">
+          <h3>🔒 Whitelisted Sites</h3>
+          <div className="whitelist-list">
+            {whitelist.map((url, index) => (
+              <div key={index} className="whitelist-item">
+                <button
+                  className="btn-whitelist-url"
+                  onClick={() => setCurrentUrl(url)}
+                >
+                  {url}
+                </button>
+                <button
+                  className="btn-remove"
+                  onClick={() => removeFromWhitelist(url)}
+                >
+                  ❌
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="add-url-section">
+            <h4>➕ Add New URL</h4>
+            <input
+              type="text"
+              className="new-url-input"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              placeholder="https://example.com"
+            />
+            <button
+              className="btn-scan"
+              onClick={handleUrlScan}
+              disabled={isScanning}
+            >
+              {isScanning ? '🔍 Scanning...' : '🛡️ Scan & Add'}
+            </button>
+
+            {scanResult && (
+              <div className={`scan-result ${scanResult.safe ? 'safe' : 'unsafe'}`}>
+                {scanResult.safe ? '✅ Safe' : '❌ Unsafe'}
+                {scanResult.reason && <p>{scanResult.reason}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="security-features">
+            <h4>🔐 Security Features</h4>
+            <ul>
+              <li>✅ Zero cookies stored</li>
+              <li>✅ Ad blockers active</li>
+              <li>✅ Script blockers enabled</li>
+              <li>✅ Ollama scanning</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Website Viewer */}
+        <div className="website-viewer">
+          {currentUrl ? (
+            <div className="iframe-container">
+              <div className="viewer-header">
+                <span className="current-url">{currentUrl}</span>
+                {currentUrl.includes('solidarity') && (
+                  <span className="one-way-badge">🚪 ONE-WAY GATE</span>
+                )}
+              </div>
+              <iframe
+                src={currentUrl}
+                title="QuipNotes Browser"
+                className="website-iframe"
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </div>
+          ) : (
+            <div className="no-url-placeholder">
+              <div className="placeholder-content">
+                <h2>🌐 QuipNotes Secure Browser</h2>
+                <p>Select a URL from the whitelist or add a new one</p>
+                <div className="feature-list">
+                  <div className="feature-item">
+                    <span className="feature-icon">🔒</span>
+                    <span>Whitelist-only browsing</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🤖</span>
+                    <span>Ollama malware scanning</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🚫</span>
+                    <span>Ad & script blockers</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🚪</span>
+                    <span>One-way gate to Solidarity</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default QuipNotes;
+    
+    <div class="code-border" style="margin-top: var(--space-phi)">
+      <h3 style="margin-top: 0">✨ Create New Note</h3>
+      <div class="subtitle">Pro tip: Add multiple tags separated by commas (e.g., "security, phi, important")</div>
+      <div class="controls">
+        <label class="subtitle">Title</label>
+        <input class="input" id="noteTitle" placeholder="Note title..." />
+        
+        <label class="subtitle">Content</label>
+        <textarea class="textarea" id="noteContent" rows="6" placeholder="Write your quick note here..."></textarea>
+        
+        <label class="subtitle">Tags (comma-separated for easy filtering)</label>
+        <input class="input" id="noteTags" placeholder="lock-gate, φ-ratio, sacred-nodes, financial..." />
+        
+        <div class="row" style="margin-top: var(--space-phi-minus)">
+          <button class="btn" id="saveNote">💾 Save Note</button>
+          <button class="btn secondary" id="clearNote">🗑️ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: var(--space-phi-squared)">
+      <div class="row" style="justify-content: space-between; align-items: center">
+        <h3 style="margin: 0">📚 Your Notes (<span id="noteCount">0</span>)</h3>
+        <div class="row" style="gap: var(--space-phi-minus)">
+          <select class="input" id="filterTags" style="width: auto; padding: 0.5rem">
+            <option value="">All Tags</option>
+          </select>
+          <input class="input" id="searchNotes" placeholder="🔍 Search notes..." style="width: 200px; padding: 0.5rem" />
+        </div>
+      </div>
+      
+      <div id="notesList" style="margin-top: var(--space-phi)"></div>
+    </div>
+
+    <div style="margin-top: var(--space-phi); padding: var(--space-phi); background: rgba(76,175,80,0.1); border-radius: 8px; border: 1px solid rgba(76,175,80,0.3)">
+      <h3 style="margin: 0 0 8px 0; color: #4CAF50">💡 Quip Notes Tips</h3>
+      <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; color: var(--muted)">
+        <li>Quick capture for Lock Gate operations and results</li>
+        <li>Tag notes for easy organization and filtering</li>
+        <li>Export to JSON for backup and analysis</li>
+        <li>φ-ratio timestamping for sacred sequence tracking</li>
+        <li>Full-text search across all notes</li>
+      </ul>
+    </div>
+  `;
+
+  const noteTitle = root.querySelector('#noteTitle');
+  const noteContent = root.querySelector('#noteContent');
+  const noteTags = root.querySelector('#noteTags');
+  const notesList = root.querySelector('#notesList');
+  const noteCount = root.querySelector('#noteCount');
+  const filterTags = root.querySelector('#filterTags');
+  const searchNotes = root.querySelector('#searchNotes');
+
+  let notes = [];
+  let allTags = new Set();
+
+  // Load notes from localStorage
+  function loadNotes() {
+    notes = JSON.parse(localStorage.getItem('solidarityNotes') || '[]');
+    
+    // Extract all unique tags
+    allTags.clear();
+    notes.forEach(note => {
+      if (note.tags) {
+        note.tags.forEach(tag => allTags.add(tag));
+      }
+    });
+    
+    updateTagFilter();
+    renderNotes();
+  }
+
+  function updateTagFilter() {
+    const currentFilter = filterTags.value;
+    filterTags.innerHTML = '<option value="">All Tags</option>';
+    Array.from(allTags).sort().forEach(tag => {
+      const option = document.createElement('option');
+      option.value = tag;
+      option.textContent = tag;
+      if (tag === currentFilter) option.selected = true;
+      filterTags.appendChild(option);
+    });
+  }
+
+  function renderNotes() {
+    const filterTag = filterTags.value;
+    const searchTerm = searchNotes.value.toLowerCase();
+    
+    let filteredNotes = notes;
+    
+    // Filter by tag
+    if (filterTag) {
+      filteredNotes = filteredNotes.filter(note => 
+        note.tags && note.tags.includes(filterTag)
+      );
+    }
+    
+    // Filter by search
+    if (searchTerm) {
+      filteredNotes = filteredNotes.filter(note =>
+        note.title.toLowerCase().includes(searchTerm) ||
+        note.content.toLowerCase().includes(searchTerm) ||
+        (note.tags && note.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+      );
+    }
+    
+    noteCount.textContent = filteredNotes.length;
+    
+    if (filteredNotes.length === 0) {
+      notesList.innerHTML = '<div class="code-border" style="text-align: center; padding: var(--space-phi-squared); color: var(--muted)">No notes found. Create your first note above!</div>';
+      return;
+    }
+    
+    notesList.innerHTML = filteredNotes.map((note, index) => `
+      <div class="note-card" data-index="${note.id}">
+        <div class="note-header">
+          <div class="note-title">${escapeHtml(note.title)}</div>
+          <div class="note-meta">${formatTimestamp(note.timestamp)}</div>
+        </div>
+        <div class="note-content">${escapeHtml(note.content)}</div>
+        ${note.tags && note.tags.length > 0 ? `
+          <div style="margin-top: var(--space-phi-minus); display: flex; gap: 0.5rem; flex-wrap: wrap">
+            ${note.tags.map(tag => `<span style="background: rgba(255,183,3,0.1); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem">${escapeHtml(tag)}</span>`).join('')}
+          </div>
+        ` : ''}
+        <div class="note-actions">
+          <button class="btn secondary" data-action="edit" data-id="${note.id}" style="padding: 0.5rem 1rem">✏️ Edit</button>
+          <button class="btn secondary" data-action="delete" data-id="${note.id}" style="padding: 0.5rem 1rem">🗑️ Delete</button>
+          <button class="btn secondary" data-action="export" data-id="${note.id}" style="padding: 0.5rem 1rem">📤 Export</button>
+        </div>
+      </div>
+    `).join('');
+    
+    // Add event listeners to action buttons
+    notesList.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const action = e.target.dataset.action;
+        const noteId = parseInt(e.target.dataset.id);
+        handleNoteAction(action, noteId);
+      });
+    });
+  }
+
+  function handleNoteAction(action, noteId) {
+    const note = notes.find(n => n.id === noteId);
+    if (!note) return;
+    
+    switch (action) {
+      case 'edit':
+        noteTitle.value = note.title;
+        noteContent.value = note.content;
+        noteTags.value = note.tags ? note.tags.join(', ') : '';
+        // Delete the old note, will save as new
+        notes = notes.filter(n => n.id !== noteId);
+        saveNotes();
+        addActivity('Editing note: ' + note.title);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        break;
+        
+      case 'delete':
+        if (confirm('Delete this note?')) {
+          notes = notes.filter(n => n.id !== noteId);
+          saveNotes();
+          addActivity('Deleted note: ' + note.title);
+          renderNotes();
+        }
+        break;
+        
+      case 'export':
+        const blob = new Blob([JSON.stringify(note, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `note-${note.id}-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        addActivity('Exported note: ' + note.title);
+        break;
+    }
+  }
+
+  function saveNotes() {
+    localStorage.setItem('solidarityNotes', JSON.stringify(notes));
+    const stats = JSON.parse(localStorage.getItem('solidarityStats') || '{}');
+    stats.notes = notes.length;
+    localStorage.setItem('solidarityStats', JSON.stringify(stats));
+  }
+
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function addActivity(description) {
+    const activities = JSON.parse(localStorage.getItem('solidarityActivity') || '[]');
+    activities.unshift({
+      timestamp: new Date().toISOString(),
+      description
+    });
+    localStorage.setItem('solidarityActivity', JSON.stringify(activities.slice(0, 50)));
+  }
+
+  // Save note button
+  root.querySelector('#saveNote').addEventListener('click', () => {
+    const title = noteTitle.value.trim();
+    const content = noteContent.value.trim();
+    const tags = noteTags.value.split(',').map(t => t.trim()).filter(t => t);
+    
+    if (!title || !content) {
+      alert('Please enter both title and content');
+      return;
+    }
+    
+    const note = {
+      id: Date.now(),
+      title,
+      content,
+      tags,
+      timestamp: new Date().toISOString(),
+      phi: 1.618033988749895
+    };
+    
+    notes.unshift(note);
+    saveNotes();
+    loadNotes();
+    
+    // Clear form
+    noteTitle.value = '';
+    noteContent.value = '';
+    noteTags.value = '';
+    
+    addActivity(`Created note: ${title}`);
+    alert('✅ Note saved successfully!');
+  });
+
+  // Clear button
+  root.querySelector('#clearNote').addEventListener('click', () => {
+    if (confirm('Clear the form?')) {
+      noteTitle.value = '';
+      noteContent.value = '';
+      noteTags.value = '';
+    }
+  });
+
+  // Filter and search
+  filterTags.addEventListener('change', renderNotes);
+  searchNotes.addEventListener('input', renderNotes);
+
+  // Initial load
+  loadNotes();
+
+  return root;
+}

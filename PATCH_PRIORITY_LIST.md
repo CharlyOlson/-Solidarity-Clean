@@ -1,3 +1,33 @@
+# React App Localhost Checklist & Endpoint Review (2026-01-10)
+
+## 1. Run & Verify React App on localhost:3000
+- [ ] Ensure `package.json` has correct `react-scripts` version (should be ^5.0.1)
+- [ ] Run `npm install` (no errors)
+- [ ] Run `npm start` (app loads at http://localhost:3000)
+- [ ] Run `npm test` (all tests pass)
+- [ ] Add/verify `npm run lint` script in `package.json` (and run it)
+- [ ] Run `npm audit` (no critical vulnerabilities)
+- [ ] If port change needed, add `.env` with `PORT=3000`
+- [ ] Document any issues or fixes here
+
+## 2. Discover.js Endpoint Review
+- [ ] Open `Discover.js`
+- [ ] Confirm all API endpoints use `http://localhost:3000` (or correct dev endpoint)
+- [ ] Update any hardcoded URLs to use environment variables or config if possible
+- [ ] Test API calls in the app (verify no CORS or connection errors)
+- [ ] Document any endpoint changes here
+
+## 3. Documentation & Commit
+- [ ] Update this checklist as you complete each step
+- [ ] Summarize what was done, what remains, and any blockers
+- [ ] Commit changes with a clear message (e.g., "Cleanup: verified React app, endpoints, and scripts")
+
+---
+**Progress Log:**
+- [ ] (To be updated as you work through the checklist)
+
+---
+**Last updated:** 2026-01-10 by Copilot
 # SOLIDARITY PLATFORM - PATCH PRIORITY LIST
 ## Specific Fixes Needed (With Code Examples)
 
