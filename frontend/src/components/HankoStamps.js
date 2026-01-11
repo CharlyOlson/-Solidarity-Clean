@@ -1,5 +1,4 @@
-// HankoStamps.js component should be placed here. If you have a previous version, copy its contents into this file.
-// If you want me to generate a fresh version, let me know!
+//
 /*
  * SOLIDARITY PLATFORM - HANKO STAMPS TAB
  * =======================================
@@ -12,10 +11,14 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BASE_RATIO } from '../config/constants';
 import './HankoStamps.css';
+import { encodeToGridPositions, calculateSudokuConvergence } from '../../utils/hanko';
 import { API_BASE_URL } from '../config/api';
+import HankoStampForm from './hanko/HankoStampForm';
+import HankoStampList from './hanko/HankoStampList';
+import HankoStampDetails from './hanko/HankoStampDetails';
 
 const HankoStamps = () => {
   const [stamps, setStamps] = useState([]);
@@ -29,219 +32,158 @@ const HankoStamps = () => {
   
   // ============================================================================
   // 7 USER INPUTS (Hanko Stamp Identity Data)
-  // Based on the encoding system: Birth Month, Mother's Name, County, Height, 
-  // Eye Color, Teacher's Name, Favorite Fruit
-  // ============================================================================
-  const [userInputs, setUserInputs] = useState({
-    birthMonth: '',        // 1. Birth month (e.g., "March")
-    mothersName: '',       // 2. Mother's middle or last name (e.g., "Marina")
-    county: '',            // 3. County/district/municipal name (e.g., "Johnson")
-    height: '',            // 4. Height in words (e.g., "Five Feet Eight Inches")
-    eyeColor: '',          // 5. Eye color (e.g., "Brown")
-    teachersName: '',      // 6. Favorite teacher's last name (e.g., "Jacobson")
-    favoriteFruit: ''      // 7. Favorite fruit/veggie (e.g., "Mango")
-  });
+  return (
+    <div className="hanko-stamps-container">
+      {/* Header */}
+      <div className="hanko-header">
+        <div className="hanko-title">
+          <h1>🎴 Hanko Stamps</h1>
+          <p className="hanko-subtitle">Japanese-Style Digital Authentication Seals</p>
+        </div>
+        <button 
+          className="btn-request-stamp"
+          onClick={() => setShowRequestDialog(true)}
+        >
+          ➕ Request New Stamp
+        </button>
+      </div>
 
-  // ============================================================================
-  // ENCODING ALGORITHM: Convert text inputs to numerical grid positions
-  // First 7 characters → alphabet positions → grid coordinates
-  // ============================================================================
-  const encodeToGridPositions = useCallback((text) => {
-    if (!text) return [];
-    const cleaned = text.toUpperCase().replace(/[^A-Z]/g, '');
-    const firstSeven = cleaned.slice(0, 7);
-    
-    // Map to alphabet position (A=1, B=2, ... M=13 for first half)
-    // Then apply the transformation: position → (position % 7) + 1
-    return firstSeven.split('').map((char, idx) => {
-      const pos = char.charCodeAt(0) - 64; // A=1, B=2, etc.
-      // Apply Henry 7-based modular transformation
-      return ((pos - 1) % 7) + 1;
-    });
-  }, []);
+      {/* Stamp Types Info */}
+      <div className="stamp-types-info">
+        <h3>📘 Stamp Types</h3>
+        <div className="stamp-types-grid">
+          {Object.entries(stampTypes).map(([key, type]) => (
+            <div key={key} className="stamp-type-card" style={{ borderColor: type.color }}>
+              <div className="stamp-visual" style={{ color: type.color }}>
+                {type.visual}
+              </div>
+              <div className="stamp-type-info">
+                <div className="stamp-name" style={{ color: type.color }}>
+                  {type.name}
+                </div>
+                <div className="stamp-japanese">
+                  {type.japanese} ({type.romaji})
+                </div>
+                <div className="stamp-description">
+                  {type.description}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-  // ============================================================================
-  // SUDOKU GRID CONVERGENCE: 6 grids that find a single point
-  // Each input creates a 3x3 grid, grids interact to find convergence
-  // ============================================================================
-  const calculateSudokuConvergence = useCallback(() => {
-    const grids = [];
-    const inputValues = Object.values(userInputs).filter(v => v.length > 0);
-    
-    if (inputValues.length < 3) return null;
+      {/* User's Stamps */}
+      <div className="user-stamps-section">
+        <h3>🎴 Your Stamps ({stamps.filter(s => !s.revoked).length} Active)</h3>
+        {stamps.length === 0 ? (
+          <div className="no-stamps">
+            <div className="no-stamps-icon">🎴</div>
+            <p>You don't have any Hanko stamps yet</p>
+            <button 
+              onClick={() => setShowRequestDialog(true)}
+            >
+              Create Your First Stamp
+            </button>
+          </div>
+        ) : (
+          <HankoStampList stamps={stamps} stampTypes={stampTypes} viewStampDetails={viewStampDetails} />
+        )}
+      </div>
 
-    // Create 6 grids from the first 6 non-empty inputs
-    inputValues.slice(0, 6).forEach((input, gridIdx) => {
-      const encoded = encodeToGridPositions(input);
-      const grid = Array(9).fill(0);
-      
-      // Fill grid using encoded values with rotation based on grid index
-      encoded.forEach((val, i) => {
-        const rotatedPos = (i + gridIdx) % 9;
-        grid[rotatedPos] = val;
-      });
-      
-      // Fill remaining cells using φ-ratio distribution
-      for (let i = 0; i < 9; i++) {
-        if (grid[i] === 0) {
-          grid[i] = ((i + gridIdx + 1) % 7) + 1;
-        }
-      }
-      
-      grids.push(grid);
-    });
-
-    // Find convergence point: intersect row/col patterns across grids
-    // Rule: Sum each position across all grids, find the position with value closest to φ×7
-    const PHI_TARGET = BASE_RATIO * 7; // ≈ 11.326
-    let bestPos = 4; // Center (0-indexed)
-    let bestDiff = Infinity;
-
-    for (let pos = 0; pos < 9; pos++) {
-      const sum = grids.reduce((acc, grid) => acc + grid[pos], 0);
-      const diff = Math.abs(sum - PHI_TARGET);
-      if (diff < bestDiff) {
-        bestDiff = diff;
-        bestPos = pos;
-      }
-    }
-
-    // Convert position to x,y coordinates (0-2, 0-2)
-    const x = bestPos % 3;
-    const y = Math.floor(bestPos / 3);
-    
-    // Calculate spoke count and rotation based on convergence
-    const totalSum = grids.flat().reduce((a, b) => a + b, 0);
-    const spokeCount = (totalSum % 7) + 7; // 7-14 spokes
-    const rotation = (totalSum * BASE_RATIO) % 360;
-
-    return {
-      x,
-      y,
-      position: bestPos,
-      spokeCount,
-      rotation: rotation.toFixed(1),
-      grids,
-      gridSums: grids.map(g => g.reduce((a, b) => a + b, 0))
-    };
-  }, [userInputs, encodeToGridPositions]);
-
-  // ============================================================================
-  // OLLAMA AI INTEGRATION: Generate stamp description/guidance
-  // ============================================================================
-  const generateWithOllama = async (convergence) => {
-    try {
-      const prompt = `Generate a brief artistic description for a Hanko stamp with these properties:
-- Convergence point: (${convergence.x}, ${convergence.y})
-- Spoke count: ${convergence.spokeCount}
-- Rotation: ${convergence.rotation}°
-- Grid energy sums: ${convergence.gridSums.join(', ')}
-
-Describe the stamp's visual characteristics in 2-3 sentences focusing on:
-1. The radial wheel pattern
-2. Color distribution (B/W ratio, R/Y/B accents)
-3. The central symbol shape`;
-
-      const response = await fetch(`${API_BASE_URL}/api/ai/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      {/* Request New Stamp Dialog - 3 Step Process */}
+      {showRequestDialog && (
+        <div className="request-dialog-overlay">
+          <div className="request-dialog expanded">
+            <h2>➕ Create Hanko Stamp</h2>
+            {/* Progress Steps */}
+            <div className="creation-steps">
+              <div className={`step ${creationStep >= 1 ? 'active' : ''}`}>
+                <span className="step-num">1</span>
+                <span>Type</span>
+              </div>
+              <div className="step-line"></div>
+              <div className={`step ${creationStep >= 2 ? 'active' : ''}`}>
+                <span className="step-num">2</span>
+                <span>Identity</span>
+              </div>
+              <div className="step-line"></div>
+              <div className={`step ${creationStep >= 3 ? 'active' : ''}`}>
+                <span className="step-num">3</span>
+                <span>Preview</span>
+              </div>
+            </div>
+            {/* Step 1: Type Selection */}
+            {creationStep === 1 && (
+              <>
+                <p className="dialog-subtitle">Select stamp type:</p>
+                <div className="stamp-type-selector">
+                  {Object.entries(stampTypes).map(([key, type]) => (
+                    <div 
+                      key={key}
+                      className={`stamp-type-option ${requestType === key ? 'selected' : ''}`}
+                      onClick={() => setRequestType(key)}
+                      style={{ 
+                        borderColor: requestType === key ? type.color : 'rgba(255,255,255,0.2)',
+                        backgroundColor: requestType === key ? `${type.color}20` : 'transparent'
+                      }}
+                    >
+                      <div className="option-visual" style={{ color: type.color }}>
+                        {type.visual}
+                      </div>
+                      <div className="option-name" style={{ color: type.color }}>
+                        {type.name}
+                      </div>
+                      <div className="option-japanese">
+                        {type.japanese}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="dialog-actions">
+                  <button className="btn-next" onClick={() => setCreationStep(2)}>
+                    Next: Enter Identity Data →
+                  </button>
+                  <button className="btn-cancel" onClick={handleCloseDialog}>
+                    ❌ Cancel
+                  </button>
+                </div>
+              </>
+            )}
+            {/* Step 2: 7-Input Identity Encoding System */}
+            {creationStep === 2 && (
+              <HankoStampForm
+                userInputs={userInputs}
+                setUserInputs={setUserInputs}
+                creationStep={creationStep}
+                setCreationStep={setCreationStep}
+                generatePreview={generatePreview}
+                isGenerating={isGenerating}
+                encodeToGridPositions={encodeToGridPositions}
+                calculateSudokuConvergence={calculateSudokuConvergence}
+              />
+            )}
+            {/* Step 3: Preview and Create */}
+            {creationStep === 3 && generatedPreview && (
+              // ...existing preview and create logic...
+              <div>Preview and create logic here</div>
+            )}
+          </div>
+        </div>
+      )}
+      {/* Stamp Details Modal */}
+      {selectedStamp && (
+        <HankoStampDetails
+          selectedStamp={selectedStamp}
+          stampTypes={stampTypes}
+          revokeStamp={revokeStamp}
+          onClose={() => setSelectedStamp(null)}
+        />
+      )}
+    </div>
+  );
         },
-        body: JSON.stringify({ message: prompt })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.response || data.message || 'Radial stamp with φ-ratio proportions';
-      }
-    } catch (error) {
-      console.log('Ollama not available, using default description');
-    }
-    return 'Quantum-aligned radial stamp with φ-ratio proportions and sacred geometry';
-  };
-
-  // Hanko stamp types with Japanese characters and descriptions
-  const stampTypes = {
-    personal: {
-      name: 'Personal Seal',
-      japanese: '個人印',
-      romaji: 'kojin-in',
-      description: 'For general authentication and platform access',
-      color: '#4CAF50',
-      icon: '🟢',
-      visual: '○'
-    },
-    registered: {
-      name: 'Registered Seal',
-      japanese: '実印',
-      romaji: 'jitsuin',
-      description: 'For high-security transactions and contracts',
-      color: '#F44336',
-      icon: '🔴',
-      visual: '◉'
-    },
-    bank: {
-      name: 'Bank Seal',
-      japanese: '銀行印',
-      romaji: 'ginkoin',
-      description: 'For financial transactions and wallet operations',
-      color: '#2196F3',
-      icon: '🔵',
-      visual: '◎'
-    },
-    company: {
-      name: 'Company Seal',
-      japanese: '社印',
-      romaji: 'shain',
-      description: 'For business-related authorizations',
-      color: '#FF9800',
-      icon: '🟠',
-      visual: '◈'
-    }
-  };
-
-  // Fetch user's Hanko stamps
-  useEffect(() => {
-    fetchStamps();
-  }, []);
-
-  const fetchStamps = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/api/hanko/my-stamps`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      setStamps(data.stamps || []);
-    } catch (error) {
-      console.error('Failed to fetch stamps:', error);
-    }
-  };
-
-  // Request new Hanko stamp with 7-input encoding system
-  const requestNewStamp = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      // Calculate convergence from user inputs
-      const convergence = calculateSudokuConvergence();
-      
-      // Generate AI description if available
-      let aiDescription = '';
-      if (convergence) {
-        aiDescription = await generateWithOllama(convergence);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/hanko/create`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           type: requestType,
           // 7 User Inputs for encoding
           userInputs: userInputs,
@@ -278,9 +220,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
   // Generate preview based on inputs
   const generatePreview = async () => {
     setIsGenerating(true);
-    const convergence = calculateSudokuConvergence();
-    // setConvergencePoint(convergence); // Removed unused state
-    
+    const convergence = calculateSudokuConvergence(userInputs);
     if (convergence) {
       const aiDesc = await generateWithOllama(convergence);
       setGeneratedPreview({
@@ -374,7 +314,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                 </div>
               </div>
             </div>
-          ))}
+//
         </div>
       </div>
 
@@ -387,7 +327,6 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
             <div className="no-stamps-icon">🎴</div>
             <p>You don't have any Hanko stamps yet</p>
             <button 
-              className="btn-create-first"
               onClick={() => setShowRequestDialog(true)}
             >
               Create Your First Stamp
@@ -400,7 +339,6 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
               return (
                 <div 
                   key={stamp.stamp_id}
-                  className={`stamp-card ${stamp.revoked ? 'revoked' : ''}`}
                   onClick={() => viewStampDetails(stamp)}
                   style={{ borderColor: type.color }}
                 >
@@ -413,7 +351,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                   ) : (
                     <div className="stamp-badge" style={{ backgroundColor: type.color }}>
                       <div className="stamp-visual-large">
-                        {type.visual}
+                      → {encodeToGridPositions(userInputs.teachersName).join('')}
                       </div>
                       <div className="stamp-japanese-text">
                         {type.japanese}
@@ -426,7 +364,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                       {type.name}
                     </div>
                     <div className="stamp-card-meta">
-                      <span>🔢 ID: {stamp.stamp_id.substring(0, 8)}...</span>
+                      → {encodeToGridPositions(userInputs.favoriteFruit).join('')}
                       <span>📅 {stamp.date}</span>
                     </div>
                     <div className="stamp-usage-stats">
@@ -436,7 +374,6 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                       </div>
                       {stamp.last_used && (
                         <div className="usage-stat">
-                          <span className="stat-label">Last Used:</span>
                           <span className="stat-value">
                             {new Date(stamp.last_used).toLocaleDateString()}
                           </span>
@@ -454,7 +391,6 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                   </div>
                 </div>
               );
-            })}
           </div>
         )}
       </div>
