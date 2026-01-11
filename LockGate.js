@@ -10,56 +10,25 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const express = require('express');
+const crypto = require('crypto');
+const router = express.Router();
 
-import React, { useState, useEffect } from 'react';
-import './LockGate.css';
-import { API_BASE_URL } from '../config/api';
-import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
+// Nonce storage (in production, use Redis or database)
+const nonceStore = new Map();
+const NONCE_EXPIRY = 5 * 60 * 1000; // 5 minutes
 
-const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
-  const [securityState, setSecurityState] = useState('locked'); // locked, secured, warning, critical
-  const [lastScanTime, setLastScanTime] = useState(null);
-  const [intrustionAttempts, setIntrusionAttempts] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
-  const [burnProtocolActive, setBurnProtocolActive] = useState(false);
+// Server secret for HMAC (in production, use environment variable)
+const SERVER_SECRET = process.env.LOCK_GATE_SECRET || 'solidarity-phi-1.618033988749895-baseline-0.618';
 
-  // Security states with visual indicators
-  const securityStates = {
-    secured: {
-      color: '#4CAF50',
-      icon: '🔓',
-      label: 'SECURED',
-      opacity: 0.75,
-      flash: true // Momentary green flash
-    },
-    locked: {
-      color: '#FFD700',
-      icon: '🔒',
-      label: 'LOCKED',
-      opacity: 0.75,
-      flash: false
-    },
-    warning: {
-      color: '#FF9800',
-      icon: '⚠️',
-      label: 'INTRUSION DETECTED',
-      opacity: 1.0,
-      flash: false,
-      popup: true
-    },
-    critical: {
-      color: '#F44336',
-      icon: '🔥',
-      label: 'BURN PROTOCOL',
-      opacity: 1.0,
-      flash: false,
-      burn: true
-    }
-  };
+// Audit log storage (in production, use database)
+const auditLog = [];
 
-  // Monitor security threats
-  useEffect(() => {
-    const checkSecurity = async () => {
+/**
+ * POST /api/lockgate/nonce
+ * Issue challenge nonce for HMAC verification
+ */
+router.post('/nonce', (req, res) => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/security/status`);
         const data = await response.json();
@@ -83,7 +52,7 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
       } catch (error) {
         console.error('Security check failed:', error);
       }
-    };
+});
 
     // Check security every 2 seconds
     checkSecurity();
@@ -114,144 +83,145 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
       console.error('Burn protocol error:', error);
       alert('❌ Burn protocol failed. Contact admin.');
     }
-  };
+    }
+    
+    // Verify HMAC if provided
+    let hmacValid = false;
+    if (hmac) {
+      const expectedHmac = crypto
+        .createHmac('sha256', SERVER_SECRET)
+        .update(serverHash)
+        .digest('hex');
+      
+      // Constant-time comparison
+      hmacValid = crypto.timingSafeEqual(
+        Buffer.from(hmac, 'hex'),
+        Buffer.from(expectedHmac, 'hex')
+      );
+    }
+    
+    // Record audit entry
+    const auditEntry = {
+      userId: payloadData.userId,
+      action: payloadData.action,
+      payloadHashHex: serverHash,
+      timestamp: new Date().toISOString(),
+      nonceValid,
+      hmacValid,
+      safetyLevel: payloadData.safetyLevel || 0.618,
+      result: hmacValid ? 'VERIFIED' : 'PENDING'
+    };
+    
+    auditLog.push(auditEntry);
+    
+    // Limit audit log size (keep last 100 entries)
+    if (auditLog.length > 100) {
+      auditLog.shift();
+    }
+    
+    console.log(`   HMAC valid: ${hmacValid}, Nonce valid: ${nonceValid}`);
+    console.log(`   Result: ${auditEntry.result}`);
+    
+    res.json({
+      success: true,
+      serverHash,
+      clientHash,
+      hashMatch: serverHash === clientHash,
+      nonceValid,
+      hmacValid,
+      verification: hmacValid ? 'VERIFIED' : 'PENDING',
+      audit: auditEntry,
+      phi: 1.618033988749895,
+      safetyLevel: 0.618
+    });
+  } catch (error) {
+    console.error('Lock Gate error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  // Dismiss intrusion popup
-  const dismissPopup = () => {
-    setShowPopup(false);
-    setSecurityState('locked');
-  };
+/**
+ * GET /api/lockgate/audit
+ * Retrieve audit log entries
+ */
+router.get('/audit', (req, res) => {
+  try {
+    const { userId, limit = 10 } = req.query;
+    
+    let entries = auditLog;
+    
+    // Filter by userId if provided
+    if (userId) {
+      entries = entries.filter(e => e.userId === userId);
+    }
+    
+    // Apply limit
+    entries = entries.slice(-parseInt(limit));
+    
+    res.json({
+      success: true,
+      count: entries.length,
+      entries,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Audit log error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  const currentState = securityStates[securityState];
+/**
+ * POST /api/lockgate/coils
+ * Convert currency to coils (1 penny = 100,000 coils)
+ */
+router.post('/coils', (req, res) => {
+  try {
+    const { pennies, dollars } = req.body;
+    
+    const COILS_PER_PENNY = 100000;
+    const PENNIES_PER_DOLLAR = 100;
+    
+    let totalCoils = 0;
+    
+    if (pennies) {
+      totalCoils += pennies * COILS_PER_PENNY;
+    }
+    
+    if (dollars) {
+      totalCoils += dollars * PENNIES_PER_DOLLAR * COILS_PER_PENNY;
+    }
+    
+    res.json({
+      success: true,
+      input: { pennies, dollars },
+      coils: totalCoils,
+      units: Math.floor(totalCoils / 10),
+      components: Math.floor(totalCoils / 100),
+      phi: 1.618033988749895
+    });
+  } catch (error) {
+    console.error('Coils conversion error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  return (
-    <>
-      {/* Fixed Security Overlay - Bottom Right */}
-      <div 
-        className={`lockgate-overlay ${securityState}`}
-        style={{
-          backgroundColor: currentState.color,
-          opacity: currentState.opacity
-        }}
-      >
-        <div className="lockgate-icon">
-          {currentState.icon}
-        </div>
-        <div className="lockgate-label">
-          {currentState.label}
-        </div>
-        {securityState === 'secured' && lastScanTime && (
-          <div className="lockgate-timestamp">
-            Scanned: {lastScanTime.toLocaleTimeString()}
-          </div>
-        )}
-      </div>
+// Clean expired nonces every minute
+setInterval(() => {
+  const now = Date.now();
+  for (const [nonce, data] of nonceStore.entries()) {
+    if (now >= data.expiresAt) {
+      nonceStore.delete(nonce);
+    }
+  }
+}, 60000);
 
-      {/* Intrusion Popup (Orange State) */}
-      {showPopup && securityState === 'warning' && (
-        <div className="intrusion-popup-overlay">
-          <div className="intrusion-popup">
-            <h2>⚠️ SECURITY ALERT</h2>
-            <p className="alert-message">
-              Intrusion attempts detected on your system
-            </p>
-            
-            <div className="attempts-list">
-              <h3>Detected Attempts:</h3>
-              {intrustionAttempts.map((attempt, idx) => (
-                <div key={idx} className="attempt-item">
-                  <span className="attempt-icon">🚨</span>
-                  <div className="attempt-details">
-                    <div className="attempt-type">{attempt.type}</div>
-                    <div className="attempt-timestamp">
-                      {new Date(attempt.timestamp).toLocaleString()}
-                    </div>
-                    <div className="attempt-info">{attempt.details}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="popup-actions">
-              <button 
-                className="btn-block"
-                onClick={() => {
-                  fetch(`${API_BASE_URL}/api/security/block-threat`, { method: 'POST' });
-                  dismissPopup();
-                }}
-              >
-                🛡️ Block Threat
-              </button>
-              <button 
-                className="btn-investigate"
-                onClick={() => {
-                  window.location.hash = '#user-logs';
-                  dismissPopup();
-                }}
-              >
-                🔍 View Full Logs
-              </button>
-              <button 
-                className="btn-dismiss"
-                onClick={dismissPopup}
-              >
-                ❌ Dismiss
-              </button>
-            </div>
-
-            <p className="popup-note">
-              All attempts have been logged to User Logs
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Burn Protocol Screen (Red State) */}
-      {burnProtocolActive && securityState === 'critical' && (
-        <div className="burn-protocol-overlay">
-          <div className="burn-protocol-screen">
-            <div className="burn-icon">🔥</div>
-            <h1>CRITICAL SECURITY BREACH</h1>
-            <p className="burn-message">
-              Multiple unauthorized access attempts detected.<br />
-              System integrity compromised.
-            </p>
-
-            <div className="burn-details">
-              <div className="burn-detail-item">
-                <span className="icon">🔒</span>
-                <span>Secure all logs</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">🗑️</span>
-                <span>Erase system content and downloads</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">🔄</span>
-                <span>Restart system</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">✨</span>
-                <span>Rebuild clean settings (no corruption)</span>
-              </div>
-            </div>
-
-            <button 
-              className="btn-burn"
-              onClick={executeBurnProtocol}
-            >
-              🔥 EXECUTE BURN PROTOCOL
-            </button>
-
-            <p className="burn-warning">
-              ⚠️ This action is irreversible and will restart the system
-            </p>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-export default LockGate;
-
+module.exports = router;
