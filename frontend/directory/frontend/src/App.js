@@ -6,6 +6,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import HankoStamps from './components/HankoStamps';
+import FinancialGraph from './components/FinancialGraph';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -18,6 +19,8 @@ function App() {
     switch (activeTab) {
       case 'hanko':
         return <HankoStamps />;
+      case 'financial':
+        return <FinancialGraph />;
       case 'home':
       default:
         return <div>Welcome to the Solidarity Platform!</div>;
@@ -43,6 +46,12 @@ function App() {
             onClick={() => setActiveTab('hanko')}
           >
             🎴 Hanko Stamps
+          </button>
+          <button
+            className={activeTab === 'financial' ? 'tab active' : 'tab'}
+            onClick={() => setActiveTab('financial')}
+          >
+            📈 Financial Graph
           </button>
         </div>
       </nav>

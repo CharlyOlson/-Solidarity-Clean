@@ -1,0 +1,2 @@
+cd C:\Users\souls\OneDrive\Documents\GitHub\-Solidarity-Clean\frontend\directory\frontend
+npm start
