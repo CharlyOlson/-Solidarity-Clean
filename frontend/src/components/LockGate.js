@@ -11,15 +11,27 @@
  */
 
 
+
 import React, { useState, useEffect } from 'react';
 import './LockGate.css';
 import { API_BASE_URL } from '../config/api';
 import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
 
+// Generate a secure random nonce for this session
+function generateNonce() {
+  return (
+    Math.random().toString(36).slice(2) +
+    Math.random().toString(36).slice(2) +
+    Date.now().toString(36)
+  );
+}
+
+const sessionNonce = generateNonce();
+
 const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
   const [securityState, setSecurityState] = useState('locked'); // locked, secured, warning, critical
   const [lastScanTime, setLastScanTime] = useState(null);
-  const [intrustionAttempts, setIntrusionAttempts] = useState([]);
+  const [intrusionAttempts, setIntrusionAttempts] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [burnProtocolActive, setBurnProtocolActive] = useState(false);
 
@@ -61,7 +73,7 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
   useEffect(() => {
     const checkSecurity = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/security/status`);
+        const response = await fetch(`${API_BASE_URL}/api/lockgate/status`);
         const data = await response.json();
 
         // Update security state based on threats
@@ -91,7 +103,7 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Burn Protocol - ERASE AND RESTART
+  // Burn Protocol - ERASE AND RESTART (with nonce)
   const executeBurnProtocol = async () => {
     if (!window.confirm('⚠️ CRITICAL SECURITY ALERT\n\nThis will:\n• Secure all logs\n• Erase system content and downloads\n• Restart system\n• Rebuild user settings (clean, no corruption)\n\nContinue?')) {
       return;
@@ -99,13 +111,25 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
 
     try {
       // Step 1: Secure logs
-      await fetch(`${API_BASE_URL}/api/security/secure-logs`, { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/lockgate/secure-logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nonce: sessionNonce })
+      });
 
       // Step 2: Erase content
-      await fetch(`${API_BASE_URL}/api/security/erase-content`, { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/lockgate/erase-content`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nonce: sessionNonce })
+      });
 
       // Step 3: Clean rebuild
-      await fetch(`${API_BASE_URL}/api/security/rebuild-clean`, { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/lockgate/rebuild-clean`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nonce: sessionNonce })
+      });
 
       // Step 4: Restart
       alert('🔥 Burn protocol complete. System will restart...');
@@ -158,7 +182,7 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
             
             <div className="attempts-list">
               <h3>Detected Attempts:</h3>
-              {intrustionAttempts.map((attempt, idx) => (
+              {intrusionAttempts.map((attempt, idx) => (
                 <div key={idx} className="attempt-item">
                   <span className="attempt-icon">🚨</span>
                   <div className="attempt-details">
@@ -176,7 +200,11 @@ const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
               <button 
                 className="btn-block"
                 onClick={() => {
-                  fetch(`${API_BASE_URL}/api/security/block-threat`, { method: 'POST' });
+                  fetch(`${API_BASE_URL}/api/lockgate/block-threat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nonce: sessionNonce })
+                  });
                   dismissPopup();
                 }}
               >
