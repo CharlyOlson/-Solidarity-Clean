@@ -10,8 +10,12 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { HarmonicPhraseParser } = require('./HarmonicPhraseParser');
+const { EnhancedBridgingPhraseParser } = require('./EnhancedBridgingPhraseParser');
+const { GoldenRatioMath } = require('./GoldenRatioMath');
+
 module.exports = {
-  HarmonicPhraseParser: require('./HarmonicPhraseParser'),
-  EnhancedBridgingPhraseParser: require('./EnhancedBridgingPhraseParser'),
-  GoldenRatioMath: require('./GoldenRatioMath')
+  HarmonicPhraseParser,
+  EnhancedBridgingPhraseParser,
+  GoldenRatioMath
 };

@@ -10,7 +10,10 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { BridgingSafetyCoordinator } = require('./BridgingSafetyCoordinator');
+const { BridgingShapes } = require('./BridgingShapes');
+
 module.exports = {
-  BridgingSafetyCoordinator: require('./BridgingSafetyCoordinator'),
-  BridgingShapes: require('./BridgingShapes')
+  BridgingSafetyCoordinator,
+  BridgingShapes
 };

@@ -10,7 +10,10 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const OllamaIntegration = require('./OllamaIntegration');
+const PerplexityIntegration = require('./PerplexityIntegration');
+
 module.exports = {
-  OllamaIntegration: require('./OllamaIntegration'),
-  PerplexityIntegration: require('./PerplexityIntegration')
+  OllamaIntegration,
+  PerplexityIntegration
 };

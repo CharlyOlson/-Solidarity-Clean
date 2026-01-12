@@ -10,13 +10,22 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { SolidarityEngine } = require('./SolidarityEngine');
+const { QuantumMathUtils } = require('./QuantumMathUtils');
+const { QuantumCubicCalculationSystem } = require('./QuantumCubicCalculationSystem');
+const { SacredNumericSequence } = require('./SacredNumericSequence');
+const { ComprehensiveSolidarityDiscovery } = require('./ComprehensiveSolidarityDiscovery');
+const { MobileDeviceManager } = require('./MobileDeviceManager');
+const { QuantumEngine } = require('./QuantumEngine');
+const focusedPassCorrector = require('./focusedPassCorrector');
+
 module.exports = {
-  SolidarityEngine: require('./SolidarityEngine'),
-  QuantumMathUtils: require('./QuantumMathUtils'),
-  QuantumCubicCalculationSystem: require('./QuantumCubicCalculationSystem'),
-  SacredNumericSequence: require('./SacredNumericSequence'),
-  ComprehensiveSolidarityDiscovery: require('./ComprehensiveSolidarityDiscovery'),
-  MobileDeviceManager: require('./MobileDeviceManager'),
-  QuantumEngine: require('./QuantumEngine'),
-  focusedPassCorrector: require('./focusedPassCorrector')
+  SolidarityEngine,
+  QuantumMathUtils,
+  QuantumCubicCalculationSystem,
+  SacredNumericSequence,
+  ComprehensiveSolidarityDiscovery,
+  MobileDeviceManager,
+  QuantumEngine,
+  focusedPassCorrector
 };

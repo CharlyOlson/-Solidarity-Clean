@@ -10,8 +10,12 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { TIMBRCompressionSystem } = require('./TIMBRCompressionSystem');
+const { ColorMotionTracking } = require('./ColorMotionTracking');
+const { AudioStudioCommands } = require('./AudioStudioCommands');
+
 module.exports = {
-  TIMBRCompressionSystem: require('./TIMBRCompressionSystem'),
-  ColorMotionTracking: require('./ColorMotionTracking'),
-  AudioStudioCommands: require('./AudioStudioCommands')
+  TIMBRCompressionSystem,
+  ColorMotionTracking,
+  AudioStudioCommands
 };
