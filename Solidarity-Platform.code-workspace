@@ -1,12 +1,8 @@
 {
   "folders": [
     {
-      "name": "Solidarity Platform (Main)",
+      "name": "Solidarity Platform",
       "path": "."
-    },
-    {
-      "name": "E Drive Storage",
-      "path": "E:\\"
     }
   ],
   "settings": {
@@ -56,21 +52,21 @@
         "name": "Run Script: start",
         "request": "launch",
         "command": "npm run start",
-        "cwd": "${workspaceFolder:Solidarity Platform (Main)}"
+        "cwd": "${workspaceFolder:Solidarity Platform}"
       },
       {
         "type": "node",
         "name": "Launch Solidarity Launcher",
         "request": "launch",
-        "program": "${workspaceFolder:Solidarity Platform (Main)}/launcher.js",
-        "cwd": "${workspaceFolder:Solidarity Platform (Main)}"
+        "program": "${workspaceFolder:Solidarity Platform}/launcher.js",
+        "cwd": "${workspaceFolder:Solidarity Platform}"
       },
       {
         "type": "node",
         "name": "Test Bridging Safety",
         "request": "launch",
-        "program": "${workspaceFolder:Solidarity Platform (Main)}/bridgingSafetyCoordinator.js",
-        "cwd": "${workspaceFolder:Solidarity Platform (Main)}"
+        "program": "${workspaceFolder:Solidarity Platform}/src/safety/BridgingSafetyCoordinator.js",
+        "cwd": "${workspaceFolder:Solidarity Platform}"
       }
     ]
   }
