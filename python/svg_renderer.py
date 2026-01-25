@@ -1,73 +1,85 @@
-# hanko/svg_renderer.py
-import math
-from typing import Dict, Any
-from .qr_utils import make_qr_payload, generate_qr_svg_fragment, extract_qr_inner
-from .models import UserProfile
-
-
-class HankoSVGRenderer:
-    """
-    Renders hanko stamps with:
-    - Daily strip (48 segments around border)
-    - RGB box (base hash visualization)
-    - QR code block (stamp metadata)
-    - Grid patch and radial wheel (TODO: from original engine)
-    """
-    
-    def __init__(self, size_px: int = 512):
-        self.size_px = size_px
-        self.PHI = 1.618033988749
-        self.PHI_RECIPROCAL = 0.618
-
-    def render(
+    def render_svg(
         self,
-        profile: UserProfile,
+        profile,
         date: str,
         stamp_id: str,
-        params: Dict[str, Any],
-        base_hash: bytes,
-        daily_hash: bytes,
+        params: dict,
         algo_version: str = "hanko-v1",
+        size_px: int = 512,
     ) -> str:
-        size_px = self.size_px
-        user_short_id = str(profile.user_id)[:8]
-
-        parts = []
-        parts.append(
-            f'<svg xmlns="http://www.w3.org/2000/svg" '
-            f'width="{size_px}" height="{size_px}" '
-            f'viewBox="0 0 {size_px} {size_px}">'
+        g = params["grid_size"]
+        gd = params["grid_digits"]
+        spokes = params["spokes"]
+        rotation = params["rotation_deg"]
+        radial = params["radial_levels"]
+        thick = params["thickness_levels"]
+        stamp_type = params.get("stamp_type", "personal")
+        half = size_px / 2
+        radius = size_px * 0.38 * self.PHI_RECIPROCAL
+        palettes = {
+            'personal': ["#111111", "#4CAF50", "#8BC34A", "#CDDC39", "#FFC107"],
+            'registered': ["#111111", "#e63946", "#d62828", "#9d0208", "#370617"],
+            'bank': ["#111111", "#457b9d", "#1d3557", "#14213d", "#0077b6"],
+            'company': ["#111111", "#FF9800", "#F57C00", "#E65100", "#BF360C"]
+        }
+        palette = palettes.get(stamp_type, palettes['personal'])
+        svg_parts = []
+        svg_parts.append(
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{size_px}" height="{size_px}" viewBox="0 0 {size_px} {size_px}">' 
         )
-
-        # Background
-        parts.append(
-            f'<rect x="0" y="0" width="{size_px}" height="{size_px}" '
-            f'fill="#fcfcfc" />'
+        svg_parts.append(f'<rect x="0" y="0" width="{size_px}" height="{size_px}" fill="#fdfcf8"/>')
+        border_width = int(4 * self.PHI_RECIPROCAL)
+        svg_parts.append(
+            f'<rect x="8" y="8" width="{size_px-16}" height="{size_px-16}" '
+            f'stroke="#111" stroke-width="{border_width}" fill="none" />'
         )
-
-        # Main outer circle
-        half = size_px / 2.0
-        outer_r = size_px * 0.42
-        parts.append(
-            f'<circle cx="{half}" cy="{half}" r="{outer_r}" '
-            f'fill="#ffffff" stroke="#111111" stroke-width="3.0" />'
+        cell = size_px * 0.12 / g
+        offset_x = size_px * 0.08
+        offset_y = size_px * 0.72
+        for row in range(g):
+            for col in range(g):
+                idx = row * g + col
+                d = gd[idx]
+                cx = offset_x + col * cell
+                cy = offset_y + row * cell
+                svg_parts.append(
+                    f'<rect x="{cx}" y="{cy}" width="{cell}" height="{cell}" '
+                    f'stroke="#111" stroke-width="0.5" fill="#ffffff"/>'
+                )
+                if d >= 7:
+                    svg_parts.append(
+                        f'<rect x="{cx+1}" y="{cy+1}" width="{cell-2}" height="{cell-2}" '
+                        f'fill="{palette[d % len(palette)]}" opacity="0.85"/>'
+                    )
+                elif 4 <= d <= 6:
+                    svg_parts.append(
+                        f'<path d="M {cx} {cy+cell} L {cx+cell} {cy} " '
+                        f'stroke="{palette[(d+1) % len(palette)]}" stroke-width="1.2"/>'
+                    )
+                else:
+                    svg_parts.append(
+                        f'<circle cx="{cx + cell/2}" cy="{cy + cell/2}" r="{cell*0.15}" '
+                        f'fill="{palette[(d+2) % len(palette)]}"/>'
+                    )
+        svg_parts.append(
+            f'<circle cx="{half}" cy="{half}" r="{radius}" stroke="#111" stroke-width="3" fill="none"/>'
         )
-
-        # Daily strip around border
-        parts.append(self._render_daily_strip(size_px, daily_hash))
-
-        # RGB box
-        parts.append(self._render_rgb_box(size_px, base_hash))
-
-        # QR block
-        parts.append(
-            self._render_qr_block(
-                size_px, stamp_id, date, user_short_id, algo_version
+        import math
+        for i in range(spokes):
+            angle_deg = rotation + (360.0 / spokes) * i
+            angle_rad = math.radians(angle_deg)
+            inner = radius * 0.15 * radial[i % len(radial)] * self.PHI_RECIPROCAL
+            outer = radius * (0.6 + 0.05 * (radial[i % len(radial)])) * self.PHI
+            x1 = half + inner * math.cos(angle_rad)
+            y1 = half + inner * math.sin(angle_rad)
+            x2 = half + outer * math.cos(angle_rad)
+            y2 = half + outer * math.sin(angle_rad)
+            width = 1.0 + thick[i % len(thick)]
+            color = palette[i % len(palette)]
+            svg_parts.append(
+                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                f'stroke="{color}" stroke-width="{width}" stroke-linecap="round"/>'
             )
-        )
-
-        # Stamp type indicator (from params)
-        stamp_type = params.get('stamp_type', 'personal')
         type_icons = {
             'personal': '個',
             'registered': '実',
@@ -75,133 +87,61 @@ class HankoSVGRenderer:
             'company': '社'
         }
         type_icon = type_icons.get(stamp_type, '個')
-        parts.append(
+        svg_parts.append(
             f'<text x="{size_px-40}" y="40" text-anchor="middle" '
-            f'font-family="serif" font-size="32" fill="#4CAF50" font-weight="bold">{type_icon}</text>'
+            f'font-family="serif" font-size="32" fill="{palette[1]}" font-weight="bold">{type_icon}</text>'
         )
-
-        # φ-ratio watermark
-        parts.append(
-            f'<text x="{half}" y="{half + 10}" text-anchor="middle" '
+        short_user = profile.user_id[:8]
+        short_stamp = stamp_id[:8]
+        meta_text = f"{short_user} {date} {algo_version} {short_stamp}"
+        svg_parts.append(
+            f'<text x="{size_px/2}" y="{size_px-20}" text-anchor="middle" '
+            f'font-family="monospace" font-size="10" fill="#333">{meta_text}</text>'
+        )
+        svg_parts.append(
+            f'<text x="{size_px/2}" y="{half + 10}" text-anchor="middle" '
             f'font-family="serif" font-size="8" fill="#cccccc" opacity="0.3">φ 1.618</text>'
         )
+        svg_parts.append("</svg>")
+        return "".join(svg_parts)
+"""
+SVG rendering and visual parameter derivation for Hanko stamps.
+"""
+from typing import Dict, Any
 
-        # Micro-text metadata
-        parts.append(
-            f'<text x="{half}" y="{size_px-20}" text-anchor="middle" '
-            f'font-family="monospace" font-size="10" fill="#333">{user_short_id} {date} {algo_version}</text>'
-        )
+class HankoSVGRenderer:
+    def __init__(self, phi: float, phi_reciprocal: float):
+        self.PHI = phi
+        self.PHI_RECIPROCAL = phi_reciprocal
 
-        parts.append("</svg>")
-        return "".join(parts)
-
-    def _render_rgb_box(self, size_px: int, base_hash: bytes) -> str:
-        """RGB visualization of first 3 bytes of base_hash"""
-        r_raw, g_raw, b_raw = base_hash[0], base_hash[1], base_hash[2]
-
-        def adj(c): return 64 + (c % 160)  # 64..223
-
-        r = adj(r_raw)
-        g = adj(g_raw)
-        b = adj(b_raw)
-
-        box_w = size_px * 0.10
-        box_h = size_px * 0.04
-        x0 = size_px * 0.06
-        y0 = size_px * 0.90
-        cell_w = box_w / 3.0
-
-        svg = []
-        svg.append(
-            f'<rect x="{x0}" y="{y0}" width="{box_w}" height="{box_h}" '
-            f'stroke="#111" stroke-width="0.8" fill="#ffffff" />'
-        )
-        svg.append(
-            f'<rect x="{x0}" y="{y0}" width="{cell_w}" height="{box_h}" '
-            f'fill="rgb({r},0,0)" />'
-        )
-        svg.append(
-            f'<rect x="{x0 + cell_w}" y="{y0}" width="{cell_w}" height="{box_h}" '
-            f'fill="rgb(0,{g},0)" />'
-        )
-        svg.append(
-            f'<rect x="{x0 + 2*cell_w}" y="{y0}" width="{cell_w}" height="{box_h}" '
-            f'fill="rgb(0,0,{b})" />'
-        )
-        return "".join(svg)
-
-    def _render_daily_strip(
-        self,
-        size_px: int,
-        daily_hash: bytes,
-        segments: int = 48,
-    ) -> str:
-        """Daily-rotating strip of colored segments around border"""
-        half = size_px / 2.0
-        outer_r = size_px * 0.40
-        inner_r = outer_r - 4.0
-        palette = ["#111111", "#e63946", "#ffbe0b", "#457b9d", "#1d3557"]
-
-        svg = []
-        angle_step = 2 * math.pi / segments
-        style_bytes = (daily_hash * ((segments // len(daily_hash)) + 1))[:segments]
-
-        for i in range(segments):
-            angle_center = i * angle_step
-            angle1 = angle_center - angle_step * 0.40
-            angle2 = angle_center + angle_step * 0.40
-
-            b = style_bytes[i]
-            color = palette[b % len(palette)]
-            opacity = 0.9 if (b & 0b00100000) else 0.55
-
-            x1_inner = half + inner_r * math.cos(angle1)
-            y1_inner = half + inner_r * math.sin(angle1)
-            x1_outer = half + outer_r * math.cos(angle1)
-            y1_outer = half + outer_r * math.sin(angle1)
-
-            x2_inner = half + inner_r * math.cos(angle2)
-            y2_inner = half + inner_r * math.sin(angle2)
-            x2_outer = half + outer_r * math.cos(angle2)
-            y2_outer = half + outer_r * math.sin(angle2)
-
-            path_d = (
-                f"M {x1_inner:.2f} {y1_inner:.2f} "
-                f"L {x1_outer:.2f} {y1_outer:.2f} "
-                f"L {x2_outer:.2f} {y2_outer:.2f} "
-                f"L {x2_inner:.2f} {y2_inner:.2f} Z"
-            )
-            svg.append(
-                f'<path d="{path_d}" fill="{color}" fill-opacity="{opacity}" '
-                f'stroke="none" />'
-            )
-        return "".join(svg)
-
-    def _render_qr_block(
-        self,
-        size_px: int,
-        stamp_id: str,
-        date: str,
-        user_short_id: str,
-        algo_version: str = "hanko-v1",
-    ) -> str:
-        """QR code in top-right corner with stamp metadata"""
-        qr_payload = make_qr_payload(stamp_id, date, user_short_id, algo_version)
-        qr_svg = generate_qr_svg_fragment(qr_payload)
-        inner, vb_w, vb_h = extract_qr_inner(qr_svg)
-
-        qr_size = size_px * 0.22
-        margin = size_px * 0.06
-        x = size_px - qr_size - margin
-        y = margin
-
-        sx = qr_size / vb_w
-        sy = qr_size / vb_h
-        s = min(sx, sy)
-
-        return (
-            f'<g transform="translate({x:.2f},{y:.2f}) scale({s:.4f})" '
-            f'fill="#000000" stroke="none">'
-            f'{inner}'
-            f'</g>'
-        )
+    def derive_visual_params(self, base_hash: bytes, grid_size: int = 3, stamp_type: str = "personal") -> Dict[str, Any]:
+        stream_int = int.from_bytes(base_hash, "big")
+        digits = []
+        temp = stream_int
+        for _ in range(grid_size * grid_size + 64):
+            digits.append(temp % 10)
+            temp //= 10
+        grid_digits = digits[: grid_size * grid_size]
+        wheel_digits = digits[grid_size * grid_size :]
+        base_spokes = int(8 * self.PHI_RECIPROCAL)
+        spokes = base_spokes + (wheel_digits[0] % 9)
+        rotation_deg = (wheel_digits[1] * 13) % 360
+        radial_levels = [1 + int((d % 3) * self.PHI_RECIPROCAL) for d in wheel_digits[2 : 2 + spokes]]
+        thickness_levels = [1 + (d % 3) for d in wheel_digits[2 + spokes : 2 + 2 * spokes]]
+        type_modifiers = {
+            'personal': {'grid_complexity': 1.0, 'wheel_density': 1.0},
+            'registered': {'grid_complexity': 1.2, 'wheel_density': 1.3},
+            'bank': {'grid_complexity': 0.8, 'wheel_density': 1.5},
+            'company': {'grid_complexity': 1.5, 'wheel_density': 1.2}
+        }
+        modifier = type_modifiers.get(stamp_type, type_modifiers['personal'])
+        return {
+            "grid_size": grid_size,
+            "grid_digits": grid_digits,
+            "spokes": spokes,
+            "rotation_deg": rotation_deg,
+            "radial_levels": radial_levels,
+            "thickness_levels": thickness_levels,
+            "type_modifier": modifier,
+            "stamp_type": stamp_type
+        }

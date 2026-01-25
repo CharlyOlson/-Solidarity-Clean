@@ -1,120 +1,184 @@
-# hanko/engine.py
-import os
-import base64
-from typing import Dict, Any
-from uuid import UUID
 
-from .crypto import sha3_512, sha3_256, ed25519_sign, pq_sign
-from .models import UserProfile, HankoStamp
-from .svg_renderer import HankoSVGRenderer
+"""
+Quantum Engine for Solidarity Platform
+Implements quantum circuit simulation, benchmarking, and Ollama AI integration with safety guards.
+"""
 
 
-class HankoEngine:
-    """
-    Quantum-resistant hanko stamp generator with:
-    - SHA-3 hashing
-    - Ed25519 + optional PQ signatures
-    - Daily strip, RGB box, QR code integration
-    - φ-ratio (1.618) harmonic system
-    """
-    
-    def __init__(self, server_salt: bytes, ed25519_sk: bytes, pq_sk: bytes | None = None):
-        self.server_salt = server_salt
-        self.ed25519_sk = ed25519_sk
-        self.pq_sk = pq_sk
-        self.renderer = HankoSVGRenderer(size_px=512)
+import time
+import json
+from typing import Optional, Dict, Any, Tuple
 
-    def generate_stamp(
-        self,
-        user_profile: UserProfile,
-        device_root_id: str,
-        device_public_key: bytes,
-        date: str,
-        daily_counter: int,
-        timepass_key: bytes = b"",
-        context_hash: bytes = b"",
-        stamp_type: str = "personal",
-        algo_version: str = "hanko-v1",
-    ) -> tuple[HankoStamp, str]:
-        """
-        Generate a cryptographically-bound hanko stamp
-        
-        Returns: (HankoStamp, svg_string)
-        """
-        stamp_id_bytes = os.urandom(32)
-        stamp_id = self._b64url(stamp_id_bytes)
+# --- Import guards for optional dependencies ---
+try:
+    from qiskit import QuantumCircuit, Aer, execute
+except ImportError:
+    QuantumCircuit = None
+    Aer = None
+    execute = None
+    print("[WARNING] qiskit is not installed. Quantum functions will not work.")
 
-        # Base hash: deterministic from user, device, date, counter
-        base_hash = sha3_512(
-            user_profile.user_id.bytes
-            + device_public_key
-            + date.encode("ascii")
-            + daily_counter.to_bytes(4, "big")
-            + timepass_key
-            + self.server_salt
-        )
+try:
+    import requests
+except ImportError:
+    requests = None
+    print("[WARNING] requests is not installed. Ollama API calls will not work.")
 
-        # Daily hash: changes every day for visual variation
-        daily_hash = sha3_256(
-            stamp_id_bytes + date.encode("ascii") + base_hash
-        )
+# Constants
+PHI = 1.618033988749
+BRIDGING_BASELINE = 0.618
 
-        # Context hash: empty if not provided
-        if not context_hash:
-            context_hash = sha3_256(b"default_context")
+def phi_modulate(value: float) -> float:
+    """Apply phi ratio modulation."""
+    return value * PHI
 
-        params = self._derive_visual_params(base_hash, stamp_type)
+def baseline_modulate(value: float) -> float:
+    """Apply bridging baseline modulation."""
+    return value * BRIDGING_BASELINE
 
-        svg = self.renderer.render(
-            profile=user_profile,
-            date=date,
-            stamp_id=stamp_id,
-            params=params,
-            base_hash=base_hash,
-            daily_hash=daily_hash,
-            algo_version=algo_version,
-        )
+def safe_json_loads(data: str) -> Dict[str, Any]:
+    try:
+        return json.loads(data)
+    except Exception:
+        return {}
 
-        svg_bytes = svg.encode("utf-8")
-        svg_hash = sha3_256(svg_bytes)
+def print_status(msg: str) -> None:
+    print(f"[ENGINE] {msg}")
 
-        # Sign: stamp_id + date + base_hash + svg_hash + context_hash
-        payload = (
-            stamp_id_bytes
-            + date.encode("ascii")
-            + base_hash
-            + svg_hash
-            + context_hash
-        )
+def build_quantum_circuit(depth: int = 14) -> 'QuantumCircuit':
+    """Build a quantum circuit with phi-modulated RX gates."""
+    if QuantumCircuit is None:
+        raise ImportError("qiskit is not installed.")
+    qc = QuantumCircuit(depth, depth)
+    for i in range(depth):
+        qc.h(i)
+        qc.rx(PHI, i)
+    qc.measure(range(depth), range(depth))
+    return qc
 
-        sig_ed = ed25519_sign(self.ed25519_sk, payload)
-        sig_pq = pq_sign(self.pq_sk, payload) if self.pq_sk else b""
+def run_quantum_simulation(depth: int = 14, shots: int = 1000) -> Dict[str, int]:
+    """Run quantum simulation and return measurement counts."""
+    if Aer is None or execute is None:
+        raise ImportError("qiskit is not installed.")
+    simulator = Aer.get_backend('qasm_simulator')
+    qc = build_quantum_circuit(depth)
+    result = execute(qc, simulator, shots=shots).result()
+    counts = result.get_counts(qc)
+    return counts
 
-        hanko = HankoStamp(
-            stamp_id=stamp_id,
-            user_id=user_profile.user_id,
-            device_root_id=device_root_id,
-            date=date,
-            daily_counter=daily_counter,
-            base_hash=base_hash,
-            daily_hash=daily_hash,
-            svg_hash=svg_hash,
-            context_hash=context_hash,
-            algo_version=algo_version,
-            sig_ed25519=sig_ed,
-            sig_pq=sig_pq or None,
-        )
-        return hanko, svg
+def benchmark_quantum_engine(depth: int = 14, shots: int = 1000) -> Tuple[Dict[str, int], float]:
+    """Benchmark quantum engine performance."""
+    print_status(f"Benchmarking quantum engine: depth={depth}, shots={shots}")
+    start = time.time()
+    counts = run_quantum_simulation(depth, shots)
+    duration = time.time() - start
+    print_status(f"Completed in {duration:.3f}s")
+    return counts, duration
 
-    def _derive_visual_params(self, base_hash: bytes, stamp_type: str) -> Dict[str, Any]:
-        """
-        Derive visual parameters from base_hash for future grid/wheel rendering
-        """
-        return {
-            'stamp_type': stamp_type,
-            'base_hash': base_hash,
+
+def ollama_query(prompt: str, model: str = 'llama3.2:3b', safety_level: float = BRIDGING_BASELINE) -> str:
+    """Query Ollama local AI API."""
+    if requests is None:
+        return '[ERROR: requests not installed]'
+    url = 'http://localhost:11434/api/generate'
+    payload = {
+        'model': model,
+        'prompt': prompt,
+        'options': {
+            'temperature': 0.4,
+            'num_predict': 4000
         }
+    }
+    try:
+        resp = requests.post(url, json=payload, timeout=30)
+        if resp.status_code == 200:
+            return safe_json_loads(resp.text).get('response', '')
+        else:
+            print_status(f"Ollama error: {resp.status_code}")
+            return ''
+    except Exception as e:
+        print_status(f"Ollama exception: {e}")
+        return ''
 
-    @staticmethod
-    def _b64url(data: bytes) -> str:
-        return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
+
+
+def train_ollama_with_quantum_result(result: Dict[str, Any], user_instruction: Optional[str] = None) -> str:
+    """
+    Send quantum experiment result and user instruction to Ollama for 'training' or analysis.
+    Now supports dynamic scope, metrics, and flexible request/response adaptation.
+    SAFETY GUARD: Only allow safe, non-malicious instructions and results.
+    """
+    # Validate result structure
+    if not isinstance(result, dict) or "experiment" not in result or "counts" not in result:
+        return "[SAFETY ERROR: Invalid experiment result structure]"
+    # Validate user instruction
+    if user_instruction:
+        if len(user_instruction) > 1000:
+            return "[SAFETY ERROR: Instruction too long or invalid type]"
+        forbidden = ["<script", "</script", "import os", "import sys", "rm -rf", "shutdown", "hack", "exploit", "bypass", "token:", "api_key:"]
+        if any(word in user_instruction.lower() for word in forbidden):
+            return "[SAFETY ERROR: Forbidden content detected in instruction]"
+
+    # Dynamic context construction
+    context = (
+        "You are a quantum AI assistant. Here is the result of a quantum experiment.\n"
+        "You can adapt your analysis, metrics, and suggestions dynamically based on the user's request.\n"
+        "Experiment result: " + json.dumps(result, indent=2) + "\n"
+    )
+    # If user requests metrics or a specific analysis type, add explicit instructions
+    if user_instruction:
+        context += "User instruction: " + user_instruction + "\n"
+        if "metrics" in user_instruction.lower():
+            context += "Please provide detailed metrics and statistical analysis.\n"
+        if "scope:" in user_instruction.lower():
+            # Example: "scope:diagnostics" in instruction
+            for line in user_instruction.splitlines():
+                if line.lower().startswith("scope:"):
+                    context += "Scope: " + line.split(":", 1)[1].strip() + "\n"
+        if "analysis_type:" in user_instruction.lower():
+            for line in user_instruction.splitlines():
+                if line.lower().startswith("analysis_type:"):
+                    context += "Analysis type: " + line.split(":", 1)[1].strip() + "\n"
+    context += "Respond with insights, training suggestions, next steps, and adapt your output to the requested scope or metrics."
+    return ollama_query(context)
+
+
+
+# --- STUB FOR run_experiment ---
+def run_experiment(experiment: str, shots: int) -> Dict[str, Any]:
+    """Stub for run_experiment. Replace with actual implementation."""
+    return {"experiment": experiment, "shots": shots, "counts": {"0": shots // 2, "1": shots // 2}}
+
+
+
+# --- Main entry point ---
+def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(description="Solidarity Quantum Engine")
+    parser.add_argument("experiment", choices=["bell", "ghz3", "parity2", "phaseflip3"], help="Quantum experiment to run")
+    parser.add_argument("--shots", type=int, default=256, help="Number of shots for the experiment")
+    parser.add_argument("--ollama", action="store_true", help="Send result to Ollama for analysis/training")
+    parser.add_argument("--instruction", type=str, default=None, help="Custom instruction for Ollama training")
+    args = parser.parse_args()
+
+    # Safety guard: limit shots and experiment
+    if not (1 <= args.shots <= 1000000):
+        print(json.dumps({"error": "[SAFETY ERROR: shots out of allowed range]"}))
+        return
+    allowed_experiments = {"bell", "ghz3", "parity2", "phaseflip3"}
+    if args.experiment not in allowed_experiments:
+        print(json.dumps({"error": "[SAFETY ERROR: experiment not allowed]"}))
+        return
+
+    payload = run_experiment(args.experiment, args.shots)
+    print(json.dumps(payload))
+
+    if args.ollama:
+        print("\n[Ollama API] Sending experiment result for analysis/training...")
+        response = train_ollama_with_quantum_result(payload, args.instruction)
+        print("\n[Ollama Response]\n" + response)
+
+
+if __name__ == "__main__":
+    main()
