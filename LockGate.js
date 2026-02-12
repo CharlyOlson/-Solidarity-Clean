@@ -1,6 +1,6 @@
 /*
- * SOLIDARITY PLATFORM - LOCKGATE SECURITY OVERLAY
- * ================================================
+ * SOLIDARITY PLATFORM - LOCK GATE API ROUTES
+ * ==========================================
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
@@ -10,248 +10,237 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const express = require('express');
+const crypto = require('crypto');
+const router = express.Router();
 
-import React, { useState, useEffect } from 'react';
-import './LockGate.css';
-import { API_BASE_URL } from '../config/api';
-import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
+// Nonce storage (in production, use Redis or database)
+const nonceStore = new Map();
+const NONCE_EXPIRY = 5 * 60 * 1000; // 5 minutes
 
-const LockGate = ({ safetyLevel = BRIDGING_BASELINE }) => {
-  const [securityState, setSecurityState] = useState('locked'); // locked, secured, warning, critical
-  const [lastScanTime, setLastScanTime] = useState(null);
-  const [intrustionAttempts, setIntrusionAttempts] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
-  const [burnProtocolActive, setBurnProtocolActive] = useState(false);
+// Server secret for HMAC (in production, use environment variable)
+const SERVER_SECRET = process.env.LOCK_GATE_SECRET || 'solidarity-phi-1.618033988749895-baseline-0.618';
 
-  // Security states with visual indicators
-  const securityStates = {
-    secured: {
-      color: '#4CAF50',
-      icon: '🔓',
-      label: 'SECURED',
-      opacity: 0.75,
-      flash: true // Momentary green flash
-    },
-    locked: {
-      color: '#FFD700',
-      icon: '🔒',
-      label: 'LOCKED',
-      opacity: 0.75,
-      flash: false
-    },
-    warning: {
-      color: '#FF9800',
-      icon: '⚠️',
-      label: 'INTRUSION DETECTED',
-      opacity: 1.0,
-      flash: false,
-      popup: true
-    },
-    critical: {
-      color: '#F44336',
-      icon: '🔥',
-      label: 'BURN PROTOCOL',
-      opacity: 1.0,
-      flash: false,
-      burn: true
+// Audit log storage (in production, use database)
+const auditLog = [];
+
+/**
+ * POST /api/lockgate/nonce
+ * Issue challenge nonce for HMAC verification
+ */
+router.post('/nonce', (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'userId required' 
+      });
     }
-  };
+    
+    // Generate cryptographically secure nonce
+    const nonce = crypto.randomBytes(16).toString('hex');
+    const timestamp = new Date().toISOString();
+    
+    // Store nonce with expiry
+    nonceStore.set(nonce, {
+      userId,
+      timestamp,
+      expiresAt: Date.now() + NONCE_EXPIRY
+    });
+    
+    console.log(`🔐 Nonce issued for user ${userId}: ${nonce.slice(0, 8)}...`);
+    
+    res.json({
+      success: true,
+      nonce,
+      timestamp,
+      expiresIn: NONCE_EXPIRY / 1000,
+      safetyLevel: 0.618
+    });
+  } catch (error) {
+    console.error('Nonce error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  // Monitor security threats
-  useEffect(() => {
-    const checkSecurity = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/security/status`);
-        const data = await response.json();
-
-        // Update security state based on threats
-        if (data.burnProtocolNeeded) {
-          setSecurityState('critical');
-          setBurnProtocolActive(true);
-        } else if (data.intrusionAttempts > 0) {
-          setSecurityState('warning');
-          setIntrusionAttempts(data.attempts || []);
-          setShowPopup(true);
-        } else if (data.recentScan) {
-          setSecurityState('secured');
-          setLastScanTime(new Date());
-          // Flash green for 3 seconds then return to locked
-          setTimeout(() => setSecurityState('locked'), 3000);
-        } else {
-          setSecurityState('locked');
-        }
-      } catch (error) {
-        console.error('Security check failed:', error);
+/**
+ * POST /api/lockgate/prepare
+ * Verify payload with HMAC and canonical hash
+ */
+router.post('/prepare', (req, res) => {
+  try {
+    const { payload, clientHash, nonce, hmac } = req.body;
+    
+    if (!payload) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'payload required' 
+      });
+    }
+    
+    // Parse payload
+    const payloadData = typeof payload === 'string' ? JSON.parse(payload) : payload;
+    
+    // Compute canonical hash (backend authoritative)
+    const canonicalPayload = JSON.stringify(payloadData, Object.keys(payloadData).sort());
+    const serverHash = crypto.createHash('sha256').update(canonicalPayload).digest('hex');
+    
+    console.log(`🔒 Lock Gate processing for user: ${payloadData.userId}`);
+    console.log(`   Client hash: ${clientHash?.slice(0, 16)}...`);
+    console.log(`   Server hash: ${serverHash.slice(0, 16)}...`);
+    
+    // Verify nonce if provided
+    let nonceValid = false;
+    if (nonce) {
+      const nonceData = nonceStore.get(nonce);
+      if (nonceData && Date.now() < nonceData.expiresAt) {
+        nonceValid = true;
+        nonceStore.delete(nonce); // Single use
       }
+    }
+    
+    // Verify HMAC if provided
+    let hmacValid = false;
+    if (hmac) {
+      const expectedHmac = crypto
+        .createHmac('sha256', SERVER_SECRET)
+        .update(serverHash)
+        .digest('hex');
+      
+      // Constant-time comparison
+      hmacValid = crypto.timingSafeEqual(
+        Buffer.from(hmac, 'hex'),
+        Buffer.from(expectedHmac, 'hex')
+      );
+    }
+    
+    // Record audit entry
+    const auditEntry = {
+      userId: payloadData.userId,
+      action: payloadData.action,
+      payloadHashHex: serverHash,
+      timestamp: new Date().toISOString(),
+      nonceValid,
+      hmacValid,
+      safetyLevel: payloadData.safetyLevel || 0.618,
+      result: hmacValid ? 'VERIFIED' : 'PENDING'
     };
-
-    // Check security every 2 seconds
-    checkSecurity();
-    const interval = setInterval(checkSecurity, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Burn Protocol - ERASE AND RESTART
-  const executeBurnProtocol = async () => {
-    if (!window.confirm('⚠️ CRITICAL SECURITY ALERT\n\nThis will:\n• Secure all logs\n• Erase system content and downloads\n• Restart system\n• Rebuild user settings (clean, no corruption)\n\nContinue?')) {
-      return;
+    
+    auditLog.push(auditEntry);
+    
+    // Limit audit log size (keep last 100 entries)
+    if (auditLog.length > 100) {
+      auditLog.shift();
     }
+    
+    console.log(`   HMAC valid: ${hmacValid}, Nonce valid: ${nonceValid}`);
+    console.log(`   Result: ${auditEntry.result}`);
+    
+    res.json({
+      success: true,
+      serverHash,
+      clientHash,
+      hashMatch: serverHash === clientHash,
+      nonceValid,
+      hmacValid,
+      verification: hmacValid ? 'VERIFIED' : 'PENDING',
+      audit: auditEntry,
+      phi: 1.618033988749895,
+      safetyLevel: 0.618
+    });
+  } catch (error) {
+    console.error('Lock Gate error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-    try {
-      // Step 1: Secure logs
-      await fetch(`${API_BASE_URL}/api/security/secure-logs`, { method: 'POST' });
-
-      // Step 2: Erase content
-      await fetch(`${API_BASE_URL}/api/security/erase-content`, { method: 'POST' });
-
-      // Step 3: Clean rebuild
-      await fetch(`${API_BASE_URL}/api/security/rebuild-clean`, { method: 'POST' });
-
-      // Step 4: Restart
-      alert('🔥 Burn protocol complete. System will restart...');
-      window.location.href = '/login';
-    } catch (error) {
-      console.error('Burn protocol error:', error);
-      alert('❌ Burn protocol failed. Contact admin.');
+/**
+ * GET /api/lockgate/audit
+ * Retrieve audit log entries
+ */
+router.get('/audit', (req, res) => {
+  try {
+    const { userId, limit = 10 } = req.query;
+    
+    let entries = auditLog;
+    
+    // Filter by userId if provided
+    if (userId) {
+      entries = entries.filter(e => e.userId === userId);
     }
-  };
+    
+    // Apply limit
+    entries = entries.slice(-parseInt(limit));
+    
+    res.json({
+      success: true,
+      count: entries.length,
+      entries,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Audit log error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  // Dismiss intrusion popup
-  const dismissPopup = () => {
-    setShowPopup(false);
-    setSecurityState('locked');
-  };
+/**
+ * POST /api/lockgate/coils
+ * Convert currency to coils (1 penny = 100,000 coils)
+ */
+router.post('/coils', (req, res) => {
+  try {
+    const { pennies, dollars } = req.body;
+    
+    const COILS_PER_PENNY = 100000;
+    const PENNIES_PER_DOLLAR = 100;
+    
+    let totalCoils = 0;
+    
+    if (pennies) {
+      totalCoils += pennies * COILS_PER_PENNY;
+    }
+    
+    if (dollars) {
+      totalCoils += dollars * PENNIES_PER_DOLLAR * COILS_PER_PENNY;
+    }
+    
+    res.json({
+      success: true,
+      input: { pennies, dollars },
+      coils: totalCoils,
+      units: Math.floor(totalCoils / 10),
+      components: Math.floor(totalCoils / 100),
+      phi: 1.618033988749895
+    });
+  } catch (error) {
+    console.error('Coils conversion error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 
-  const currentState = securityStates[securityState];
+// Clean expired nonces every minute
+setInterval(() => {
+  const now = Date.now();
+  for (const [nonce, data] of nonceStore.entries()) {
+    if (now >= data.expiresAt) {
+      nonceStore.delete(nonce);
+    }
+  }
+}, 60000);
 
-  return (
-    <>
-      {/* Fixed Security Overlay - Bottom Right */}
-      <div 
-        className={`lockgate-overlay ${securityState}`}
-        style={{
-          backgroundColor: currentState.color,
-          opacity: currentState.opacity
-        }}
-      >
-        <div className="lockgate-icon">
-          {currentState.icon}
-        </div>
-        <div className="lockgate-label">
-          {currentState.label}
-        </div>
-        {securityState === 'secured' && lastScanTime && (
-          <div className="lockgate-timestamp">
-            Scanned: {lastScanTime.toLocaleTimeString()}
-          </div>
-        )}
-      </div>
-
-      {/* Intrusion Popup (Orange State) */}
-      {showPopup && securityState === 'warning' && (
-        <div className="intrusion-popup-overlay">
-          <div className="intrusion-popup">
-            <h2>⚠️ SECURITY ALERT</h2>
-            <p className="alert-message">
-              Intrusion attempts detected on your system
-            </p>
-            
-            <div className="attempts-list">
-              <h3>Detected Attempts:</h3>
-              {intrustionAttempts.map((attempt, idx) => (
-                <div key={idx} className="attempt-item">
-                  <span className="attempt-icon">🚨</span>
-                  <div className="attempt-details">
-                    <div className="attempt-type">{attempt.type}</div>
-                    <div className="attempt-timestamp">
-                      {new Date(attempt.timestamp).toLocaleString()}
-                    </div>
-                    <div className="attempt-info">{attempt.details}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="popup-actions">
-              <button 
-                className="btn-block"
-                onClick={() => {
-                  fetch(`${API_BASE_URL}/api/security/block-threat`, { method: 'POST' });
-                  dismissPopup();
-                }}
-              >
-                🛡️ Block Threat
-              </button>
-              <button 
-                className="btn-investigate"
-                onClick={() => {
-                  window.location.hash = '#user-logs';
-                  dismissPopup();
-                }}
-              >
-                🔍 View Full Logs
-              </button>
-              <button 
-                className="btn-dismiss"
-                onClick={dismissPopup}
-              >
-                ❌ Dismiss
-              </button>
-            </div>
-
-            <p className="popup-note">
-              All attempts have been logged to User Logs
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Burn Protocol Screen (Red State) */}
-      {burnProtocolActive && securityState === 'critical' && (
-        <div className="burn-protocol-overlay">
-          <div className="burn-protocol-screen">
-            <div className="burn-icon">🔥</div>
-            <h1>CRITICAL SECURITY BREACH</h1>
-            <p className="burn-message">
-              Multiple unauthorized access attempts detected.<br />
-              System integrity compromised.
-            </p>
-
-            <div className="burn-details">
-              <div className="burn-detail-item">
-                <span className="icon">🔒</span>
-                <span>Secure all logs</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">🗑️</span>
-                <span>Erase system content and downloads</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">🔄</span>
-                <span>Restart system</span>
-              </div>
-              <div className="burn-detail-item">
-                <span className="icon">✨</span>
-                <span>Rebuild clean settings (no corruption)</span>
-              </div>
-            </div>
-
-            <button 
-              className="btn-burn"
-              onClick={executeBurnProtocol}
-            >
-              🔥 EXECUTE BURN PROTOCOL
-            </button>
-
-            <p className="burn-warning">
-              ⚠️ This action is irreversible and will restart the system
-            </p>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-export default LockGate;
-
+module.exports = router;
