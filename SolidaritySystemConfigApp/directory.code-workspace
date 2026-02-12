@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../frontend/directory"
+		},
+		{
+			"path": "../frontend"
+		}
+	],
+	"settings": {
+		"powershell.cwd": "directory"
+	}
+}
