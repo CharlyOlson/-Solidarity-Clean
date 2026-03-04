@@ -23,8 +23,8 @@ class SecurityConfig {
     this.settings = {
       // Rate limiting
       rateLimit: {
-        windowMs: process.env.RATE_LIMIT_WINDOW_MS || 60000, // 1 minute
-        maxRequests: process.env.RATE_LIMIT_MAX_REQUESTS || 100,
+        windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60000, // 1 minute
+        maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 100,
         message: 'Too many requests, please try again later.'
       },
       
@@ -75,7 +75,11 @@ class SecurityConfig {
     return (req, res, next) => {
       // Sanitize query parameters
       if (req.query) {
-        for (const key in req.query) {
+        for (const key of Object.keys(req.query)) {
+          // Avoid prototype pollution by skipping dangerous keys
+          if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+            continue;
+          }
           if (typeof req.query[key] === 'string') {
             req.query[key] = InputSanitizer.sanitizeString(
               req.query[key],
@@ -86,7 +90,22 @@ class SecurityConfig {
       }
 
       // Sanitize body parameters
-      if (req.body && typeof req.body === 'object') {
+      if (Array.isArray(req.body)) {
+        req.body = req.body
+          .slice(0, this.settings.validation.maxArrayLength)
+          .map(item => {
+            if (item && typeof item === 'object') {
+              return this.sanitizeObject(item);
+            }
+            if (typeof item === 'string') {
+              return InputSanitizer.sanitizeString(
+                item,
+                this.settings.validation.maxStringLength
+              );
+            }
+            return item;
+          });
+      } else if (req.body && typeof req.body === 'object') {
         req.body = this.sanitizeObject(req.body);
       }
 
@@ -102,8 +121,12 @@ class SecurityConfig {
       return {};
     }
 
-    const sanitized = {};
-    for (const key in obj) {
+    const sanitized = Object.create(null);
+    for (const key of Object.keys(obj)) {
+      // Avoid prototype pollution by skipping dangerous keys
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue;
+      }
       const value = obj[key];
       
       if (typeof value === 'string') {
@@ -114,8 +137,8 @@ class SecurityConfig {
       } else if (Array.isArray(value)) {
         sanitized[key] = value
           .slice(0, this.settings.validation.maxArrayLength)
-          .map(item => 
-            typeof item === 'object' ? this.sanitizeObject(item, depth + 1) : item
+          .map(item =>
+            typeof item === 'object' && item !== null ? this.sanitizeObject(item, depth + 1) : item
           );
       } else if (typeof value === 'object' && value !== null) {
         sanitized[key] = this.sanitizeObject(value, depth + 1);
@@ -142,7 +165,25 @@ class SecurityConfig {
         return next();
       }
 
-      const files = req.files || [req.file];
+      let files = [];
+      if (Array.isArray(req.files)) {
+        // e.g., multer upload.array()
+        files = req.files;
+      } else if (req.files && typeof req.files === 'object') {
+        // e.g., multer upload.fields() => object of arrays
+        for (const fieldFiles of Object.values(req.files)) {
+          if (Array.isArray(fieldFiles)) {
+            files.push(...fieldFiles);
+          }
+        }
+      } else if (req.file) {
+        // e.g., multer upload.single()
+        files = [req.file];
+      }
+
+      if (!files.length) {
+        return next();
+      }
       
       for (const file of files) {
         // Check file size
@@ -174,6 +215,11 @@ class SecurityConfig {
    */
   getBlockchainSecurityMiddleware() {
     return (req, res, next) => {
+      // Guard against missing or non-object body
+      if (!req.body || typeof req.body !== 'object') {
+        return next();
+      }
+
       // Ensure test mode in development
       if (this.settings.blockchain.testMode && req.body.network === 'mainnet') {
         return res.status(403).json({

@@ -107,13 +107,20 @@ class SecureURLValidator {
 
     // Additional hostname validation
     if (parsedURL.hostname) {
+      const isLocal = this.isLocalhost(parsedURL.hostname);
+
       // Check for localhost/private IPs if not allowed
-      if (!options.allowLocalhost && this.isLocalhost(parsedURL.hostname)) {
+      if (!options.allowLocalhost && isLocal) {
         errors.push('Localhost URLs not allowed');
       }
 
-      // Check for private IP ranges if not allowed
-      if (!options.allowPrivateIP && this.isPrivateIP(parsedURL.hostname)) {
+      // Check for private IP ranges if not allowed.
+      // If localhost is explicitly allowed, do not reject it as a private IP.
+      if (
+        !options.allowPrivateIP &&
+        (!options.allowLocalhost || !isLocal) &&
+        this.isPrivateIP(parsedURL.hostname)
+      ) {
         errors.push('Private IP addresses not allowed');
       }
     }
@@ -158,9 +165,14 @@ class SecureURLValidator {
       }
     }
 
-    // Check for IPv6 private ranges
-    if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
-      return true;
+    // Check for IPv6 private ranges (only when hostname is an IP literal, not a DNS name)
+    // IPv6 addresses in URLs are enclosed in brackets: [fc00::1]
+    // After URL parsing, hostname will be [fc00::1] (with brackets)
+    if (hostname.startsWith('[') && hostname.endsWith(']')) {
+      const ipv6 = hostname.slice(1, -1);
+      if (ipv6.startsWith('fc') || ipv6.startsWith('fd')) {
+        return true;
+      }
     }
 
     return false;
@@ -211,12 +223,12 @@ class InputSanitizer {
       previousLength = sanitized.length;
       iterations++;
       
-      // Remove script tags and their content (with whitespace tolerance)
+      // Remove script tags and their content (tolerates malformed closing tags with extra chars before >)
       // Note: Iterative approach mitigates incomplete-multi-character-sanitization
-      sanitized = sanitized.replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, '');
+      sanitized = sanitized.replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\b[^>]*>/gi, '');
       
-      // Remove style tags and their content (with whitespace tolerance)
-      sanitized = sanitized.replace(/<\s*style\b[^>]*>[\s\S]*?<\s*\/\s*style\s*>/gi, '');
+      // Remove style tags and their content (tolerates malformed closing tags with extra chars before >)
+      sanitized = sanitized.replace(/<\s*style\b[^>]*>[\s\S]*?<\s*\/\s*style\b[^>]*>/gi, '');
       
       // Remove all HTML tags (with whitespace tolerance)
       sanitized = sanitized.replace(/<\s*[^>]+\s*>/g, '');
@@ -371,7 +383,7 @@ class SecurityHeaders {
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
+      'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';",
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'geolocation=(), microphone=(), camera=()'
     };

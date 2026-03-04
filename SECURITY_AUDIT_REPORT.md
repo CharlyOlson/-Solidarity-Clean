@@ -32,7 +32,7 @@ The application is now protected with multiple layers of security controls. Whil
 
 ##### 1. validator.js URL Validation Bypass (GHSA-9965-vmph-33xx)
 - **Severity**: Moderate (CVSS 6.1)
-- **Package**: validator@13.15.15
+- **Package**: validator@13.15.23
 - **Status**: ✅ MITIGATED
 - **Affected Components**: express-validator, sequelize
 - **Mitigation**:

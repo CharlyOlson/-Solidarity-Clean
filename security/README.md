@@ -154,10 +154,9 @@ const url = req.body.url; // Could be javascript:alert(1)
 
 ### 3. Sanitize Before Database Operations
 ```javascript
-// Good
+// Good - use parameterized queries (validation/type checking recommended before use)
 const query = 'SELECT * FROM users WHERE name = ?';
-const sanitizedName = InputSanitizer.sanitizeSQL(req.body.name);
-db.execute(query, [sanitizedName]);
+db.execute(query, [req.body.name]);
 
 // Bad
 const query = `SELECT * FROM users WHERE name = '${req.body.name}'`; // SQL injection!

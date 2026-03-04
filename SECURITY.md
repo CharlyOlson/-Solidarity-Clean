@@ -36,14 +36,14 @@ If you discover a security vulnerability in the Solidarity Platform, please repo
 
 #### 1. Validator.js URL Validation Bypass (GHSA-9965-vmph-33xx)
 - **Severity**: Moderate (CVSS 6.1)
-- **Status**: Known issue in validator v13.15.15 (latest)
+- **Status**: Previously affected in validator v13.15.15; resolved by upgrading to validator v13.15.23 (current)
 - **Affected Components**: express-validator, sequelize validation
 - **Mitigation**: 
   - Additional URL validation layers implemented in security middleware
   - Input sanitization applied before validator usage
   - Content Security Policy (CSP) headers configured
   - Regular expression based URL validation as backup
-- **Remediation Plan**: Monitoring for validator package updates
+- **Remediation Plan**: Package updated to validator v13.15.23; continuing to monitor for future validator security advisories
 
 #### 2. Development Dependencies
 Several development dependencies have known vulnerabilities:
@@ -97,16 +97,18 @@ Several development dependencies have known vulnerabilities:
 ### Implemented Security Measures
 
 1. **Web Security Headers**
-   - Helmet.js for secure HTTP headers
+   - Secure HTTP headers configured via application middleware (custom `SecurityHeaders`)
    - Content Security Policy (CSP)
    - X-Frame-Options
    - X-Content-Type-Options
    - X-XSS-Protection
+   - Helmet.js can be optionally added for additional hardening
 
 2. **Rate Limiting**
-   - express-rate-limit configured
+   - Application-level rate limiting implemented via custom middleware (`RateLimitHelper`)
    - Protection against brute force attacks
    - API endpoint throttling
+   - `express-rate-limit` can be integrated as an alternative or complementary solution
 
 3. **Input Validation**
    - express-validator for request validation
