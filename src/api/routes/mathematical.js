@@ -15,9 +15,9 @@ const router = express.Router();
 
 // Import core mathematical systems
 const CoreMathematicsEngine = require('../../utils/CoreMathematicsEngine');
-const { GoldenRatioMath, MirrorNumberSystem } = require('../../../core/goldenRatioMath');
-const { FocusedPassCorrector } = require('../../../core/focusedPassCorrector');
-const { HarmonicPhraseParser } = require('../../../core/harmonicPhraseParser');
+const { GoldenRatioMath, MirrorNumberSystem } = require('../../harmonic/GoldenRatioMath');
+const { FocusedPassCorrector } = require('../../core/focusedPassCorrector');
+const { HarmonicPhraseParser } = require('../../harmonic/HarmonicPhraseParser');
 
 // Initialize systems
 const coreEngine = new CoreMathematicsEngine();
