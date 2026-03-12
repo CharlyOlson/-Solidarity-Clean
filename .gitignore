@@ -135,6 +135,7 @@ tmp/
 temp/
 
 # Local database files
+data/
 *.db
 *.sqlite
 *.sqlite3
