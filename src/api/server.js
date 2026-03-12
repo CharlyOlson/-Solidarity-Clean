@@ -130,6 +130,104 @@ app.get('/api/ai/status', (req, res) => {
     }
 });
 
+// AI: Chat endpoint (used by frontend OllamaHome and HankoStamps)
+app.post('/api/ai/chat', async (req, res) => {
+    try {
+        const { message, safetyLevel = 0.618 } = req.body;
+        const result = await queryOllama(message, { safetyLevel });
+        const text = typeof result === 'string' ? result
+            : result.response || result.text || result.error || JSON.stringify(result);
+        res.json({ success: true, response: text });
+    } catch (err) {
+        // Ollama not running — return a helpful fallback
+        logger.warn('AI chat fallback (Ollama offline)', { error: err.message });
+        res.json({
+            success: true,
+            response: `I'm currently in offline mode (Ollama is not running). `
+                + `To enable AI responses, start Ollama with: ollama serve\n\n`
+                + `Your question: "${req.body.message}"\n\n`
+                + `Platform Status: Safety Level ${req.body.safetyLevel || 0.618} | φ = 1.618`,
+            offline: true
+        });
+    }
+});
+
+// AI: Live context endpoint (used by frontend OllamaHome)
+app.get('/api/ai/live-context', (req, res) => {
+    try {
+        const status = getAISystemStatus();
+        res.json({
+            success: true,
+            safetyLevel: 0.618,
+            phi: 1.618033988749895,
+            sacredNodes: [1, 3, 4, 7, 14, 21, 49],
+            aiStatus: status,
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        res.json({ success: true, safetyLevel: 0.618, phi: 1.618033988749895, offline: true });
+    }
+});
+
+// === Hanko Stamps API ===
+const hankoStamps = new Map(); // In-memory store for demo
+
+app.get('/api/hanko/my-stamps', (req, res) => {
+    const stamps = Array.from(hankoStamps.values());
+    res.json({ success: true, stamps });
+});
+
+app.post('/api/hanko/create', (req, res) => {
+    try {
+        const { inputs, preview, type = 'personal' } = req.body;
+        const id = `hanko-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const stamp = {
+            id,
+            type,
+            inputs: inputs || {},
+            preview: preview || {},
+            createdAt: new Date().toISOString(),
+            status: 'active',
+            convergenceScore: 0.618
+        };
+        hankoStamps.set(id, stamp);
+        res.json({ success: true, stamp });
+    } catch (err) {
+        logger.error('Hanko create error', { error: err.message });
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+app.post('/api/hanko/revoke/:id', (req, res) => {
+    const stamp = hankoStamps.get(req.params.id);
+    if (stamp) {
+        stamp.status = 'revoked';
+        res.json({ success: true, stamp });
+    } else {
+        res.status(404).json({ success: false, error: 'Stamp not found' });
+    }
+});
+
+// === Activity Logs & User Settings API ===
+const activityLog = [];
+const userSettings = { theme: 'dark', safetyLevel: 0.618, notifications: true };
+
+app.post('/api/logs/activity', (req, res) => {
+    const entry = { ...req.body, timestamp: new Date().toISOString() };
+    activityLog.push(entry);
+    if (activityLog.length > 1000) activityLog.shift();
+    res.json({ success: true });
+});
+
+app.get('/api/user/settings', (req, res) => {
+    res.json({ success: true, settings: userSettings });
+});
+
+app.put('/api/user/settings', (req, res) => {
+    Object.assign(userSettings, req.body);
+    res.json({ success: true, settings: userSettings });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({
