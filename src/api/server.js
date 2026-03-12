@@ -18,6 +18,7 @@ const path = require('path');
 
 const logger = require('../utils/logger');
 const apiRouter = require('./api_router');
+const { requireLicense, requireTier, requireFeature, enforceTestMode } = require('./middleware/license');
 
 const app = express();
 let PORT = parseInt(process.env.PORT, 10) || 3000;
@@ -32,53 +33,67 @@ app.use(express.static(path.join(__dirname, '../../frontend/public')));
 app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ROUTE MOUNTS
+// LICENSE GATE — All /api/* routes require a valid license key
+// (except health check and auth registration)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Auth
-app.use('/api/auth', require('./routes/auth'));
-
-// Domain routes
-app.use('/api/mathematical', require('./routes/mathematical'));
-app.use('/api/lockgate', require('./routes/lockgate'));
-app.use('/devices', require('./routes/devices'));
-app.use('/api/financial', require('./routes/financial'));
-app.use('/api/calculator', require('./routes/calculator'));
-
-// Session & AI
-app.use('/api/session', require('./routes/session'));
-app.use('/api/ai', require('./routes/ai'));
-
-// Hanko Stamps (SQLite-backed)
-app.use('/api/hanko', require('./routes/hanko'));
-
-// User settings & activity logs (SQLite-backed)
-app.use('/api/user', require('./routes/settings'));
-app.use('/api/logs', require('./routes/settings'));
-
-// Centralized API Router
-app.use('/api/router', apiRouter);
-
-// Health check
+// Health check (public — no license required)
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'healthy',
         version: '2.41.0',
         platform: 'Solidarity Platform',
         architect: 'Scott Charles Olson',
+        trademark: 'TRADEMARKED BY SCOTT CHARLES OLSON',
         timestamp: new Date().toISOString(),
         phi: 1.618033988749895,
         safetyLevel: 0.618,
+        licensed: !!process.env.SOLIDARITY_LICENSE_KEY,
         systems: {
             mathematical: 'operational',
             lockgate: 'operational',
             devices: 'operational',
             ai: 'operational',
             hanko: 'operational',
-            auth: 'operational'
+            auth: 'operational',
+            license: 'operational'
         }
     });
 });
+
+// Auth (public — registration doesn't need license, but login does set tier context)
+app.use('/api/auth', require('./routes/auth'));
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LICENSED ROUTES — Require valid license key + tier access
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Apply license validation to all remaining API routes
+app.use('/api', requireLicense);
+
+// Enforce test mode for non-operator tiers (financial safety)
+app.use('/api', enforceTestMode);
+
+// Domain routes — Student tier and above
+app.use('/api/session', requireTier('student'), require('./routes/session'));
+app.use('/api/ai', requireTier('student'), requireFeature('ai_chat'), require('./routes/ai'));
+
+// Practitioner tier and above
+app.use('/api/mathematical', requireTier('practitioner'), require('./routes/mathematical'));
+app.use('/api/lockgate', requireTier('practitioner'), require('./routes/lockgate'));
+app.use('/api/calculator', requireTier('practitioner'), require('./routes/calculator'));
+app.use('/api/hanko', requireTier('practitioner'), requireFeature('hanko'), require('./routes/hanko'));
+
+// Financial routes — Practitioner tier minimum, test mode enforced
+app.use('/api/financial', requireTier('practitioner'), require('./routes/financial'));
+app.use('/devices', requireTier('practitioner'), require('./routes/devices'));
+
+// User settings & activity logs — Student tier and above
+app.use('/api/user', requireTier('student'), require('./routes/settings'));
+app.use('/api/logs', requireTier('student'), require('./routes/settings'));
+
+// Centralized API Router — Practitioner tier
+app.use('/api/router', requireTier('practitioner'), apiRouter);
 
 // Catch-all route for frontend
 app.get('*', (req, res) => {
