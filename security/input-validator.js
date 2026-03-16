@@ -166,10 +166,15 @@ class SecureURLValidator {
     }
 
     // Check for IPv6 private ranges (only when hostname is an IP literal, not a DNS name)
-    // IPv6 addresses in URLs are enclosed in brackets: [fc00::1]
-    // After URL parsing, hostname will be [fc00::1] (with brackets)
-    if (hostname.startsWith('[') && hostname.endsWith(']')) {
-      const ipv6 = hostname.slice(1, -1);
+    // Note: URL.hostname for IPv6 literals does NOT include brackets; it will be like "fc00::1"
+    // Support both bracketed ("[fc00::1]") and non-bracketed ("fc00::1") forms.
+    let ipv6Host = hostname;
+    if (ipv6Host.startsWith('[') && ipv6Host.endsWith(']')) {
+      ipv6Host = ipv6Host.slice(1, -1);
+    }
+
+    if (ipv6Host.includes(':')) {
+      const ipv6 = ipv6Host.toLowerCase();
       if (ipv6.startsWith('fc') || ipv6.startsWith('fd')) {
         return true;
       }
