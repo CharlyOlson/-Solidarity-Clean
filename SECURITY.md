@@ -111,14 +111,15 @@ Several development dependencies have known vulnerabilities:
    - `express-rate-limit` can be integrated as an alternative or complementary solution
 
 3. **Input Validation**
-   - express-validator for request validation
-   - Joi schemas for data validation
-   - Custom validation middleware
+   - Centralized validation utilities in `security/input-validator.js`
+   - `InputSanitizer` middleware for sanitizing request data
+   - `SecureURLValidator` middleware for validating and constraining inbound URLs
+   - Custom validation middleware configured via `security/security-config.js`
 
-4. **Authentication & Authorization**
-   - JWT token-based authentication
-   - bcrypt password hashing
-   - Role-based access control (RBAC)
+4. **Authentication & Authorization (Integration-Ready)**
+   - Designed to integrate with JWT token-based authentication when an auth layer is added
+   - Recommended use of bcrypt (or equivalent modern password hashing) in deployments that manage user credentials
+   - Role-based access control (RBAC) recommended at the application level following least-privilege principles
 
 5. **Data Protection**
    - Encryption for sensitive data
