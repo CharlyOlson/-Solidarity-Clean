@@ -89,12 +89,23 @@ class SecureURLValidator {
     try {
       parsedURL = new URL(url);
     } catch (e) {
-      // If URL is relative, try with a base
+      // If URL is not a valid absolute URL, treat it as a potential relative URL.
+      if (!options.allowRelative) {
+        return { valid: false, sanitized: '', errors: ['Relative URLs not allowed'] };
+      }
+
+      // Reject inputs that look like they specify a scheme (e.g., "javascript:").
+      const hasSchemeLikePrefix = /^[a-zA-Z][a-zA-Z0-9+\-.]*:/.test(url);
+      if (hasSchemeLikePrefix) {
+        return { valid: false, sanitized: '', errors: ['Invalid URL format'] };
+      }
+
+      // Use a synthetic base only for structural validation, but do not return it.
       try {
-        parsedURL = new URL(url, 'https://example.com');
-        if (!options.allowRelative) {
-          return { valid: false, sanitized: '', errors: ['Relative URLs not allowed'] };
-        }
+        // If this succeeds, consider the relative URL structurally valid and return it as-is.
+        // eslint-disable-next-line no-unused-vars
+        const tmpURL = new URL(url, 'https://example.com');
+        return { valid: true, sanitized: url, errors: [] };
       } catch (e2) {
         return { valid: false, sanitized: '', errors: ['Invalid URL format'] };
       }
