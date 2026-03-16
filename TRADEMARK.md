@@ -5,10 +5,8 @@
 
 ## Claimant Information
 - **Name**: Scott Charles Olson
-- **Date of Birth**: 03/31/1997
-- **Contact**: +19135485715
-- **Location**: Kansas, USA 66210
-
+- **Contact**: GitHub: @CharlyOlson
+- **Location**: United States
 ## Project
 - **Name**: -Solidarity-Clean
 - **Repository**: https://github.com/CharlyOlson/-Solidarity-Clean
