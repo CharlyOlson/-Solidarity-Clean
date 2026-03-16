@@ -6,7 +6,7 @@
 **Copyright**: © 2025 Scott Charles Olson. All rights reserved.  
 **Trademark**: TRADEMARKED BY SCOTT CHARLES OLSON  
 
-See [AUTHORSHIP.md](AUTHORSHIP.md), [COPYRIGHT.md](COPYRIGHT.md), and [TRADEMARK.md](TRADEMARK.md) for full details.
+See the project's internal authorship, copyright, and trademark documentation for full details.
 
 ## First Run Record
 - **GitHub Actions Run**: [#18694883279](https://github.com/CharlyOlson/-Solidarity-Clean/actions/runs/18694883279/job/53309653603)
