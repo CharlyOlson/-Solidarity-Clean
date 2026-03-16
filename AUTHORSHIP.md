@@ -2,11 +2,11 @@
 
 ## Author Information
 - **Name**: Scott Charles Olson
-- **Date of Birth**: 03/31/1997
+- **Date of Birth**: [redacted]
 - **Role**: Architect of Model
-- **Contact**: +19135485715
-- **Location**: Kansas, USA 66210
-- **GitHub**: CharlyOlson
+- **Contact**: [project contact email or issue tracker URL]
+- **Location**: Kansas, USA
+- **GitHub**: https://github.com/CharlyOlson
 
 ## Project Information
 - **Repository**: -Solidarity-Clean
