@@ -102,8 +102,7 @@ function Discover() {
               </div>
             ))}
           </div>
-
-                  import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS } from '../config/constants';
+        </div>
 
         {/* Sidebar */}
         <div className="discover-sidebar">
