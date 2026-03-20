@@ -124,7 +124,13 @@ const stmts = {
   // Cleanup (keep last 10000 logs)
   trimLogs: db.prepare(
     'DELETE FROM activity_logs WHERE id NOT IN (SELECT id FROM activity_logs ORDER BY timestamp DESC LIMIT 10000)'
-  )
+  ),
+
+  // Test cleanup statements
+  deleteAllUsers: db.prepare('DELETE FROM users'),
+  deleteAllStamps: db.prepare('DELETE FROM hanko_stamps'),
+  deleteAllSettings: db.prepare('DELETE FROM user_settings'),
+  deleteAllLogs: db.prepare('DELETE FROM activity_logs')
 };
 
 module.exports = { db, stmts };

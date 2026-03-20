@@ -13,9 +13,15 @@
 
 const express = require('express');
 const router = express.Router();
-const { queryOllama, getAISystemStatus } = require('../../../ai_integration/ollama_integration');
+const { queryOllama, getAISystemStatus, assessAISafety } = require('../../../ai_integration/ollama_integration');
+const { BridgingSafetyCoordinator } = require('../../safety/BridgingSafetyCoordinator');
+const CoreMathematicsEngine = require('../../utils/CoreMathematicsEngine');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
+
+// Live instances — used to feed real computed values into responses
+const safetyCoordinator = new BridgingSafetyCoordinator();
+const coreEngine = new CoreMathematicsEngine();
 
 // POST /api/ai/query — Direct Ollama query
 router.post('/query', optionalAuth, async (req, res) => {
@@ -45,18 +51,28 @@ router.post('/chat', optionalAuth, async (req, res) => {
   try {
     const { message, safetyLevel = 0.618 } = req.body;
     const result = await queryOllama(message, { safetyLevel });
+
+    if (!result.success) {
+      // Ollama not running or query failed — return honest status
+      return res.json({
+        success: false,
+        error: result.error || 'AI query failed',
+        offline: true,
+        fallbackSuggestion: result.fallbackSuggestion || 'Start Ollama with: ollama serve',
+        safetyLevel,
+      });
+    }
+
     const text = typeof result === 'string' ? result
-      : result.response || result.text || result.error || JSON.stringify(result);
-    res.json({ success: true, response: text });
+      : result.response || result.text || result.content || JSON.stringify(result);
+    res.json({ success: true, response: text, safetyMode: result.safetyMode });
   } catch (err) {
-    logger.warn('AI chat fallback (Ollama offline)', { error: err.message });
+    logger.warn('AI chat error', { error: err.message });
     res.json({
-      success: true,
-      response: `I'm currently in offline mode (Ollama is not running). `
-        + `To enable AI responses, start Ollama with: ollama serve\n\n`
-        + `Your question: "${req.body.message}"\n\n`
-        + `Platform Status: Safety Level ${req.body.safetyLevel || 0.618} | φ = 1.618`,
-      offline: true
+      success: false,
+      error: err.message,
+      offline: true,
+      fallbackSuggestion: 'Ensure Ollama is running: ollama serve',
     });
   }
 });
@@ -65,16 +81,29 @@ router.post('/chat', optionalAuth, async (req, res) => {
 router.get('/live-context', (req, res) => {
   try {
     const status = getAISystemStatus();
+    const systemStatus = safetyCoordinator.getSystemStatus();
+    const constants = coreEngine.getSystemConstants();
+
     res.json({
       success: true,
-      safetyLevel: 0.618,
-      phi: 1.618033988749895,
-      sacredNodes: [1, 3, 4, 7, 14, 21, 49],
+      safetyLevel: safetyCoordinator.componentLevels.ai,
+      systemSafetyLevel: safetyCoordinator.componentLevels.system,
+      flowMode: systemStatus.flowMode,
+      phi: constants.phi,
+      sacredNodes: constants.sacredNodes,
+      henryProgression: {
+        base: constants.henryBase,
+        double: constants.henryDouble,
+        square: constants.henrySquare,
+        controlRatio: constants.controlRatio,
+      },
       aiStatus: status,
+      warnings: systemStatus.warnings,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    res.json({ success: true, safetyLevel: 0.618, phi: 1.618033988749895, offline: true });
+    logger.error('Live context error', { error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

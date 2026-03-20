@@ -95,7 +95,15 @@ app.use('/api/logs', requireTier('student'), require('./routes/settings'));
 // Centralized API Router — Practitioner tier
 app.use('/api/router', requireTier('practitioner'), apiRouter);
 
-// Catch-all route for frontend
+// 404 handler for unknown API routes (must come before frontend catch-all)
+app.use('/api/*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        error: `Route not found: ${req.originalUrl}`
+    });
+});
+
+// Catch-all route for frontend (non-API routes)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
 });

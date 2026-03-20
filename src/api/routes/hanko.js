@@ -16,6 +16,10 @@ const router = express.Router();
 const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
+const CoreMathematicsEngine = require('../../utils/CoreMathematicsEngine');
+
+// Shared math engine for computing convergence scores
+const coreEngine = new CoreMathematicsEngine();
 
 // GET /api/hanko/my-stamps — List stamps for current user
 router.get('/my-stamps', optionalAuth, (req, res) => {
@@ -38,7 +42,14 @@ router.post('/create', optionalAuth, (req, res) => {
   try {
     const { inputs, preview, type = 'personal' } = req.body;
     const id = `hanko-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const convergenceScore = 0.618;
+
+    // Compute convergence score from inputs using the math engine
+    // Derive a seed value from the input data for φ-ratio harmony scoring
+    const inputStr = JSON.stringify(inputs || {});
+    const seedValue = inputStr.length > 0
+      ? inputStr.split('').reduce((sum, ch) => sum + ch.charCodeAt(0), 0)
+      : Date.now() % 1000;
+    const convergenceScore = coreEngine.calculateHarmonyScore(seedValue);
 
     stmts.createStamp.run(
       id,
