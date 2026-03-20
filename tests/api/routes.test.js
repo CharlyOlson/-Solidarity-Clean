@@ -1,15 +1,22 @@
 /*
  * SOLIDARITY PLATFORM - API ROUTE TESTS
- * ====================================
+ * ======================================
  * Tests for all REST API endpoints using supertest
  * Validates auth, persistence, license gates, and full request/response cycle
+ *
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
+ * Owner: Scott Charles Olson
+ * DOB: March 31, 1997
+ * Phone: +1 (913) 548-5715
+ * Location: Kansas, USA 66210
+ * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
 const request = require('supertest');
 const { generateLicenseKey } = require('../../src/api/middleware/license');
+const { PHI, BRIDGING_BASELINE } = require('../../src/utils/constants');
 const app = require('../../src/api/server');
 const { db, stmts } = require('../../src/api/db');
-const { generateToken } = require('../../src/api/middleware/auth');
 
 // Generate a valid operator-level license key for tests
 const testLicense = generateLicenseKey('operator', 'testrunner', 365);
@@ -57,8 +64,9 @@ describe('API Routes', () => {
       stmts.deleteAllSettings.run();
       stmts.deleteAllLogs.run();
       stmts.deleteAllUsers.run();
-    } catch (_) {
-      // Tables might not exist in cleanup
+    } catch (err) {
+      // Tables might not exist yet during first run
+      console.warn('Test cleanup:', err.message);
     }
   });
 
@@ -68,8 +76,8 @@ describe('API Routes', () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('healthy');
       expect(res.body.version).toBe('2.41.0');
-      expect(res.body.phi).toBe(1.618033988749895);
-      expect(res.body.safetyLevel).toBe(0.618);
+      expect(res.body.phi).toBe(PHI);
+      expect(res.body.safetyLevel).toBe(BRIDGING_BASELINE);
     });
   });
 
@@ -180,7 +188,7 @@ describe('API Routes', () => {
       const res = await authedPost('/api/hanko/create', token)
         .send({
           inputs: { name: 'John Doe', amount: 100 },
-          preview: { convergence: 0.618, phi: 1.618 },
+          preview: { convergence: BRIDGING_BASELINE, phi: PHI },
           type: 'personal'
         });
 
@@ -303,7 +311,7 @@ describe('API Routes', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.settings).toBeDefined();
-      expect(res.body.settings.safetyLevel).toBe(0.618);
+      expect(res.body.settings.safetyLevel).toBe(BRIDGING_BASELINE);
     });
 
     it('should reject requests without license', async () => {
@@ -397,7 +405,7 @@ describe('API Routes', () => {
 
     it('should accept chat requests with auth and license', async () => {
       const res = await authedPost('/api/ai/chat', token)
-        .send({ message: 'Hello', safetyLevel: 0.618 });
+        .send({ message: 'Hello', safetyLevel: BRIDGING_BASELINE });
 
       expect(res.status).toBe(200);
       // Either successful response or offline indicator

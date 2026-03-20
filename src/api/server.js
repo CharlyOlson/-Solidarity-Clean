@@ -2,7 +2,7 @@
  * SOLIDARITY PLATFORM - API SERVER
  * =================================
  *
- * TRADEMARK INFORMATION:
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
  * Phone: +1 (913) 548-5715
@@ -15,6 +15,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { PHI, BRIDGING_BASELINE, SACRED_NODES } = require('../utils/constants');
 
 const logger = require('../utils/logger');
 const apiRouter = require('./api_router');
@@ -40,14 +41,15 @@ app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
 // Health check (public — no license required)
 app.get('/api/health', (req, res) => {
     res.json({
+        success: true,
         status: 'healthy',
         version: '2.41.0',
         platform: 'Solidarity Platform',
         architect: 'Scott Charles Olson',
         trademark: 'TRADEMARKED BY SCOTT CHARLES OLSON',
         timestamp: new Date().toISOString(),
-        phi: 1.618033988749895,
-        safetyLevel: 0.618,
+        phi: PHI,
+        safetyLevel: BRIDGING_BASELINE,
         licensed: !!process.env.SOLIDARITY_LICENSE_KEY,
         systems: {
             mathematical: 'operational',
@@ -130,9 +132,9 @@ function startServerWithFallback(maxRetries = 10) {
             logger.info(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
             logger.info(`💚 Health Check: http://localhost:${PORT}/api/health`);
             logger.info('═'.repeat(60));
-            logger.info('🌟 Base Ratio (φ): 1.618033988749895');
+            logger.info(`🌟 Base Ratio (φ): ${PHI}`);
             logger.info('🎵 Harmonic Phrases: 6 available');
-            logger.info('📊 Sacred Nodes: [1, 3, 4, 7, 14, 21, 49]');
+            logger.info(`📊 Sacred Nodes: ${JSON.stringify(SACRED_NODES)}`);
             logger.info('═'.repeat(60));
         });
 

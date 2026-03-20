@@ -4,9 +4,10 @@
  *
  * CRUD endpoints for Hanko Stamps with SQLite persistence
  *
- * TRADEMARK INFORMATION:
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
+ * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
@@ -17,9 +18,11 @@ const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
 const CoreMathematicsEngine = require('../../utils/CoreMathematicsEngine');
+const { BridgingSafetyCoordinator } = require('../../safety/BridgingSafetyCoordinator');
 
-// Shared math engine for computing convergence scores
+// Shared instances for computing convergence scores and safety levels
 const coreEngine = new CoreMathematicsEngine();
+const safetyCoordinator = new BridgingSafetyCoordinator();
 
 // GET /api/hanko/my-stamps — List stamps for current user
 router.get('/my-stamps', optionalAuth, (req, res) => {
@@ -30,7 +33,7 @@ router.get('/my-stamps', optionalAuth, (req, res) => {
       inputs: JSON.parse(row.inputs),
       preview: JSON.parse(row.preview)
     }));
-    res.json({ success: true, stamps });
+    res.json({ success: true, stamps, safetyLevel: safetyCoordinator.componentLevels.system });
   } catch (err) {
     logger.error('Hanko list error', { error: err.message });
     res.status(500).json({ success: false, error: err.message });

@@ -14,6 +14,7 @@
  */
 
 const crypto = require('crypto');
+const logger = require('../../utils/logger');
 
 // The signing secret — in production, load from env variable
 const LICENSE_SECRET = process.env.LICENSE_SECRET || 'solidarity-platform-signing-key-change-in-production';
@@ -194,6 +195,7 @@ function requireLicense(req, res, next) {
     const result = validateLicenseKey(key);
 
     if (!result.valid) {
+        logger.warn('License rejected', { error: result.error, ip: req.ip });
         return res.status(403).json({
             success: false,
             error: 'License required',
@@ -286,9 +288,9 @@ function enforceTestMode(req, res, next) {
 
     if (req.license.tierInfo.testModeOnly) {
         req.body = req.body || {};
-        req.body.testMode = true;
 
-        // Block any attempt to set testMode: false
+        // Block any attempt to set testMode: false or liveMode: true
+        // Check BEFORE overwriting so the guard is not bypassed
         if (req.body.testMode === false || req.body.liveMode === true) {
             return res.status(403).json({
                 success: false,
@@ -296,6 +298,9 @@ function enforceTestMode(req, res, next) {
                 upgrade: 'Operator tier required for live mode — contact@solidarity.com'
             });
         }
+
+        // Force test mode for this tier
+        req.body.testMode = true;
     }
 
     next();

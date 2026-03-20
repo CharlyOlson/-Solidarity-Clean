@@ -4,9 +4,10 @@
  *
  * SQLite persistence layer using better-sqlite3
  *
- * TRADEMARK INFORMATION:
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
+ * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
@@ -14,6 +15,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
+const logger = require('../utils/logger');
 
 const DATA_DIR = path.join(__dirname, '../../data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -25,8 +27,11 @@ db.pragma('journal_mode = WAL');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SCHEMA
+// Note: DEFAULT 0.618 values correspond to BRIDGING_BASELINE (PHI_RECIPROCAL)
+// from src/utils/constants.js — keep in sync if the constant changes.
 // ═══════════════════════════════════════════════════════════════════════════
 
+try {
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -65,6 +70,10 @@ db.exec(`
     timestamp TEXT DEFAULT (datetime('now'))
   );
 `);
+} catch (err) {
+  logger.error('Schema initialization error', { error: err.message });
+  throw err;
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PREPARED STATEMENTS

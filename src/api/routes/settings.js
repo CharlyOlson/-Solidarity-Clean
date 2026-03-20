@@ -4,9 +4,10 @@
  *
  * User settings and activity log endpoints with SQLite persistence
  *
- * TRADEMARK INFORMATION:
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
+ * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
@@ -15,13 +16,14 @@ const express = require('express');
 const router = express.Router();
 const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
+const { BRIDGING_BASELINE } = require('../../utils/constants');
 
 // GET /api/user/settings — Get current user settings
 router.get('/settings', optionalAuth, (req, res) => {
   const row = stmts.getSettings.get(req.user.id);
   const settings = row
     ? { theme: row.theme, safetyLevel: row.safety_level, notifications: !!row.notifications }
-    : { theme: 'dark', safetyLevel: 0.618, notifications: true };
+    : { theme: 'dark', safetyLevel: BRIDGING_BASELINE, notifications: true };
   res.json({ success: true, settings });
 });
 
@@ -30,7 +32,7 @@ router.put('/settings', optionalAuth, (req, res) => {
   const current = stmts.getSettings.get(req.user.id);
   const merged = {
     theme: req.body.theme ?? current?.theme ?? 'dark',
-    safetyLevel: req.body.safetyLevel ?? current?.safety_level ?? 0.618,
+    safetyLevel: req.body.safetyLevel ?? current?.safety_level ?? BRIDGING_BASELINE,
     notifications: req.body.notifications ?? (current ? !!current.notifications : true)
   };
   stmts.upsertSettings.run(

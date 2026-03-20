@@ -4,9 +4,10 @@
  *
  * Registration and login endpoints
  *
- * TRADEMARK INFORMATION:
+ * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
+ * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
@@ -16,6 +17,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const { stmts } = require('../db');
 const { generateToken, hashPassword, comparePassword, requireAuth } = require('../middleware/auth');
+const { BRIDGING_BASELINE } = require('../../utils/constants');
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
@@ -42,7 +44,7 @@ router.post('/register', async (req, res) => {
     stmts.createUser.run(id, username, hash);
 
     // Create default settings for new user
-    stmts.upsertSettings.run(id, 'dark', 0.618, 1);
+    stmts.upsertSettings.run(id, 'dark', BRIDGING_BASELINE, 1);
 
     const token = generateToken({ id, username });
     res.status(201).json({ success: true, token, user: { id, username } });
