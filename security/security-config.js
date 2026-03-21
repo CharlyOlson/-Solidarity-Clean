@@ -69,6 +69,49 @@ class SecurityConfig {
   }
 
   /**
+   * Recursively sanitize query parameter values, including arrays and objects.
+   */
+  sanitizeQueryValue(value, depth = 0) {
+    if (value == null) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      return InputSanitizer.sanitizeString(
+        value,
+        this.settings.validation.maxStringLength
+      );
+    }
+
+    if (Array.isArray(value)) {
+      if (depth >= this.settings.validation.maxObjectDepth) {
+        return [];
+      }
+      const maxLength = this.settings.validation.maxArrayLength;
+      return value
+        .slice(0, maxLength)
+        .map(item => this.sanitizeQueryValue(item, depth + 1));
+    }
+
+    if (typeof value === 'object') {
+      if (depth >= this.settings.validation.maxObjectDepth) {
+        return {};
+      }
+      const sanitizedObject = {};
+      for (const key of Object.keys(value)) {
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+          // Skip dangerous keys to prevent prototype pollution in nested query parameters
+          continue;
+        }
+        sanitizedObject[key] = this.sanitizeQueryValue(value[key], depth + 1);
+      }
+      return sanitizedObject;
+    }
+
+    return value;
+  }
+
+  /**
    * Get Express middleware for request sanitization
    */
   getSanitizationMiddleware() {
@@ -80,12 +123,7 @@ class SecurityConfig {
           if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
             continue;
           }
-          if (typeof req.query[key] === 'string') {
-            req.query[key] = InputSanitizer.sanitizeString(
-              req.query[key],
-              this.settings.validation.maxStringLength
-            );
-          }
+          req.query[key] = this.sanitizeQueryValue(req.query[key]);
         }
       }
 
