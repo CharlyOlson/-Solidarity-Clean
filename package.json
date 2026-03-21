@@ -193,6 +193,9 @@
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setup.js"
     ],
+    "moduleNameMapper": {
+      "^.*/ai_integration/ollama_integration$": "<rootDir>/tests/__mocks__/ollama_integration.js"
+    },
     "testTimeout": 10000
   },
   "lint-staged": {
