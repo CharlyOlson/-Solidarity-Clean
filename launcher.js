@@ -9,12 +9,15 @@
  * @version 6.5.0
  */
 
-const { ComprehensiveSolidarityDiscovery } = require('./src/ComprehensiveSolidarityDiscovery');
-const { EnhancedBridgingPhraseParser } = require('./src/EnhancedBridgingPhraseParser');
-const { MobileDeviceManager } = require('./src/MobileDeviceManager');
-const { SacredNumericSequence } = require('./src/SacredNumericSequence');
-const { TIMBRCompressionSystem } = require('./src/TIMBRCompressionSystem');
-const { CorrectedSolidaritySystem } = require('./src/correctedSolidaritySystem');
+// Core modules
+const { ComprehensiveSolidarityDiscovery, MobileDeviceManager, SacredNumericSequence } = require('./src/core');
+const { SolidarityEngine } = require('./src/core/SolidarityEngine');
+
+// Harmonic modules
+const { EnhancedBridgingPhraseParser } = require('./src/harmonic');
+
+// Audio modules
+const { TIMBRCompressionSystem } = require('./src/audio');
 
 class SolidarityPlatformLauncher {
     constructor() {
@@ -45,7 +48,7 @@ class SolidarityPlatformLauncher {
         });
         
         // Initialize Quantum Cubic Calculation System
-        this.quantumSystem = new CorrectedSolidaritySystem({
+        this.quantumSystem = new SolidarityEngine({
             cubicPrecision: 64,
             quantumDepth: 14,
             cubitBase: 697,

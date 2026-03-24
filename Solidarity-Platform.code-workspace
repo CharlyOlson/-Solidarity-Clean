@@ -1,0 +1,73 @@
+{
+  "folders": [
+    {
+      "name": "Solidarity Platform",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/.git/**": true,
+      "**/frontend/node_modules/**": true,
+      "**/frontend/build/**": true,
+      "**/coverage/**": true,
+      "**/logs/**": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/frontend/node_modules": true,
+      "**/frontend/build": true,
+      "**/coverage": true,
+      "**/logs": true
+    },
+    "files.associations": {
+      "*.js": "javascript",
+      "*.json": "jsonc",
+      "*.py": "python"
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "javascript.validate.enable": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "eamodio.gitlens",
+      "github.copilot"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node-terminal",
+        "name": "Run Script: start",
+        "request": "launch",
+        "command": "npm run start",
+        "cwd": "${workspaceFolder:Solidarity Platform}"
+      },
+      {
+        "type": "node",
+        "name": "Launch Solidarity Launcher",
+        "request": "launch",
+        "program": "${workspaceFolder:Solidarity Platform}/launcher.js",
+        "cwd": "${workspaceFolder:Solidarity Platform}"
+      },
+      {
+        "type": "node",
+        "name": "Test Bridging Safety",
+        "request": "launch",
+        "program": "${workspaceFolder:Solidarity Platform}/src/safety/BridgingSafetyCoordinator.js",
+        "cwd": "${workspaceFolder:Solidarity Platform}"
+      }
+    ]
+  }
+}

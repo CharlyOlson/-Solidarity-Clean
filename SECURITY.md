@@ -1,211 +1,106 @@
-# Security Policy
+# SOLIDARITY PLATFORM — Security Policy
 
-## Supported Versions
-
-We actively maintain and provide security updates for the following versions:
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 2.41.x  | :white_check_mark: |
-| < 2.41  | :x:                |
-
-## Reporting a Vulnerability
-
-### How to Report
-
-If you discover a security vulnerability in the Solidarity Platform, please report it by:
-
-1. **DO NOT** open a public GitHub issue
-2. Send an email to: contact@solidarity.com
-3. Include the following information:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if available)
-
-### What to Expect
-
-- **Initial Response**: Within 48 hours of submission
-- **Status Update**: Within 7 days with our assessment
-- **Resolution Timeline**: Critical vulnerabilities will be addressed within 30 days
-- **Credit**: We acknowledge security researchers who report vulnerabilities responsibly
-
-## Known Security Considerations
-
-### Current Vulnerabilities and Mitigations
-
-#### 1. Validator.js URL Validation Bypass (GHSA-9965-vmph-33xx)
-- **Severity**: Moderate (CVSS 6.1)
-- **Status**: Previously affected in validator v13.15.15; resolved by upgrading to validator v13.15.23 (current)
-- **Affected Components**: express-validator, sequelize validation
-- **Mitigation**: 
-  - Additional URL validation layers implemented in security middleware
-  - Input sanitization applied before validator usage
-  - Content Security Policy (CSP) headers configured
-  - Regular expression based URL validation as backup
-- **Remediation Plan**: Package updated to validator v13.15.23; continuing to monitor for future validator security advisories
-
-#### 2. Development Dependencies
-Several development dependencies have known vulnerabilities:
-- **artillery**: Uses vulnerable versions of axios and posthog-node
-- **lint-staged**: Uses vulnerable micromatch (ReDoS)
-- **nodemon**: Uses vulnerable semver (ReDoS)
-
-**Mitigation**: These only affect development environment and are not exposed in production
-
-## Security Best Practices
-
-### For Users
-
-1. **Environment Variables**
-   - Never commit `.env` files to version control
-   - Use `.env.example` as a template
-   - Rotate secrets regularly
-
-2. **API Keys and Tokens**
-   - Store securely in environment variables
-   - Use different keys for development/production
-   - Implement key rotation policies
-
-3. **Private Keys (Blockchain)**
-   - Never expose private keys in code or logs
-   - Use hardware wallets for production
-   - Enable encryption for stored keys
-
-### For Contributors
-
-1. **Code Security**
-   - Run `npm audit` before committing
-   - Use prepared statements for database queries
-   - Validate and sanitize all user inputs
-   - Avoid using `eval()` or dynamic code execution
-   - Use security linters (eslint-plugin-security)
-
-2. **Dependencies**
-   - Regularly update dependencies
-   - Review security advisories
-   - Use lockfiles (package-lock.json)
-
-3. **Testing**
-   - Include security tests
-   - Test input validation
-   - Test authentication/authorization
-   - Run CodeQL security scanning
-
-## Security Features
-
-### Implemented Security Measures
-
-1. **Web Security Headers**
-   - Secure HTTP headers configured via application middleware (custom `SecurityHeaders`)
-   - Content Security Policy (CSP)
-   - X-Frame-Options
-   - X-Content-Type-Options
-   - X-XSS-Protection
-   - Helmet.js can be optionally added for additional hardening
-
-2. **Rate Limiting**
-   - Application-level rate limiting implemented via custom middleware (`RateLimitHelper`)
-   - Protection against brute force attacks
-   - API endpoint throttling
-   - `express-rate-limit` can be integrated as an alternative or complementary solution
-
-3. **Input Validation**
-   - Centralized validation utilities in `security/input-validator.js`
-   - `InputSanitizer` middleware for sanitizing request data
-   - `SecureURLValidator` middleware for validating and constraining inbound URLs
-   - Custom validation middleware configured via `security/security-config.js`
-
-4. **Authentication & Authorization (Integration-Ready)**
-   - Designed to integrate with JWT token-based authentication when an auth layer is added
-   - Recommended use of bcrypt (or equivalent modern password hashing) in deployments that manage user credentials
-   - Role-based access control (RBAC) recommended at the application level following least-privilege principles
-
-5. **Data Protection**
-   - Encryption for sensitive data
-   - Secure session management
-   - CORS configuration
-
-6. **Financial Security**
-   - Test mode by default
-   - Transaction confirmation requirements
-   - Gas limit protections
-   - Multi-signature support ready
-
-## Security Monitoring
-
-### Automated Security Checks
-
-- **npm audit**: Run on every dependency update
-- **CodeQL**: Automated security scanning on commits
-- **Dependabot**: Automated dependency updates
-- **Pre-commit hooks**: Security linting before commits
-
-### Manual Security Reviews
-
-- Quarterly security audits
-- Code review requirements for security-sensitive changes
-- Penetration testing recommendations
-
-## Incident Response Plan
-
-### In Case of Security Breach
-
-1. **Immediate Actions**
-   - Isolate affected systems
-   - Preserve evidence/logs
-   - Notify security team
-
-2. **Assessment**
-   - Determine scope of breach
-   - Identify affected data/users
-   - Assess potential impact
-
-3. **Containment**
-   - Apply patches/fixes
-   - Rotate compromised credentials
-   - Update security measures
-
-4. **Communication**
-   - Notify affected users
-   - Publish security advisory
-   - Document lessons learned
-
-5. **Recovery**
-   - Restore from secure backups
-   - Verify system integrity
-   - Monitor for residual issues
-
-## Compliance
-
-This project implements security measures aligned with:
-- OWASP Top 10 security risks
-- CWE/SANS Top 25 software errors
-- General security best practices
-
-## Security Contacts
-
-- **Security Team**: contact@solidarity.com
-- **Project Maintainer**: Scott Charles Olson
-- **GitHub Security Advisories**: [Enable on repository]
-
-## Security Updates
-
-Subscribe to security updates:
-1. Watch this repository on GitHub
-2. Enable notifications for security advisories
-3. Subscribe to release notifications
-
-## Version History
-
-### Version 2.41.0 (Current)
-- Security assessment completed
-- SECURITY.md created
-- Input validation middleware added
-- Security headers configured
-- Development dependency vulnerabilities documented
+**Owner:** Scott Charles Olson
+**Trademark:** TRADEMARKED BY SCOTT CHARLES OLSON
 
 ---
 
-**Last Updated**: 2025-10-21  
-**Next Security Review**: 2026-01-21
+## Supported Versions
+
+| Version | Supported | Notes |
+|---------|-----------|-------|
+| 2.41.x | Yes | Current production release |
+| 2.40.x | Yes | Security patches only |
+| < 2.40 | No | Unsupported — upgrade required |
+
+---
+
+## Reporting a Vulnerability
+
+If you discover a security vulnerability in the Solidarity Platform, please report it responsibly:
+
+1. **DO NOT** open a public GitHub issue for security vulnerabilities
+2. **Email:** contact@solidarity.com with subject "SECURITY: [brief description]"
+3. **Phone:** +1 (913) 548-5715 (for critical/urgent vulnerabilities)
+
+### What to Include
+
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if any)
+
+### Response Timeline
+
+| Severity | Acknowledgment | Resolution Target |
+|----------|---------------|-------------------|
+| Critical | 24 hours | 72 hours |
+| High | 48 hours | 1 week |
+| Medium | 1 week | 2 weeks |
+| Low | 2 weeks | Next release |
+
+---
+
+## Security Architecture
+
+### Authentication
+- **JWT tokens** with 24-hour expiration (jsonwebtoken)
+- **Password hashing** with bcryptjs (10 salt rounds)
+- **Bearer token validation** on all protected endpoints
+
+### License Key System
+- **HMAC-SHA256 signed** license keys
+- **4-tier access control** (observer/student/practitioner/operator)
+- **Expiration enforcement** — keys have defined validity periods
+- **Feature gating** — each tier only accesses permitted features
+- **Test mode enforcement** — non-operator tiers cannot access live financial data
+
+### Data Protection
+- **SQLite with prepared statements** — prevents SQL injection
+- **Input validation** via express-validator
+- **CORS** configured for allowed origins
+- **Helmet.js** security headers
+- **Rate limiting** per tier
+
+### Safety System
+- **7-tier safety framework** (0.00–1.00) prevents unsafe operations
+- **Safety level propagation** across all subsystems
+- **Emergency stabilization** at 0.618 baseline
+- **Financial operations** default to test mode
+
+---
+
+## Secure Development Practices
+
+1. All dependencies are audited: `npm audit --omit=dev` returns 0 vulnerabilities
+2. GitHub Actions CI runs security checks on every push
+3. Prepared statements for all database operations
+4. No secrets in source code (environment variables for sensitive values)
+5. License keys are cryptographically signed and expiring
+
+---
+
+## Known Limitations
+
+1. **Frontend CRA** has internal vulnerabilities in react-scripts dependencies (not exploitable in app context). Migration to Vite is planned.
+2. **JWT secret** defaults to a static string in development. Must be set via `JWT_SECRET` environment variable in production.
+3. **License secret** defaults to a static string in development. Must be set via `LICENSE_SECRET` environment variable in production.
+
+---
+
+## License Key Security
+
+License keys are generated using HMAC-SHA256 with a server-side secret. Keys encode:
+- Tier level (access permissions)
+- User identifier
+- Expiration date
+- Cryptographic signature
+
+**Keys cannot be forged** without the signing secret. Tampering with any component invalidates the signature.
+
+**Keys can be revoked** by changing the `LICENSE_SECRET` environment variable (invalidates all existing keys).
+
+---
+
+**Last Updated:** March 12, 2026
+**Document Version:** 2.0

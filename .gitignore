@@ -46,6 +46,11 @@ Thumbs.db
 .env.test.local
 .env.production.local
 
+# Example/Demo output files
+examples/*.json
+examples/*.txt
+examples/*.out
+
 # Logs
 logs/
 *.log
@@ -130,6 +135,7 @@ tmp/
 temp/
 
 # Local database files
+data/
 *.db
 *.sqlite
 *.sqlite3

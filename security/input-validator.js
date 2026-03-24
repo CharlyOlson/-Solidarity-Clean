@@ -89,23 +89,12 @@ class SecureURLValidator {
     try {
       parsedURL = new URL(url);
     } catch (e) {
-      // If URL is not a valid absolute URL, treat it as a potential relative URL.
-      if (!options.allowRelative) {
-        return { valid: false, sanitized: '', errors: ['Relative URLs not allowed'] };
-      }
-
-      // Reject inputs that look like they specify a scheme (e.g., "javascript:").
-      const hasSchemeLikePrefix = /^[a-zA-Z][a-zA-Z0-9+\-.]*:/.test(url);
-      if (hasSchemeLikePrefix) {
-        return { valid: false, sanitized: '', errors: ['Invalid URL format'] };
-      }
-
-      // Use a synthetic base only for structural validation, but do not return it.
+      // If URL is relative, try with a base
       try {
-        // If this succeeds, consider the relative URL structurally valid and return it as-is.
-        // eslint-disable-next-line no-unused-vars
-        const tmpURL = new URL(url, 'https://example.com');
-        return { valid: true, sanitized: url, errors: [] };
+        parsedURL = new URL(url, 'https://example.com');
+        if (!options.allowRelative) {
+          return { valid: false, sanitized: '', errors: ['Relative URLs not allowed'] };
+        }
       } catch (e2) {
         return { valid: false, sanitized: '', errors: ['Invalid URL format'] };
       }
@@ -118,20 +107,13 @@ class SecureURLValidator {
 
     // Additional hostname validation
     if (parsedURL.hostname) {
-      const isLocal = this.isLocalhost(parsedURL.hostname);
-
       // Check for localhost/private IPs if not allowed
-      if (!options.allowLocalhost && isLocal) {
+      if (!options.allowLocalhost && this.isLocalhost(parsedURL.hostname)) {
         errors.push('Localhost URLs not allowed');
       }
 
-      // Check for private IP ranges if not allowed.
-      // If localhost is explicitly allowed, do not reject it as a private IP.
-      if (
-        !options.allowPrivateIP &&
-        (!options.allowLocalhost || !isLocal) &&
-        this.isPrivateIP(parsedURL.hostname)
-      ) {
+      // Check for private IP ranges if not allowed
+      if (!options.allowPrivateIP && this.isPrivateIP(parsedURL.hostname)) {
         errors.push('Private IP addresses not allowed');
       }
     }
@@ -176,19 +158,9 @@ class SecureURLValidator {
       }
     }
 
-    // Check for IPv6 private ranges (only when hostname is an IP literal, not a DNS name)
-    // Note: URL.hostname for IPv6 literals does NOT include brackets; it will be like "fc00::1"
-    // Support both bracketed ("[fc00::1]") and non-bracketed ("fc00::1") forms.
-    let ipv6Host = hostname;
-    if (ipv6Host.startsWith('[') && ipv6Host.endsWith(']')) {
-      ipv6Host = ipv6Host.slice(1, -1);
-    }
-
-    if (ipv6Host.includes(':')) {
-      const ipv6 = ipv6Host.toLowerCase();
-      if (ipv6.startsWith('fc') || ipv6.startsWith('fd')) {
-        return true;
-      }
+    // Check for IPv6 private ranges
+    if (hostname.startsWith('fc') || hostname.startsWith('fd')) {
+      return true;
     }
 
     return false;
@@ -239,12 +211,12 @@ class InputSanitizer {
       previousLength = sanitized.length;
       iterations++;
       
-      // Remove script tags and their content (tolerates malformed closing tags with extra chars before >)
+      // Remove script tags and their content (with whitespace tolerance)
       // Note: Iterative approach mitigates incomplete-multi-character-sanitization
-      sanitized = sanitized.replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\b[^>]*>/gi, '');
+      sanitized = sanitized.replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, '');
       
-      // Remove style tags and their content (tolerates malformed closing tags with extra chars before >)
-      sanitized = sanitized.replace(/<\s*style\b[^>]*>[\s\S]*?<\s*\/\s*style\b[^>]*>/gi, '');
+      // Remove style tags and their content (with whitespace tolerance)
+      sanitized = sanitized.replace(/<\s*style\b[^>]*>[\s\S]*?<\s*\/\s*style\s*>/gi, '');
       
       // Remove all HTML tags (with whitespace tolerance)
       sanitized = sanitized.replace(/<\s*[^>]+\s*>/g, '');
@@ -399,7 +371,7 @@ class SecurityHeaders {
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-      'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self';",
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'geolocation=(), microphone=(), camera=()'
     };

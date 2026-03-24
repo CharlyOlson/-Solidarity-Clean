@@ -1,0 +1,379 @@
+/* Sacred Geometry Dashboard Styles */
+/* φ-based spacing and golden ratio design system */
+
+:root {
+    /* φ-ratio spacing scale */
+    --space-phi-minus: 0.618rem;
+    --space-base: 1rem;
+    --space-phi: 1.618rem;
+    --space-phi-squared: 2.618rem;
+    --space-phi-cubed: 4.236rem;
+    
+    /* Sacred node scaling */
+    --scale-1: 1rem;
+    --scale-3: 1.618rem;
+    --scale-4: 2rem;
+    --scale-7: 3.236rem;
+    --scale-14: 6.472rem;
+    --scale-21: 9.708rem;
+    
+    /* Golden colors */
+    --color-phi-primary: #ffd700;
+    --color-phi-secondary: #4CAF50;
+    --color-phi-tertiary: #ff6b6b;
+    --color-background: #0f0f1e;
+    --color-card: #1a1a2e;
+    --color-text: #e0e0e0;
+    --color-accent: #61dafb;
+    
+    /* Golden angle */
+    --golden-angle: 137.508deg;
+}
+
+/* Global dashboard styles */
+.sacred-geometry-dashboard {
+    min-height: 100vh;
+    background: linear-gradient(var(--golden-angle), #0f0f1e, #1a1a2e);
+    color: var(--color-text);
+    padding: var(--space-phi);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sacred-geometry-dashboard.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-phi);
+}
+
+.spinner {
+    font-size: 4rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Header */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: var(--space-phi-squared);
+    padding: var(--space-phi);
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: var(--space-phi-minus);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.dashboard-header h1 {
+    font-size: var(--scale-7);
+    margin: 0 0 var(--space-phi-minus) 0;
+    background: linear-gradient(90deg, var(--color-phi-primary), var(--color-phi-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dashboard-header p {
+    margin: 0;
+    font-size: var(--scale-3);
+    opacity: 0.8;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-phi);
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: var(--color-card);
+    border-radius: var(--space-phi-minus);
+    padding: var(--space-phi);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(255, 215, 0, 0.2);
+}
+
+.dashboard-card h2 {
+    margin: 0 0 var(--space-phi) 0;
+    font-size: var(--scale-4);
+    color: var(--color-phi-primary);
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    padding-bottom: var(--space-phi-minus);
+}
+
+/* Constants Card */
+.constants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-phi);
+}
+
+.constant {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-phi-minus);
+    padding: var(--space-phi);
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: var(--space-phi-minus);
+}
+
+.constant-label {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.constant-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+.phi-primary { color: var(--color-phi-primary); }
+.phi-secondary { color: var(--color-phi-secondary); }
+.phi-tertiary { color: var(--color-phi-tertiary); }
+.golden-angle { color: var(--color-accent); }
+
+/* Spiral Card */
+.spiral-card {
+    grid-column: span 2;
+}
+
+.golden-spiral-canvas {
+    width: 100%;
+    height: auto;
+    border-radius: var(--space-phi-minus);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.spiral-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: var(--space-phi);
+    padding: var(--space-phi-minus);
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: var(--space-phi-minus);
+}
+
+.spiral-stats span {
+    font-weight: bold;
+}
+
+/* Fibonacci Card */
+.fibonacci-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-phi-minus);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.fibonacci-item {
+    flex: 1 1 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: var(--space-phi-minus);
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: var(--space-phi-minus);
+    min-width: 100px;
+}
+
+.fib-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-phi-secondary);
+}
+
+.fib-ratio {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ratio-value {
+    font-size: 0.9rem;
+    font-family: 'Courier New', monospace;
+}
+
+.accuracy-bar {
+    height: 4px;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.convergence-note {
+    margin-top: var(--space-phi);
+    padding: var(--space-phi-minus);
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: var(--space-phi-minus);
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Sacred Nodes */
+.nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-phi-minus);
+    margin-bottom: var(--space-phi);
+}
+
+.node-button {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: var(--space-phi-minus);
+    padding: var(--space-phi);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--color-text);
+}
+
+.node-button:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.node-button.active {
+    background: var(--color-phi-primary);
+    color: var(--color-background);
+    border-color: var(--color-phi-primary);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.node-number {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.node-detail {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.node-info {
+    padding: var(--space-phi);
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: var(--space-phi-minus);
+}
+
+.node-info h3 {
+    margin: 0 0 var(--space-phi-minus) 0;
+    color: var(--color-phi-primary);
+}
+
+.node-info p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Henry Progression */
+.progression-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-phi);
+    margin: var(--space-phi) 0;
+}
+
+.progression-step {
+    text-align: center;
+    padding: var(--space-phi);
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: var(--space-phi-minus);
+    min-width: 150px;
+}
+
+.step-number {
+    font-weight: bold;
+    color: var(--color-phi-primary);
+    margin-bottom: var(--space-phi-minus);
+}
+
+.step-label {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.progression-arrow {
+    font-size: 2rem;
+    color: var(--color-phi-secondary);
+}
+
+.progression-details {
+    padding: var(--space-phi);
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: var(--space-phi-minus);
+}
+
+.progression-details p {
+    margin: var(--space-phi-minus) 0;
+}
+
+/* Statistics Card */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-phi);
+}
+
+.stat {
+    text-align: center;
+    padding: var(--space-phi);
+    background: rgba(97, 218, 251, 0.1);
+    border-radius: var(--space-phi-minus);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: var(--space-phi-minus);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsive Design with Sacred Node Breakpoints */
+@media (max-width: 1024px) { /* Node 7 */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .spiral-card {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) { /* Node 3 */
+    .dashboard-header h1 {
+        font-size: var(--scale-4);
+    }
+    
+    .progression-visual {
+        flex-direction: column;
+    }
+    
+    .progression-arrow {
+        transform: rotate(90deg);
+    }
+}
