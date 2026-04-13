@@ -1,519 +1,366 @@
 /*
  * SOLIDARITY PLATFORM - TRANSACTION PROCESSOR
- * ============================================
+ * =============================================
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
  * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
- * Status: Architect of Model System
- * Documentation: iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓
- * Timestamp: 2025-10-08 18:20:30 UTC
- * Repository: https://github.com/CharlyOlson/-Solidarity-Clean
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  * 
- * ============================================
+ * =============================================
  * 
- * Transaction Processing and Management
- * Confirmation handling and transaction history
- * Anchor ratio (anchor = 1.618) baseline for all operations
+ * Transaction queue, validation, and confirmation — LIVE
+ * Uses ethers.js v6 for real transaction submission and monitoring.
  */
+
+const { ethers } = require('ethers');
 
 class TransactionProcessor {
   constructor(config = {}) {
-    this.version = '1.0.0';
-    this.anchorRatio = 1.618;
-    this.bridgingBaseline = 0.618;
-    
-    // Configuration
+    this.version = '2.0.0';
+    this.baseRatio = 1.618;
+
     this.config = {
       testMode: config.testMode !== undefined ? config.testMode : true,
-      requiredConfirmations: config.requiredConfirmations || 3,
-      transactionTimeout: config.transactionTimeout || 300000, // 5 minutes
-      retryAttempts: config.retryAttempts || 3,
-      retryDelay: config.retryDelay || 5000
+      maxRetries: config.maxRetries || 3,
+      confirmations: config.confirmations || 1,
+      maxQueueSize: config.maxQueueSize || 100
     };
-    
+
+    this.provider = null;
+    this.signer = null;
+    this.chainId = null;
+
     // Transaction tracking
-    this.transactions = new Map();
-    this.pendingTransactions = new Map();
-    this.confirmedTransactions = new Map();
-    this.failedTransactions = new Map();
-    
-    // Processing queue
-    this.queue = [];
+    this.queue = [];        // { id, tx, status, retries, createdAt }
+    this.history = [];      // completed/failed transactions
     this.processing = false;
-    
+
     // Metrics
     this.metrics = {
       totalProcessed: 0,
       successful: 0,
       failed: 0,
-      pending: 0,
-      averageConfirmationTime: 0,
-      totalGasUsed: 0,
-      totalFees: 0
+      totalGasUsed: 0n,
+      totalRetries: 0,
+      averageConfirmationMs: 0
     };
-    
-    console.log('⚙️ Transaction Processor initialized');
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
-    console.log(`✅ Required Confirmations: ${this.config.requiredConfirmations}`);
+
+    console.log('Transaction Processor v2.0.0 initialized (ethers.js v6)');
+    console.log('Test Mode:', this.config.testMode ? 'ENABLED' : 'DISABLED');
   }
-  
-  // Process a transaction
+
+  /**
+   * Connect to chain with a signer for sending transactions.
+   */
+  async connect(rpcUrl, privateKey) {
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    this.signer = new ethers.Wallet(privateKey, this.provider);
+    const network = await this.provider.getNetwork();
+    this.chainId = Number(network.chainId);
+
+    console.log('Connected. Chain:', this.chainId, 'Signer:', this.signer.address);
+    return { success: true, chainId: this.chainId, address: this.signer.address };
+  }
+
+  /**
+   * Connect with an existing signer (from WalletManager).
+   */
+  connectWithSigner(provider, signer) {
+    this.provider = provider;
+    this.signer = signer;
+    console.log('Connected with external signer:', signer.address);
+    return { success: true, address: signer.address };
+  }
+
+  /**
+   * Submit a transaction for processing. Validates, queues, and processes.
+   * @param {object} tx - { to, value (ETH), data (optional), gasLimit (optional) }
+   */
   async processTransaction(transaction) {
+    // Validate
+    const validation = this.validateTransaction(transaction);
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    // Generate ID and queue
+    const id = this.generateTransactionId();
+    const entry = {
+      id,
+      tx: { ...transaction },
+      status: 'queued',
+      retries: 0,
+      hash: null,
+      receipt: null,
+      createdAt: Date.now(),
+      completedAt: null
+    };
+
+    this.queue.push(entry);
+    console.log('Queued transaction', id, 'to:', transaction.to);
+
+    // Process immediately if not already processing
+    if (!this.processing) {
+      return this.processNext(id);
+    }
+
+    return { success: true, id, status: 'queued', position: this.queue.length };
+  }
+
+  /**
+   * Process the next transaction in queue (or a specific one by ID).
+   */
+  async processNext(targetId = null) {
+    if (!this.signer) {
+      return { success: false, error: 'No signer connected' };
+    }
+
+    const entry = targetId
+      ? this.queue.find(e => e.id === targetId)
+      : this.queue.find(e => e.status === 'queued');
+
+    if (!entry) {
+      return { success: false, error: 'No transactions to process' };
+    }
+
+    this.processing = true;
+    entry.status = 'processing';
+
     try {
-      console.log('📤 Processing transaction...');
-      
-      // Validate transaction
-      const validation = this.validateTransaction(transaction);
-      if (!validation.valid) {
-        throw new Error(`Invalid transaction: ${validation.errors.join(', ')}`);
-      }
-      
-      // Generate transaction ID
-      const txId = this.generateTransactionId();
-      
-      // Create transaction record
-      const txRecord = {
-        id: txId,
-        ...transaction,
-        status: 'pending',
-        confirmations: 0,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        attempts: 1
+      // Build ethers transaction
+      const ethTx = {
+        to: entry.tx.to,
+        value: entry.tx.value ? ethers.parseEther(String(entry.tx.value)) : 0n
       };
-      
-      // Store transaction
-      this.transactions.set(txId, txRecord);
-      this.pendingTransactions.set(txId, txRecord);
-      this.metrics.pending++;
-      
-      // Add to processing queue
-      this.queue.push(txId);
-      
-      console.log(`✅ Transaction queued: ${txId}`);
-      
-      // Start processing if not already running
-      if (!this.processing) {
-        this.startProcessing();
+      if (entry.tx.data) ethTx.data = entry.tx.data;
+      if (entry.tx.gasLimit) ethTx.gasLimit = BigInt(entry.tx.gasLimit);
+
+      // Send
+      console.log('Sending transaction', entry.id, '...');
+      const startTime = Date.now();
+      const txResponse = await this.signer.sendTransaction(ethTx);
+      entry.hash = txResponse.hash;
+      entry.status = 'pending';
+      console.log('  Broadcast:', entry.hash);
+
+      // Wait for confirmation
+      const receipt = await txResponse.wait(this.config.confirmations);
+      const elapsed = Date.now() - startTime;
+
+      entry.status = receipt.status === 1 ? 'confirmed' : 'reverted';
+      entry.receipt = {
+        blockNumber: receipt.blockNumber,
+        gasUsed: receipt.gasUsed.toString(),
+        effectiveGasPrice: receipt.gasPrice ? receipt.gasPrice.toString() : null,
+        status: receipt.status
+      };
+      entry.completedAt = Date.now();
+
+      // Move to history
+      this.queue = this.queue.filter(e => e.id !== entry.id);
+      this.history.push(entry);
+
+      // Update metrics
+      this.metrics.totalProcessed++;
+      if (receipt.status === 1) {
+        this.metrics.successful++;
+        this.metrics.totalGasUsed += receipt.gasUsed;
+      } else {
+        this.metrics.failed++;
       }
-      
+      this.updateAverageConfirmationTime(elapsed);
+
+      console.log('  ' + entry.status.toUpperCase(), 'in block', receipt.blockNumber,
+        '(' + (elapsed / 1000).toFixed(1) + 's)');
+
+      this.processing = false;
       return {
         success: true,
-        transactionId: txId,
-        status: 'pending',
-        timestamp: txRecord.createdAt
+        id: entry.id,
+        hash: entry.hash,
+        status: entry.status,
+        blockNumber: receipt.blockNumber,
+        gasUsed: receipt.gasUsed.toString(),
+        elapsedMs: elapsed
       };
-      
+
     } catch (error) {
-      console.error('❌ Transaction processing failed:', error.message);
-      this.metrics.failed++;
-      
-      return {
-        success: false,
-        error: error.message
-      };
-    }
-  }
-  
-  // Start processing queue
-  async startProcessing() {
-    if (this.processing) {
-      return;
-    }
-    
-    this.processing = true;
-    console.log('🔄 Starting transaction processing queue...');
-    
-    while (this.queue.length > 0) {
-      const txId = this.queue.shift();
-      await this.processQueuedTransaction(txId);
-    }
-    
-    this.processing = false;
-    console.log('✅ Queue processing complete');
-  }
-  
-  // Process a queued transaction
-  async processQueuedTransaction(txId) {
-    const tx = this.transactions.get(txId);
-    
-    if (!tx) {
-      console.log(`⚠️ Transaction not found: ${txId}`);
-      return;
-    }
-    
-    try {
-      console.log(`⚙️ Processing transaction ${txId}...`);
-      
-      // Simulate sending transaction
-      await this.sendTransaction(tx);
-      
-      // Monitor confirmations
-      await this.monitorConfirmations(txId);
-      
-      console.log(`✅ Transaction ${txId} confirmed`);
-      
-    } catch (error) {
-      console.error(`❌ Transaction ${txId} failed:`, error.message);
-      await this.handleTransactionFailure(txId, error);
-    }
-  }
-  
-  // Send transaction to network
-  async sendTransaction(tx) {
-    console.log(`📡 Sending transaction to ${tx.network || 'ethereum'}...`);
-    
-    // Simulate network delay
-    await this.delay(1000);
-    
-    // Update transaction with hash
-    tx.hash = this.generateTransactionHash();
-    tx.status = 'sent';
-    tx.sentAt = Date.now();
-    tx.updatedAt = Date.now();
-    
-    console.log(`📝 Transaction hash: ${tx.hash.substring(0, 20)}...`);
-  }
-  
-  // Monitor transaction confirmations
-  async monitorConfirmations(txId) {
-    const tx = this.transactions.get(txId);
-    
-    if (!tx) {
-      throw new Error('Transaction not found');
-    }
-    
-    console.log(`👁️ Monitoring confirmations for ${txId}...`);
-    
-    const startTime = Date.now();
-    
-    while (tx.confirmations < this.config.requiredConfirmations) {
-      // Check timeout
-      if (Date.now() - startTime > this.config.transactionTimeout) {
-        throw new Error('Transaction confirmation timeout');
+      entry.retries++;
+      this.metrics.totalRetries++;
+      console.error('  Transaction failed:', error.message);
+
+      if (entry.retries < this.config.maxRetries) {
+        entry.status = 'queued'; // Re-queue for retry
+        console.log('  Retry', entry.retries, '/', this.config.maxRetries);
+        this.processing = false;
+        return this.processNext(entry.id);
       }
-      
-      // Simulate confirmation delay
-      await this.delay(2000);
-      
-      // Increment confirmations
-      tx.confirmations++;
-      tx.updatedAt = Date.now();
-      
-      console.log(`✅ Confirmation ${tx.confirmations}/${this.config.requiredConfirmations}`);
-    }
-    
-    // Transaction confirmed
-    tx.status = 'confirmed';
-    tx.confirmedAt = Date.now();
-    
-    // Calculate confirmation time
-    const confirmationTime = tx.confirmedAt - tx.createdAt;
-    
-    // Move to confirmed transactions
-    this.confirmedTransactions.set(txId, tx);
-    this.pendingTransactions.delete(txId);
-    
-    // Update metrics
-    this.metrics.totalProcessed++;
-    this.metrics.successful++;
-    this.metrics.pending--;
-    this.updateAverageConfirmationTime(confirmationTime);
-    
-    if (tx.gasUsed) {
-      this.metrics.totalGasUsed += tx.gasUsed;
-    }
-    if (tx.fee) {
-      this.metrics.totalFees += tx.fee;
-    }
-  }
-  
-  // Handle transaction failure
-  async handleTransactionFailure(txId, error) {
-    const tx = this.transactions.get(txId);
-    
-    if (!tx) {
-      return;
-    }
-    
-    // Check if we should retry
-    if (tx.attempts < this.config.retryAttempts) {
-      console.log(`🔄 Retrying transaction (attempt ${tx.attempts + 1}/${this.config.retryAttempts})...`);
-      
-      tx.attempts++;
-      tx.status = 'retrying';
-      tx.updatedAt = Date.now();
-      
-      // Add back to queue
-      await this.delay(this.config.retryDelay);
-      this.queue.push(txId);
-      
-    } else {
-      // Transaction failed permanently
-      tx.status = 'failed';
-      tx.failureReason = error.message;
-      tx.failedAt = Date.now();
-      tx.updatedAt = Date.now();
-      
-      // Move to failed transactions
-      this.failedTransactions.set(txId, tx);
-      this.pendingTransactions.delete(txId);
-      
-      // Update metrics
-      this.metrics.pending--;
+
+      // Max retries exceeded
+      entry.status = 'failed';
+      entry.error = error.message;
+      entry.completedAt = Date.now();
+      this.queue = this.queue.filter(e => e.id !== entry.id);
+      this.history.push(entry);
+      this.metrics.totalProcessed++;
       this.metrics.failed++;
-      
-      console.log(`❌ Transaction permanently failed: ${txId}`);
+      this.processing = false;
+
+      return { success: false, id: entry.id, status: 'failed', error: error.message };
     }
   }
-  
-  // Validate transaction
-  validateTransaction(transaction) {
-    const errors = [];
-    
-    // Check required fields
-    if (!transaction.to) {
-      errors.push('Missing recipient address');
+
+  /**
+   * Process all queued transactions sequentially.
+   */
+  async processAll() {
+    const results = [];
+    while (this.queue.some(e => e.status === 'queued')) {
+      const result = await this.processNext();
+      results.push(result);
     }
-    
-    if (transaction.value === undefined || transaction.value === null) {
-      errors.push('Missing transaction value');
-    }
-    
-    if (transaction.value < 0) {
-      errors.push('Invalid transaction value');
-    }
-    
-    // Check test mode
-    if (!this.config.testMode && transaction.network !== 'testnet') {
-      errors.push('Test mode disabled - mainnet transaction requires explicit confirmation');
-    }
-    
-    return {
-      valid: errors.length === 0,
-      errors
-    };
+    return results;
   }
-  
-  // Get transaction status
-  getTransactionStatus(txId) {
-    const tx = this.transactions.get(txId);
-    
-    if (!tx) {
-      return { error: 'Transaction not found' };
+
+  /**
+   * Validate a transaction before queuing.
+   */
+  validateTransaction(tx) {
+    if (!tx.to) return { valid: false, error: 'Missing "to" address' };
+    if (!ethers.isAddress(tx.to)) return { valid: false, error: 'Invalid "to" address' };
+    if (tx.value !== undefined && tx.value !== null) {
+      const val = parseFloat(tx.value);
+      if (isNaN(val) || val < 0) return { valid: false, error: 'Invalid value' };
     }
-    
-    return {
-      id: tx.id,
-      hash: tx.hash,
-      status: tx.status,
-      confirmations: tx.confirmations,
-      requiredConfirmations: this.config.requiredConfirmations,
-      createdAt: tx.createdAt,
-      confirmedAt: tx.confirmedAt,
-      attempts: tx.attempts
-    };
+    if (this.config.testMode && this.chainId === 1) {
+      return { valid: false, error: 'Test mode: mainnet transactions blocked' };
+    }
+    if (this.queue.length >= this.config.maxQueueSize) {
+      return { valid: false, error: 'Queue full' };
+    }
+    return { valid: true };
   }
-  
-  // Get transaction history
+
+  /**
+   * Get transaction status by ID.
+   */
+  getTransactionStatus(id) {
+    const queued = this.queue.find(e => e.id === id);
+    if (queued) return { ...queued };
+
+    const historical = this.history.find(e => e.id === id);
+    if (historical) return { ...historical };
+
+    return { error: 'Transaction not found' };
+  }
+
+  /**
+   * Get transaction history with optional filters.
+   */
   getTransactionHistory(filter = {}) {
-    let transactions = Array.from(this.transactions.values());
-    
-    // Apply filters
+    let results = [...this.history];
+
     if (filter.status) {
-      transactions = transactions.filter(tx => tx.status === filter.status);
+      results = results.filter(e => e.status === filter.status);
     }
-    
-    if (filter.from) {
-      transactions = transactions.filter(tx => tx.from === filter.from);
-    }
-    
     if (filter.to) {
-      transactions = transactions.filter(tx => tx.to === filter.to);
+      results = results.filter(e => e.tx.to.toLowerCase() === filter.to.toLowerCase());
     }
-    
-    // Apply precision rounding to values
-    transactions = transactions.map(tx => ({
-      ...tx,
-      value: this.precisionRound(tx.value, 8)
-    }));
-    
-    // Sort by timestamp (newest first)
-    return transactions.sort((a, b) => b.createdAt - a.createdAt);
+    if (filter.since) {
+      results = results.filter(e => e.createdAt >= filter.since);
+    }
+
+    return results;
   }
-  
-  // Cancel pending transaction
-  async cancelTransaction(txId) {
-    const tx = this.pendingTransactions.get(txId);
-    
-    if (!tx) {
-      return {
-        success: false,
-        error: 'Transaction not found or already confirmed'
-      };
+
+  /**
+   * Cancel a queued (not yet sent) transaction.
+   */
+  cancelTransaction(id) {
+    const idx = this.queue.findIndex(e => e.id === id && e.status === 'queued');
+    if (idx === -1) {
+      return { success: false, error: 'Transaction not found or already processing' };
     }
-    
-    console.log(`🚫 Cancelling transaction ${txId}...`);
-    
-    tx.status = 'cancelled';
-    tx.cancelledAt = Date.now();
-    tx.updatedAt = Date.now();
-    
-    // Remove from pending
-    this.pendingTransactions.delete(txId);
-    this.metrics.pending--;
-    
-    // Remove from queue if present
-    const queueIndex = this.queue.indexOf(txId);
-    if (queueIndex > -1) {
-      this.queue.splice(queueIndex, 1);
-    }
-    
-    console.log(`✅ Transaction cancelled`);
-    
-    return {
-      success: true,
-      transactionId: txId,
-      status: 'cancelled'
-    };
+
+    const entry = this.queue.splice(idx, 1)[0];
+    entry.status = 'cancelled';
+    entry.completedAt = Date.now();
+    this.history.push(entry);
+
+    return { success: true, id, status: 'cancelled' };
   }
-  
-  // Update average confirmation time
+
+  // Internal helpers
   updateAverageConfirmationTime(newTime) {
-    const count = this.metrics.successful;
-    const previousTotal = this.metrics.averageConfirmationTime * (count - 1);
-    this.metrics.averageConfirmationTime = (previousTotal + newTime) / count;
+    const n = this.metrics.successful;
+    this.metrics.averageConfirmationMs =
+      ((this.metrics.averageConfirmationMs * (n - 1)) + newTime) / n;
   }
-  
-  // Generate transaction ID
+
   generateTransactionId() {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 15);
-    return `tx_${timestamp}_${random}`;
+    return 'tx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   }
-  
-  // Generate transaction hash
-  generateTransactionHash() {
-    const random = Math.random().toString(36).substring(2, 15);
-    const timestamp = Date.now().toString(16);
-    return `0x${random}${timestamp}`.substring(0, 66).padEnd(66, '0');
-  }
-  
-  // Precision rounding
-  precisionRound(value, decimals = 8) {
-    const multiplier = Math.pow(10, decimals);
-    return Math.round(value * multiplier) / multiplier;
-  }
-  
-  // Delay utility
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
-  // Get metrics
+
   getMetrics() {
     return {
-      ...this.metrics,
+      totalProcessed: this.metrics.totalProcessed,
+      successful: this.metrics.successful,
+      failed: this.metrics.failed,
+      totalGasUsed: this.metrics.totalGasUsed.toString(),
+      totalRetries: this.metrics.totalRetries,
+      averageConfirmationMs: Math.round(this.metrics.averageConfirmationMs),
+      queueLength: this.queue.length,
       successRate: this.metrics.totalProcessed > 0
         ? (this.metrics.successful / this.metrics.totalProcessed * 100).toFixed(2) + '%'
-        : '0%',
-      averageConfirmationTime: this.precisionRound(this.metrics.averageConfirmationTime / 1000, 2) + 's',
-      totalFeesEth: this.precisionRound(this.metrics.totalFees, 8)
+        : 'N/A'
     };
   }
-  
-  // Print status report
+
   printStatusReport() {
-    const metrics = this.getMetrics();
-    
-    console.log('\n⚙️ TRANSACTION PROCESSOR STATUS');
+    const m = this.getMetrics();
+    console.log('\nTRANSACTION PROCESSOR v2.0.0');
     console.log('='.repeat(60));
-    console.log(`📊 Total Processed: ${metrics.totalProcessed}`);
-    console.log(`✅ Successful: ${metrics.successful}`);
-    console.log(`❌ Failed: ${metrics.failed}`);
-    console.log(`⏳ Pending: ${metrics.pending}`);
-    console.log(`📈 Success Rate: ${metrics.successRate}`);
-    console.log(`⏱️ Avg Confirmation Time: ${metrics.averageConfirmationTime}`);
-    console.log(`⛽ Total Gas Used: ${metrics.totalGasUsed}`);
-    console.log(`💸 Total Fees: ${metrics.totalFeesEth} ETH`);
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
-    console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
-    
-    if (this.queue.length > 0) {
-      console.log(`\n📋 Queue: ${this.queue.length} transactions`);
-    }
-    
+    console.log('Chain ID:', this.chainId || 'Not connected');
+    console.log('Signer:', this.signer ? this.signer.address : 'None');
+    console.log('Queue:', m.queueLength, '| Processed:', m.totalProcessed);
+    console.log('Success:', m.successful, '| Failed:', m.failed, '| Rate:', m.successRate);
+    console.log('Gas used:', m.totalGasUsed, '| Retries:', m.totalRetries);
+    console.log('Avg confirm:', m.averageConfirmationMs, 'ms');
     console.log('='.repeat(60));
-    
-    return metrics;
   }
 }
 
-// Export the processor
 module.exports = { TransactionProcessor };
 
-// Demo function
+// Demo
 async function demo() {
-  console.log('🚀 Transaction Processor Demo');
-  console.log('TRADEMARK: Scott Charles Olson - March 31, 1997');
+  console.log('Transaction Processor v2.0.0 — Live Demo');
   console.log('='.repeat(60));
-  
-  const processor = new TransactionProcessor({
-    testMode: true,
-    requiredConfirmations: 3
-  });
-  
-  // Process multiple transactions
-  console.log('\n📤 Processing transactions:');
-  
-  const tx1 = await processor.processTransaction({
-    from: '0xSender1',
-    to: '0xRecipient1',
-    value: 1.5,
-    network: 'testnet'
-  });
-  
-  const tx2 = await processor.processTransaction({
-    from: '0xSender2',
-    to: '0xRecipient2',
-    value: 0.5,
-    network: 'testnet'
-  });
-  
-  const tx3 = await processor.processTransaction({
-    from: '0xSender3',
-    to: '0xRecipient3',
-    value: 2.0,
-    network: 'testnet'
-  });
-  
-  console.log(`\n✅ ${[tx1, tx2, tx3].filter(tx => tx.success).length} transactions queued`);
-  
-  // Wait for processing to complete
-  console.log('\n⏳ Waiting for confirmations...');
-  await processor.delay(15000); // Wait 15 seconds
-  
-  // Check transaction statuses
-  console.log('\n🔍 Checking transaction statuses:');
-  if (tx1.success) {
-    const status1 = processor.getTransactionStatus(tx1.transactionId);
-    console.log(`Transaction 1: ${status1.status} (${status1.confirmations} confirmations)`);
+
+  const RPC = process.env.SEPOLIA_RPC_URL;
+  const KEY = process.env.PRIVATE_KEY;
+  if (!RPC || !KEY) {
+    console.log('Set SEPOLIA_RPC_URL and PRIVATE_KEY to run the live demo.');
+    return;
   }
-  
-  // Get transaction history
-  console.log('\n📜 Transaction History:');
-  const history = processor.getTransactionHistory({ status: 'confirmed' });
-  console.log(`Confirmed transactions: ${history.length}`);
-  
-  // Print final status
-  processor.printStatusReport();
+
+  const tp = new TransactionProcessor({ testMode: true, confirmations: 1 });
+  await tp.connect(RPC, KEY);
+
+  // Send a small self-transfer to test
+  console.log('\nSending 0.0001 ETH self-transfer...');
+  const result = await tp.processTransaction({
+    to: tp.signer.address,
+    value: '0.0001'
+  });
+  console.log('Result:', JSON.stringify(result, null, 2));
+
+  tp.printStatusReport();
 }
 
-// Auto-run demo if called directly
 if (require.main === module) {
   demo().catch(console.error);
 }

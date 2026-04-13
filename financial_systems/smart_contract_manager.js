@@ -1,479 +1,363 @@
 /*
  * SOLIDARITY PLATFORM - SMART CONTRACT MANAGER
- * =============================================
+ * ==============================================
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
  * Phone: +1 (913) 548-5715
  * Location: Kansas, USA 66210
- * Status: Architect of Model System
- * Documentation: iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓
- * Timestamp: 2025-10-08 18:20:30 UTC
- * Repository: https://github.com/CharlyOlson/-Solidarity-Clean
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  * 
- * =============================================
+ * ==============================================
  * 
- * Smart Contract Operations and Management
- * Anchor ratio (anchor = 1.618) baseline for all operations
- * Gas management and optimization
+ * Contract deployment, registration, and interaction — LIVE
+ * Uses ethers.js v6 for real contract calls.
+ * Gas estimation with phi safety margin (1.618x).
  */
+
+const { ethers } = require('ethers');
 
 class SmartContractManager {
   constructor(config = {}) {
-    this.version = '1.0.0';
-    this.anchorRatio = 1.618;
-    this.bridgingBaseline = 0.618;
-    
-    // Configuration
+    this.version = '2.0.0';
+    this.baseRatio = 1.618;
+
     this.config = {
       testMode: config.testMode !== undefined ? config.testMode : true,
-      defaultGasLimit: config.defaultGasLimit || 500000,
-      maxGasPrice: config.maxGasPrice || 100, // Gwei
-      confirmations: config.confirmations || 3,
-      autoGasEstimation: config.autoGasEstimation !== undefined ? config.autoGasEstimation : true
+      gasSafetyMultiplier: config.gasSafetyMultiplier || 1.618 // phi ratio
     };
-    
-    // Contract registry
+
+    this.provider = null;
+    this.signer = null;
+    this.chainId = null;
+
+    // Contract registry: name -> { address, abi, contract (ethers.Contract instance) }
     this.contracts = new Map();
-    
-    // Deployment history
-    this.deployments = [];
-    
-    // Contract interactions
-    this.interactions = [];
-    
-    // Gas tracking
+
+    // Gas metrics
     this.gasMetrics = {
-      totalGasUsed: 0,
-      totalGasCost: 0,
-      deploymentCount: 0,
-      interactionCount: 0,
-      averageGasPrice: 0,
-      estimationAccuracy: []
+      totalEstimated: 0n,
+      totalUsed: 0n,
+      callCount: 0,
+      deployCount: 0
     };
-    
-    console.log('📜 Smart Contract Manager initialized');
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
-    console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
+
+    console.log('Smart Contract Manager v2.0.0 initialized (ethers.js v6)');
+    console.log('Gas safety multiplier:', this.config.gasSafetyMultiplier + 'x (phi)');
   }
-  
-  // Register a contract
+
+  /**
+   * Connect to chain with a signer.
+   */
+  async connect(rpcUrl, privateKey) {
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    this.signer = new ethers.Wallet(privateKey, this.provider);
+    const network = await this.provider.getNetwork();
+    this.chainId = Number(network.chainId);
+    console.log('Connected. Chain:', this.chainId, 'Signer:', this.signer.address);
+    return { success: true, chainId: this.chainId };
+  }
+
+  /**
+   * Connect with an existing provider/signer.
+   */
+  connectWithSigner(provider, signer) {
+    this.provider = provider;
+    this.signer = signer;
+  }
+
+  /**
+   * Register an already-deployed contract for interaction.
+   */
   registerContract(name, address, abi) {
-    console.log(`📝 Registering contract: ${name}`);
-    
-    this.contracts.set(name, {
-      name,
-      address,
-      abi,
-      registeredAt: Date.now(),
-      interactions: 0
-    });
-    
-    console.log(`✅ Contract registered: ${address.substring(0, 10)}...`);
-    
-    return {
-      success: true,
-      name,
-      address
-    };
+    if (!ethers.isAddress(address)) {
+      return { success: false, error: 'Invalid contract address' };
+    }
+
+    const signerOrProvider = this.signer || this.provider;
+    if (!signerOrProvider) {
+      return { success: false, error: 'Connect to a provider first' };
+    }
+
+    const contract = new ethers.Contract(address, abi, signerOrProvider);
+    this.contracts.set(name, { address, abi, contract });
+
+    console.log('Registered contract:', name, 'at', address);
+    return { success: true, name, address };
   }
-  
-  // Deploy a smart contract
-  async deployContract(name, bytecode, constructorArgs = [], options = {}) {
+
+  /**
+   * Deploy a new contract.
+   * @param {string} name - Name to register the deployed contract under
+   * @param {string} abi - Contract ABI
+   * @param {string} bytecode - Contract bytecode
+   * @param {array} constructorArgs - Constructor arguments
+   */
+  async deployContract(name, abi, bytecode, constructorArgs = []) {
+    if (!this.signer) {
+      return { success: false, error: 'No signer connected' };
+    }
+    if (this.config.testMode && this.chainId === 1) {
+      return { success: false, error: 'Test mode: mainnet deployment blocked' };
+    }
+
     try {
-      console.log(`🚀 Deploying contract: ${name}`);
-      
-      if (this.config.testMode && options.network !== 'testnet') {
-        throw new Error('Test mode enabled - cannot deploy to mainnet');
-      }
-      
-      // Estimate gas
-      const gasEstimate = await this.estimateDeploymentGas(bytecode, constructorArgs);
-      console.log(`⛽ Estimated gas: ${gasEstimate}`);
-      
-      // Calculate gas price
-      const gasPrice = this.calculateOptimalGasPrice(options.urgency || 'normal');
-      console.log(`💰 Gas price: ${gasPrice} Gwei`);
-      
-      // Simulate deployment
-      const deployment = await this.simulateDeployment(name, bytecode, constructorArgs, {
-        gasLimit: options.gasLimit || gasEstimate,
-        gasPrice
-      });
-      
-      // Register deployed contract
-      if (deployment.success && deployment.address) {
-        this.registerContract(name, deployment.address, options.abi || []);
-      }
-      
-      // Record deployment
-      this.deployments.push({
+      console.log('Deploying contract:', name, '...');
+
+      const factory = new ethers.ContractFactory(abi, bytecode, this.signer);
+
+      // Estimate gas with phi safety margin
+      const deployTx = await factory.getDeployTransaction(...constructorArgs);
+      const gasEstimate = await this.provider.estimateGas(deployTx);
+      const safeGas = (gasEstimate * BigInt(Math.round(this.config.gasSafetyMultiplier * 1000))) / 1000n;
+
+      console.log('  Gas estimate:', gasEstimate.toString(), '-> safe:', safeGas.toString());
+
+      // Deploy
+      const contract = await factory.deploy(...constructorArgs, { gasLimit: safeGas });
+      const receipt = await contract.deploymentTransaction().wait(1);
+
+      const addr = await contract.getAddress();
+      console.log('  Deployed at:', addr, 'in block', receipt.blockNumber);
+
+      // Register it
+      this.contracts.set(name, { address: addr, abi, contract });
+      this.gasMetrics.deployCount++;
+      this.gasMetrics.totalEstimated += gasEstimate;
+      this.gasMetrics.totalUsed += receipt.gasUsed;
+
+      return {
+        success: true,
         name,
-        address: deployment.address,
-        gasUsed: deployment.gasUsed,
-        gasPrice: deployment.gasPrice,
-        totalCost: deployment.totalCost,
-        timestamp: Date.now(),
-        network: options.network || 'testnet'
-      });
-      
-      // Update metrics
-      this.gasMetrics.deploymentCount++;
-      this.gasMetrics.totalGasUsed += deployment.gasUsed;
-      this.gasMetrics.totalGasCost += deployment.totalCost;
-      
-      console.log(`✅ Contract deployed: ${deployment.address}`);
-      console.log(`💸 Total cost: ${deployment.totalCost.toFixed(8)} ETH`);
-      
-      return deployment;
-      
-    } catch (error) {
-      console.error('❌ Deployment failed:', error.message);
-      return {
-        success: false,
-        error: error.message
+        address: addr,
+        hash: receipt.hash,
+        blockNumber: receipt.blockNumber,
+        gasUsed: receipt.gasUsed.toString()
       };
+
+    } catch (error) {
+      console.error('Deployment failed:', error.message);
+      return { success: false, error: error.message };
     }
   }
-  
-  // Simulate contract deployment
-  async simulateDeployment(name, bytecode, constructorArgs, options) {
-    // Simulate deployment delay
-    await this.delay(2000);
-    
-    // Generate contract address
-    const address = this.generateContractAddress();
-    
-    // Calculate gas used (simulated)
-    const gasUsed = Math.floor(options.gasLimit * (0.8 + Math.random() * 0.2));
-    const gasPriceWei = options.gasPrice * 1e9; // Convert Gwei to Wei
-    const totalCost = (gasUsed * gasPriceWei) / 1e18; // Convert to ETH
-    
-    return {
-      success: true,
-      name,
-      address,
-      gasUsed,
-      gasPrice: options.gasPrice,
-      totalCost,
-      transactionHash: this.generateTxHash()
-    };
-  }
-  
-  // Estimate deployment gas
-  async estimateDeploymentGas(bytecode, constructorArgs) {
-    if (!this.config.autoGasEstimation) {
-      return this.config.defaultGasLimit;
-    }
-    
-    // Simplified gas estimation based on bytecode length
-    const baseGas = 21000;
-    const bytecodeGas = bytecode.length * 200;
-    const argsGas = constructorArgs.length * 10000;
-    
-    return baseGas + bytecodeGas + argsGas;
-  }
-  
-  // Call contract function
-  async callContractFunction(contractName, functionName, args = [], options = {}) {
+
+  /**
+   * Call a read-only (view/pure) function on a registered contract.
+   */
+  async callView(contractName, functionName, args = []) {
+    const entry = this.contracts.get(contractName);
+    if (!entry) return { success: false, error: 'Contract not registered: ' + contractName };
+
     try {
-      console.log(`📞 Calling ${contractName}.${functionName}()`);
-      
-      const contract = this.contracts.get(contractName);
-      if (!contract) {
-        throw new Error(`Contract not found: ${contractName}`);
-      }
-      
-      if (this.config.testMode && options.network !== 'testnet') {
-        throw new Error('Test mode enabled - cannot interact with mainnet contracts');
-      }
-      
-      // Estimate gas for function call
-      const gasEstimate = await this.estimateFunctionGas(contractName, functionName, args);
-      console.log(`⛽ Estimated gas: ${gasEstimate}`);
-      
-      // Calculate gas price
-      const gasPrice = this.calculateOptimalGasPrice(options.urgency || 'normal');
-      
-      // Simulate function call
-      const result = await this.simulateFunctionCall(contractName, functionName, args, {
-        gasLimit: options.gasLimit || gasEstimate,
-        gasPrice
-      });
-      
-      // Record interaction
-      this.interactions.push({
-        contractName,
-        functionName,
-        args,
-        gasUsed: result.gasUsed,
-        gasPrice: result.gasPrice,
-        totalCost: result.totalCost,
-        timestamp: Date.now(),
-        success: result.success
-      });
-      
-      // Update contract interaction count
-      contract.interactions++;
-      
-      // Update metrics
-      this.gasMetrics.interactionCount++;
-      this.gasMetrics.totalGasUsed += result.gasUsed;
-      this.gasMetrics.totalGasCost += result.totalCost;
-      
-      console.log(`✅ Function call successful`);
-      console.log(`💸 Cost: ${result.totalCost.toFixed(8)} ETH`);
-      
-      return result;
-      
-    } catch (error) {
-      console.error('❌ Function call failed:', error.message);
+      const result = await entry.contract[functionName](...args);
+      this.gasMetrics.callCount++;
+
       return {
-        success: false,
-        error: error.message
+        success: true,
+        contract: contractName,
+        function: functionName,
+        result: this.serializeResult(result)
       };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
   }
-  
-  // Simulate function call
-  async simulateFunctionCall(contractName, functionName, args, options) {
-    // Simulate call delay
-    await this.delay(1500);
-    
-    // Calculate gas used
-    const gasUsed = Math.floor(options.gasLimit * (0.5 + Math.random() * 0.3));
-    const gasPriceWei = options.gasPrice * 1e9;
-    const totalCost = (gasUsed * gasPriceWei) / 1e18;
-    
-    return {
-      success: true,
-      contractName,
-      functionName,
-      gasUsed,
-      gasPrice: options.gasPrice,
-      totalCost,
-      transactionHash: this.generateTxHash(),
-      returnValue: `Result from ${functionName}`
-    };
-  }
-  
-  // Estimate function gas
-  async estimateFunctionGas(contractName, functionName, args) {
-    if (!this.config.autoGasEstimation) {
-      return this.config.defaultGasLimit;
+
+  /**
+   * Call a state-changing (write) function on a registered contract.
+   */
+  async callWrite(contractName, functionName, args = [], options = {}) {
+    const entry = this.contracts.get(contractName);
+    if (!entry) return { success: false, error: 'Contract not registered: ' + contractName };
+    if (!this.signer) return { success: false, error: 'No signer connected' };
+
+    try {
+      // Estimate gas
+      const gasEstimate = await entry.contract[functionName].estimateGas(...args);
+      const safeGas = (gasEstimate * BigInt(Math.round(this.config.gasSafetyMultiplier * 1000))) / 1000n;
+
+      console.log('Calling', contractName + '.' + functionName,
+        '| gas:', gasEstimate.toString(), '->', safeGas.toString());
+
+      // Build tx options
+      const txOptions = { gasLimit: safeGas };
+      if (options.value) txOptions.value = ethers.parseEther(String(options.value));
+
+      // Execute
+      const tx = await entry.contract[functionName](...args, txOptions);
+      const receipt = await tx.wait(1);
+
+      this.gasMetrics.callCount++;
+      this.gasMetrics.totalEstimated += gasEstimate;
+      this.gasMetrics.totalUsed += receipt.gasUsed;
+
+      console.log('  Confirmed in block', receipt.blockNumber, '| gas used:', receipt.gasUsed.toString());
+
+      return {
+        success: true,
+        contract: contractName,
+        function: functionName,
+        hash: receipt.hash,
+        blockNumber: receipt.blockNumber,
+        gasUsed: receipt.gasUsed.toString()
+      };
+
+    } catch (error) {
+      console.error('Call failed:', error.message);
+      return { success: false, error: error.message };
     }
-    
-    // Simplified gas estimation
-    const baseGas = 21000;
-    const functionGas = 50000;
-    const argsGas = args.length * 5000;
-    
-    return baseGas + functionGas + argsGas;
   }
-  
-  // Calculate optimal gas price
-  calculateOptimalGasPrice(urgency = 'normal') {
-    const urgencyMultipliers = {
-      low: 0.7,
-      normal: 1.0,
-      high: 1.3,
-      urgent: 1.6
-    };
-    
-    const multiplier = urgencyMultipliers[urgency] || 1.0;
-    const basePrice = 30; // Base price in Gwei
-    const optimalPrice = basePrice * multiplier;
-    
-    return Math.min(optimalPrice, this.config.maxGasPrice);
+
+  /**
+   * Batch multiple view calls in parallel.
+   */
+  async batchView(calls) {
+    // calls: [{ contract, function, args }]
+    const results = await Promise.all(
+      calls.map(c => this.callView(c.contract, c.function, c.args || []))
+    );
+    return results;
   }
-  
-  // Apply anchor ratio to gas optimization
-  optimizeGasWithAnchorRatio(estimatedGas) {
-    // Use anchor ratio for conservative gas estimation
-    return Math.ceil(estimatedGas * this.anchorRatio);
-  }
-  
-  // Batch contract calls (gas optimization)
-  async batchContractCalls(calls) {
-    console.log(`📦 Batching ${calls.length} contract calls...`);
-    
-    const results = [];
-    let totalGasSaved = 0;
-    
-    for (const call of calls) {
-      const result = await this.callContractFunction(
-        call.contract,
-        call.function,
-        call.args,
-        { ...call.options, batched: true }
-      );
-      
-      results.push(result);
-      
-      // Estimate gas saved through batching
-      const individualGas = await this.estimateFunctionGas(call.contract, call.function, call.args);
-      const batchedGas = result.gasUsed;
-      totalGasSaved += (individualGas - batchedGas);
+
+  /**
+   * Estimate gas for a contract function call.
+   */
+  async estimateGas(contractName, functionName, args = []) {
+    const entry = this.contracts.get(contractName);
+    if (!entry) return { success: false, error: 'Contract not registered' };
+
+    try {
+      const estimate = await entry.contract[functionName].estimateGas(...args);
+      const safe = (estimate * BigInt(Math.round(this.config.gasSafetyMultiplier * 1000))) / 1000n;
+
+      return {
+        success: true,
+        estimate: estimate.toString(),
+        safeEstimate: safe.toString(),
+        multiplier: this.config.gasSafetyMultiplier
+      };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    
-    console.log(`✅ Batch completed`);
-    console.log(`⛽ Total gas saved: ${totalGasSaved}`);
-    
-    return {
-      success: true,
-      results,
-      totalGasSaved,
-      callCount: calls.length
-    };
   }
-  
-  // Get contract details
+
+  /**
+   * Get a registered contract's ethers.Contract instance directly.
+   */
   getContract(name) {
-    const contract = this.contracts.get(name);
-    
-    if (!contract) {
-      return { error: 'Contract not found' };
-    }
-    
-    return contract;
+    const entry = this.contracts.get(name);
+    return entry ? entry.contract : null;
   }
-  
-  // List all registered contracts
+
+  /**
+   * List all registered contracts.
+   */
   listContracts() {
-    return Array.from(this.contracts.values());
+    const list = [];
+    for (const [name, entry] of this.contracts) {
+      list.push({ name, address: entry.address });
+    }
+    return list;
   }
-  
-  // Get gas metrics
+
+  /**
+   * Get gas metrics.
+   */
   getGasMetrics() {
-    const avgGasPrice = this.gasMetrics.interactionCount > 0
-      ? this.gasMetrics.totalGasCost / this.gasMetrics.interactionCount
-      : 0;
-    
+    const savings = this.gasMetrics.totalEstimated > 0n
+      ? this.gasMetrics.totalEstimated - this.gasMetrics.totalUsed
+      : 0n;
+
     return {
-      ...this.gasMetrics,
-      averageGasPrice: this.precisionRound(avgGasPrice * 1e9, 2), // Convert to Gwei
-      totalContracts: this.contracts.size,
-      totalCostEth: this.precisionRound(this.gasMetrics.totalGasCost, 8)
+      deployCount: this.gasMetrics.deployCount,
+      callCount: this.gasMetrics.callCount,
+      totalEstimated: this.gasMetrics.totalEstimated.toString(),
+      totalUsed: this.gasMetrics.totalUsed.toString(),
+      gasSavings: savings.toString()
     };
   }
-  
-  // Generate contract address (simplified)
-  generateContractAddress() {
-    const timestamp = Date.now().toString(16);
-    const random = Math.random().toString(36).substring(2, 15);
-    return `0x${timestamp}${random}`.substring(0, 42).padEnd(42, '0');
-  }
-  
-  // Generate transaction hash
-  generateTxHash() {
-    const random = Math.random().toString(36).substring(2, 15);
-    const timestamp = Date.now().toString(16);
-    return `0x${random}${timestamp}`.substring(0, 66).padEnd(66, '0');
-  }
-  
-  // Precision rounding
-  precisionRound(value, decimals = 8) {
-    const multiplier = Math.pow(10, decimals);
-    return Math.round(value * multiplier) / multiplier;
-  }
-  
-  // Delay utility
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
-  // Print status report
-  printStatusReport() {
-    const metrics = this.getGasMetrics();
-    
-    console.log('\n📜 SMART CONTRACT MANAGER STATUS');
-    console.log('='.repeat(60));
-    console.log(`📊 Registered Contracts: ${metrics.totalContracts}`);
-    console.log(`🚀 Deployments: ${metrics.deploymentCount}`);
-    console.log(`📞 Interactions: ${metrics.interactionCount}`);
-    console.log(`⛽ Total Gas Used: ${metrics.totalGasUsed}`);
-    console.log(`💰 Average Gas Price: ${metrics.averageGasPrice} Gwei`);
-    console.log(`💸 Total Cost: ${metrics.totalCostEth} ETH`);
-    console.log(`🌟 Anchor Ratio: ${this.anchorRatio}`);
-    console.log(`🧪 Test Mode: ${this.config.testMode ? 'ENABLED' : 'DISABLED'}`);
-    
-    if (this.contracts.size > 0) {
-      console.log('\n📋 REGISTERED CONTRACTS:');
-      this.listContracts().forEach(contract => {
-        console.log(`  ${contract.name}: ${contract.address.substring(0, 20)}...`);
-        console.log(`    Interactions: ${contract.interactions}`);
-      });
+
+  // Serialize ethers results (BigInt, arrays, etc.) to plain JSON
+  serializeResult(val) {
+    if (typeof val === 'bigint') return val.toString();
+    if (Array.isArray(val)) return val.map(v => this.serializeResult(v));
+    if (typeof val === 'object' && val !== null) {
+      const obj = {};
+      for (const k of Object.keys(val)) {
+        if (!isNaN(k)) continue; // skip numeric indices from Result
+        obj[k] = this.serializeResult(val[k]);
+      }
+      return obj;
     }
-    
+    return val;
+  }
+
+  printStatusReport() {
+    const m = this.getGasMetrics();
+    console.log('\nSMART CONTRACT MANAGER v2.0.0');
     console.log('='.repeat(60));
-    
-    return metrics;
+    console.log('Chain ID:', this.chainId || 'Not connected');
+    console.log('Signer:', this.signer ? this.signer.address : 'None');
+    console.log('Registered contracts:', this.contracts.size);
+    for (const [name, entry] of this.contracts) {
+      console.log('  ', name, '->', entry.address);
+    }
+    console.log('Deploys:', m.deployCount, '| Calls:', m.callCount);
+    console.log('Gas estimated:', m.totalEstimated, '| used:', m.totalUsed);
+    console.log('='.repeat(60));
   }
 }
 
-// Export the manager
 module.exports = { SmartContractManager };
 
-// Demo function
+// Demo — reads TreasuryManager state
 async function demo() {
-  console.log('🚀 Smart Contract Manager Demo');
-  console.log('TRADEMARK: Scott Charles Olson - March 31, 1997');
+  console.log('Smart Contract Manager v2.0.0 — Live Demo');
   console.log('='.repeat(60));
-  
-  const manager = new SmartContractManager({ testMode: true });
-  
-  // Deploy a contract
-  console.log('\n🚀 Deploying SolidarityToken contract:');
-  const deployment = await manager.deployContract(
-    'SolidarityToken',
-    '0x608060405234801561001057600080fd5b50...', // Simplified bytecode
-    ['Solidarity', 'SLDRT', 18],
-    { network: 'testnet' }
-  );
-  
-  // Call contract function
-  if (deployment.success) {
-    console.log('\n📞 Calling transfer function:');
-    await manager.callContractFunction(
-      'SolidarityToken',
-      'transfer',
-      ['0xRecipientAddress', 100],
-      { network: 'testnet', urgency: 'normal' }
-    );
-    
-    console.log('\n📞 Calling balanceOf function:');
-    await manager.callContractFunction(
-      'SolidarityToken',
-      'balanceOf',
-      ['0xUserAddress'],
-      { network: 'testnet' }
-    );
+
+  const RPC = process.env.SEPOLIA_RPC_URL;
+  const KEY = process.env.PRIVATE_KEY;
+  if (!RPC || !KEY) {
+    console.log('Set SEPOLIA_RPC_URL and PRIVATE_KEY to run the live demo.');
+    return;
   }
-  
-  // Test batch operations
-  console.log('\n📦 Testing batch operations:');
-  await manager.batchContractCalls([
-    {
-      contract: 'SolidarityToken',
-      function: 'approve',
-      args: ['0xSpender', 1000],
-      options: { network: 'testnet' }
-    },
-    {
-      contract: 'SolidarityToken',
-      function: 'totalSupply',
-      args: [],
-      options: { network: 'testnet' }
-    }
+
+  const scm = new SmartContractManager({ testMode: true });
+  await scm.connect(RPC, KEY);
+
+  // Register TreasuryManager
+  const TREASURY = '0x362DC26b4b084778DB9525DF5A1d4A344C9E0C64';
+  scm.registerContract('TreasuryManager', TREASURY, [
+    'function scott() view returns (address)',
+    'function hank() view returns (address)',
+    'function classEquityRebuildFund() view returns (address)',
+    'function infrastructureReserveSet() view returns (bool)',
+    'function infrastructureReserveBP() view returns (uint256)',
+    'function totalDistributed() view returns (uint256)',
+    'function distributionCount() view returns (uint256)',
+    'function owner() view returns (address)',
   ]);
-  
-  // Print final status
-  manager.printStatusReport();
+
+  // Batch read
+  console.log('\nReading TreasuryManager state...');
+  const results = await scm.batchView([
+    { contract: 'TreasuryManager', function: 'owner' },
+    { contract: 'TreasuryManager', function: 'scott' },
+    { contract: 'TreasuryManager', function: 'hank' },
+    { contract: 'TreasuryManager', function: 'infrastructureReserveSet' },
+    { contract: 'TreasuryManager', function: 'infrastructureReserveBP' },
+    { contract: 'TreasuryManager', function: 'totalDistributed' },
+    { contract: 'TreasuryManager', function: 'distributionCount' },
+  ]);
+
+  results.forEach(r => {
+    if (r.success) console.log(' ', r.function + ':', r.result);
+  });
+
+  scm.printStatusReport();
 }
 
-// Auto-run demo if called directly
 if (require.main === module) {
   demo().catch(console.error);
 }
