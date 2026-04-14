@@ -18,7 +18,13 @@ const AIRouter = require('../../ai/AIRouter');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
 
+// AIRouter instance — coherence engine can be attached after system boot
 const aiRouter = new AIRouter();
+
+// Attach coherence engine (called from server.js after financial system boots)
+function attachCoherence(coherenceEngine) {
+  aiRouter.coherence = coherenceEngine;
+}
 
 // POST /api/ai/chat — Chat with AI (routes to Ollama or Perplexity based on tier)
 router.post('/chat', optionalAuth, async (req, res) => {
@@ -43,6 +49,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
       success: true,
       response: result.content,
       provider: result.provider,
+      coherenceMode: result.coherenceMode || 'standard',
     });
   } catch (err) {
     logger.warn('AI chat error', { error: err.message });
@@ -66,3 +73,4 @@ router.get('/status', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.attachCoherence = attachCoherence;
