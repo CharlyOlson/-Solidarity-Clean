@@ -30,8 +30,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static files (frontend)
-app.use(express.static(path.join(__dirname, '../../frontend/public')));
-app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
+// In production, serve the built React app; in dev, serve raw files
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../../frontend/build')));
+} else {
+  app.use(express.static(path.join(__dirname, '../../frontend/public')));
+  app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LICENSE GATE — All /api/* routes require a valid license key
@@ -65,6 +70,7 @@ app.get('/api/health', (req, res) => {
 
 // Auth (public — registration doesn't need license, but login does set tier context)
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/subscription', require('./routes/subscription'));
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LICENSED ROUTES — Require valid license key + tier access
@@ -151,6 +157,13 @@ function startServerWithFallback(maxRetries = 10) {
         });
     }
     tryListen();
+}
+
+// SPA catch-all — serve React index.html for unmatched routes in production
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
+  });
 }
 
 // Start server when run directly (not when imported for testing)
