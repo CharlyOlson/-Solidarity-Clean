@@ -46,6 +46,11 @@ const TIERS = {
   business: {
     name: 'Business',
     description: 'Organization-scale financial operations with compliance support',
+    stripe: {
+      productId: 'prod_UKwG3kBcKgkbjq',
+      monthlyPriceId: 'price_1TMGOVHKDThuncCuYosS7fPb',  // $29/month
+      annualPriceId: 'price_1TMGOaHKDThuncCuHKq5Z8Ao',   // $290/year
+    },
     ai: {
       provider: 'perplexity',      // Cloud API
       fallback: 'ollama',          // Falls back to local if API unavailable
