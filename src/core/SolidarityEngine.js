@@ -14,8 +14,16 @@
 const { QuantumCubicCalculationSystem } = require('./QuantumCubicCalculationSystem');
 const { QuantumMathUtils, QuantumProcessingPipeline } = require('./QuantumMathUtils');
 const { SacredNumericSequence } = require('./SacredNumericSequence');
-const { TIMBRCompressionSystem } = require('../audio/TIMBRCompressionSystem');
-const { audioCommands, executeAudioCommand } = require('../audio/AudioStudioCommands');
+let TIMBRCompressionSystem, audioCommands, executeAudioCommand;
+try {
+  ({ TIMBRCompressionSystem } = require('../audio/TIMBRCompressionSystem'));
+  ({ audioCommands, executeAudioCommand } = require('../audio/AudioStudioCommands'));
+} catch {
+  // Audio modules archived — optional dependency
+  TIMBRCompressionSystem = null;
+  audioCommands = {};
+  executeAudioCommand = () => ({ success: false, error: 'audio module not available' });
+}
 const path = require('path');
 
 class SolidarityEngine {

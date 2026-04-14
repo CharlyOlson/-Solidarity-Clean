@@ -16,8 +16,13 @@ const { SolidarityEngine } = require('./src/core/SolidarityEngine');
 // Harmonic modules
 const { EnhancedBridgingPhraseParser } = require('./src/harmonic');
 
-// Audio modules
-const { TIMBRCompressionSystem } = require('./src/audio');
+// Audio modules (archived — optional dependency)
+let TIMBRCompressionSystem;
+try {
+  ({ TIMBRCompressionSystem } = require('./src/audio'));
+} catch {
+  TIMBRCompressionSystem = null;
+}
 
 class SolidarityPlatformLauncher {
     constructor() {

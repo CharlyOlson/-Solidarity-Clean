@@ -8,7 +8,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import OllamaHome from './components/OllamaHome';
-import QuipNotes from './components/QuipNotes';
 import UserLogs from './components/UserLogs';
 import HankoStamps from './components/HankoStamps';
 import WalletManager from './components/WalletManager';
@@ -32,7 +31,7 @@ function App() {
       case 'home':
         return <OllamaHome />;
       case 'quipnotes':
-        return <QuipNotes />;
+        return <div style={{padding: '2rem'}}>QuipNotes has been archived.</div>;
       case 'logs':
         return <UserLogs />;
       case 'hanko':

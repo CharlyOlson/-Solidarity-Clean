@@ -1,7 +1,7 @@
 /*
  * SOLIDARITY PLATFORM - AI MODULE INDEX
  * ======================================
- * 
+ *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
@@ -10,10 +10,12 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
-const OllamaIntegration = require('./OllamaIntegration');
-const PerplexityIntegration = require('./PerplexityIntegration');
+const OllamaProvider = require('./OllamaProvider');
+const PerplexityProvider = require('./PerplexityProvider');
+const AIRouter = require('./AIRouter');
 
 module.exports = {
-  OllamaIntegration,
-  PerplexityIntegration
+  OllamaProvider,
+  PerplexityProvider,
+  AIRouter,
 };
