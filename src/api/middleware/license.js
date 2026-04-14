@@ -127,15 +127,26 @@ function validateLicenseKey(key) {
     }
 
     // Parse key: SOL-{TIER}-{userId}-{expiry}-{signature}
+    // Note: userId may contain hyphens, so we locate expiry (8-digit date) to split correctly
     const parts = key.split('-');
     if (parts.length < 5 || parts[0] !== 'SOL') {
         return { valid: false, error: 'Invalid key format' };
     }
 
     const tierStr = parts[1].toLowerCase();
-    const userId = parts[2];
-    const expiry = parts[3];
-    const providedSig = parts.slice(4).join('-'); // Handle dashes in signature
+
+    // Find the expiry field — 8-digit date (YYYYMMDD), searching from position 2 onward
+    let expiryIdx = -1;
+    for (let i = 2; i < parts.length - 1; i++) {
+        if (/^\d{8}$/.test(parts[i])) { expiryIdx = i; break; }
+    }
+    if (expiryIdx === -1) {
+        return { valid: false, error: 'Invalid key format — no expiry found' };
+    }
+
+    const userId = parts.slice(2, expiryIdx).join('-');
+    const expiry = parts[expiryIdx];
+    const providedSig = parts.slice(expiryIdx + 1).join('-');
 
     // Check tier
     if (!TIERS[tierStr]) {
