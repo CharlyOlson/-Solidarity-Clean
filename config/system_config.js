@@ -112,7 +112,7 @@ class UnifiedSystemConfiguration {
   // Load AI configuration
   loadAIConfig() {
     try {
-      const configPath = path.join(__dirname, '../ai_integration/ai_config.json');
+      const configPath = path.join(__dirname, '../src/ai/ai_config.json');
       if (fs.existsSync(configPath)) {
         const data = fs.readFileSync(configPath, 'utf8');
         return JSON.parse(data);
