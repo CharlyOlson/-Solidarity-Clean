@@ -1,57 +1,50 @@
 /**
  * SOLIDARITY PLATFORM - USER DASHBOARD
  * Real-time statistics and activity overview
+ *
+ * TRADEMARKED BY SCOTT CHARLES OLSON
  */
-
-
 
 import React, { useState, useEffect, useCallback } from 'react';
 import OperationalStatus from './OperationalStatus';
-const API_BASE = '';
+import { useChainData } from '../hooks/useChainData';
 
 export function Dashboard() {
-  const [systemStatus, setSystemStatus] = useState('Online');
-  const [safetyLevel, setSafetyLevel] = useState('0.618');
+  const {
+    loading: chainLoading,
+    error: chainError,
+    treasuryState,
+    coherenceScore,
+    coherenceLevel,
+    systemStatus,
+    deployerBalance,
+    refresh,
+  } = useChainData();
+
   const [wallets, setWallets] = useState([]);
   const [activityLog, setActivityLog] = useState([]);
   const [stats, setStats] = useState({ lockGate: 0, swaps: 0, notes: 0 });
-  const [balance, setBalance] = useState(0);
   const [username, setUsername] = useState('');
 
-
-  const loadDashboard = useCallback(() => {
+  const loadLocal = useCallback(() => {
     const user = JSON.parse(localStorage.getItem('solidarityUser') || '{}');
     if (user.username) setUsername(user.username);
-    const statsData = JSON.parse(localStorage.getItem('solidarityStats') || '{"lockGate":0,"swaps":0,"notes":0}');
+    const statsData = JSON.parse(
+      localStorage.getItem('solidarityStats') || '{"lockGate":0,"swaps":0,"notes":0}'
+    );
     setStats(statsData);
     setWallets(user.wallets || []);
-    const activities = JSON.parse(localStorage.getItem('solidarityActivity') || '[]');
+    const activities = JSON.parse(
+      localStorage.getItem('solidarityActivity') || '[]'
+    );
     setActivityLog(activities.slice(0, 10));
-    setSystemStatus(user.systemStatus || 'Online');
-    setSafetyLevel(user.safetyLevel || '0.618');
-    fetchSystemBalance();
   }, []);
 
   useEffect(() => {
-    loadDashboard();
-    const interval = setInterval(loadDashboard, 10000);
+    loadLocal();
+    const interval = setInterval(loadLocal, 10000);
     return () => clearInterval(interval);
-  }, [loadDashboard]); // Add loadDashboard as dependency
-
-
-
-  async function fetchSystemBalance() {
-    try {
-      const resp = await fetch(`${API_BASE}/devices/balance`, { method: 'POST' });
-      if (resp.ok) {
-        const data = await resp.json();
-        setBalance(data.balance);
-      }
-    } catch (e) {
-      // fallback to local value
-      setBalance(0);
-    }
-  }
+  }, [loadLocal]);
 
   function formatTime(timestamp) {
     const date = new Date(timestamp);
@@ -64,30 +57,32 @@ export function Dashboard() {
   }
 
   function addActivity(description) {
-    const activities = JSON.parse(localStorage.getItem('solidarityActivity') || '[]');
+    const activities = JSON.parse(
+      localStorage.getItem('solidarityActivity') || '[]'
+    );
     activities.unshift({
       timestamp: new Date().toISOString(),
-      description
+      description,
     });
-    localStorage.setItem('solidarityActivity', JSON.stringify(activities.slice(0, 50)));
-    loadDashboard();
+    localStorage.setItem(
+      'solidarityActivity',
+      JSON.stringify(activities.slice(0, 50))
+    );
+    loadLocal();
   }
 
-  // Quick actions
   function handleQuickLockGate() {
     addActivity('Navigated to Lock Gate');
-    // Implement navigation logic here
   }
   function handleQuickNote() {
     addActivity('Navigated to Quip Notes');
-    // Implement navigation logic here
   }
   function handleQuickSwap() {
     addActivity('Navigated to Device Exchange');
-    // Implement navigation logic here
   }
   function handleRefreshDash() {
-    loadDashboard();
+    loadLocal();
+    refresh();
     addActivity('Dashboard refreshed');
   }
 
@@ -97,12 +92,59 @@ export function Dashboard() {
       <div className="dashboard-header">
         <h1>Solidarity Platform Dashboard</h1>
         <div className="dashboard-status">
-          <span>Status: {systemStatus}</span>
-          <span>Safety Level: {safetyLevel}</span>
+          <span>Status: {chainLoading ? 'Connecting...' : systemStatus}</span>
+          <span>
+            Coherence: {coherenceScore} ({coherenceLevel})
+          </span>
         </div>
+        {chainError && (
+          <div style={{ color: '#ff6600', fontSize: '0.85rem' }}>
+            {chainError}
+          </div>
+        )}
         <div className="dashboard-user">User: {username}</div>
       </div>
+
       <div className="dashboard-content">
+        {/* Chain data section */}
+        <div className="dashboard-section">
+          <h2>Chain State (Sepolia)</h2>
+          {chainLoading ? (
+            <div>Loading chain data...</div>
+          ) : (
+            <div className="stats-list">
+              <div className="stat-item">
+                <span>Deployer Balance</span>
+                <span>{Number(deployerBalance).toFixed(4)} ETH</span>
+              </div>
+              <div className="stat-item">
+                <span>Distribution Count</span>
+                <span>{treasuryState.distributionCount}</span>
+              </div>
+              <div className="stat-item">
+                <span>Total Distributed</span>
+                <span>{Number(treasuryState.totalDistributed).toFixed(4)} ETH</span>
+              </div>
+              <div className="stat-item">
+                <span>Infrastructure Reserve</span>
+                <span>{treasuryState.infrastructureReserveBP} bp</span>
+              </div>
+              <div className="stat-item">
+                <span>Reserve Set</span>
+                <span>{treasuryState.infrastructureReserveSet ? 'Yes' : 'No'}</span>
+              </div>
+              <div className="stat-item">
+                <span>Coherence Score</span>
+                <span>{coherenceScore}</span>
+              </div>
+              <div className="stat-item">
+                <span>Coherence Level</span>
+                <span>{coherenceLevel}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="dashboard-section">
           <h2>Wallets</h2>
           <div className="wallet-list">
@@ -114,6 +156,7 @@ export function Dashboard() {
             ))}
           </div>
         </div>
+
         <div className="dashboard-section">
           <h2>Activity Log</h2>
           <div className="activity-log">
@@ -125,6 +168,7 @@ export function Dashboard() {
             ))}
           </div>
         </div>
+
         <div className="dashboard-section">
           <h2>Stats</h2>
           <div className="stats-list">
@@ -136,18 +180,26 @@ export function Dashboard() {
             ))}
           </div>
         </div>
-        <div className="dashboard-section">
-          <h2>Balance</h2>
-          <div className="balance-value">{balance.toFixed(3)}</div>
-        </div>
       </div>
+
       <div style={{ marginTop: 'var(--space-phi-squared)' }}>
-        <h3>🎯 Quick Actions</h3>
-        <div className="row" style={{ gap: 'var(--space-phi-minus)', flexWrap: 'wrap' }}>
-          <button className="btn" onClick={handleQuickLockGate}>🔒 New Lock Gate</button>
-          <button className="btn" onClick={handleQuickNote}>📝 New Note</button>
-          <button className="btn secondary" onClick={handleQuickSwap}>🔄 Device Swap</button>
-          <button className="btn secondary" onClick={handleRefreshDash}>🔃 Refresh</button>
+        <h3>Quick Actions</h3>
+        <div
+          className="row"
+          style={{ gap: 'var(--space-phi-minus)', flexWrap: 'wrap' }}
+        >
+          <button className="btn" onClick={handleQuickLockGate}>
+            New Lock Gate
+          </button>
+          <button className="btn" onClick={handleQuickNote}>
+            New Note
+          </button>
+          <button className="btn secondary" onClick={handleQuickSwap}>
+            Device Swap
+          </button>
+          <button className="btn secondary" onClick={handleRefreshDash}>
+            Refresh
+          </button>
         </div>
       </div>
     </div>

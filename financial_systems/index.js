@@ -25,6 +25,7 @@ const { FinancialOptimizer } = require('./financial_optimizer');
 const { FinancialConfiguration } = require('./financial_config');
 const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
 const { BridgingSafetyCoordinator } = require('../src/safety/BridgingSafetyCoordinator');
+const { ThreeBodyCoherence } = require('../src/core/ThreeBodyCoherence');
 
 // TreasuryManager ABI — all public functions
 const TREASURY_ABI = [
@@ -66,17 +67,41 @@ const TREASURY_ABI = [
   'event InfrastructureReserveSized(uint256 basisPoints)',
 ];
 
-// Default: deployed TreasuryManager on Sepolia
+// Default: deployed contracts on Sepolia
 const TREASURY_ADDRESS = '0x362DC26b4b084778DB9525DF5A1d4A344C9E0C64';
+const TOKEN_ADDRESS = '0xe12A8C0386429Eb6Db0101c358A8cc4b10e09d86';
+
+// SolidarityToken ABI
+const TOKEN_ABI = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function totalSupply() view returns (uint256)',
+  'function balanceOf(address) view returns (uint256)',
+  'function coherenceScore() view returns (uint256)',
+  'function getCoherenceLevel() view returns (string)',
+  'function getCoherenceHistoryLength() view returns (uint256)',
+  'function treasuryManager() view returns (address)',
+  'function coherenceGatingEnabled() view returns (bool)',
+  'function updateCoherence(uint256,uint256,uint256,uint256)',
+  'function setCoherenceGating(bool)',
+  'function CRITICAL_THRESHOLD() view returns (uint256)',
+  'function STABLE_THRESHOLD() view returns (uint256)',
+  'function ELEVATED_THRESHOLD() view returns (uint256)',
+];
 
 class SolidarityFinancialSystem {
   constructor() {
     this.version = '2.0.0';
     this.booted = false;
 
-    // Core math and safety
+    // Core math, safety, and coherence
     this.math = new CoreMathematicsEngine();
     this.safety = new BridgingSafetyCoordinator();
+    this.coherence = new ThreeBodyCoherence({
+      math: this.math,
+      safety: this.safety
+    });
 
     // Financial modules (initialized but not connected)
     this.blockchain = new BlockchainConnector({ testMode: true });
@@ -126,10 +151,17 @@ class SolidarityFinancialSystem {
     await this.contracts.connect(rpcUrl, privateKey);
     this.contracts.registerContract('TreasuryManager', treasuryAddr, TREASURY_ABI);
 
+    // Register SolidarityToken (SLDRT)
+    const tokenAddr = opts.tokenAddress || TOKEN_ADDRESS;
+    this.contracts.registerContract('SolidarityToken', tokenAddr, TOKEN_ABI);
+
     this.booted = true;
 
     // Read initial state
     const state = await this.getTreasuryState();
+
+    // Initialize coherence with current state
+    this.coherence.calculate();
 
     console.log('\n--- System Ready ---');
     console.log('Chain ID:', conn.chainId);
@@ -139,6 +171,9 @@ class SolidarityFinancialSystem {
     console.log('Infra Reserve:', state.infrastructureReserveBP + ' BP');
     console.log('Distributions:', state.distributionCount);
     console.log('Total Distributed:', state.totalDistributed);
+    console.log('Coherence:', this.coherence.getScore().toFixed(4),
+      '(' + this.coherence.getLevel() + ')');
+    console.log('Token:', tokenAddr);
     console.log('='.repeat(60));
 
     return { success: true, chainId: conn.chainId, state };
@@ -182,13 +217,39 @@ class SolidarityFinancialSystem {
   }
 
   /**
+   * Push current coherence score to the on-chain SolidarityToken.
+   * Syncs the off-chain ThreeBodyCoherence state to the contract.
+   */
+  async pushCoherenceOnChain() {
+    if (!this.booted) throw new Error('System not booted. Call boot() first.');
+
+    const state = this.coherence.getState();
+    const toUint = (v) => Math.round(v * 10000); // 0.618 -> 6180
+
+    console.log('Pushing coherence on-chain:', state.score.toFixed(4), '(' + state.level + ')');
+
+    const result = await this.contracts.callWrite(
+      'SolidarityToken', 'updateCoherence',
+      [toUint(state.score), toUint(state.bodies.safety), toUint(state.bodies.harmony), toUint(state.bodies.demand)]
+    );
+
+    if (result.success) {
+      console.log('Coherence pushed. Gas used:', result.gasUsed);
+    }
+    return result;
+  }
+
+  /**
    * Distribute revenue through TreasuryManager.
+   * Coherence-aware: records the transaction and recalculates system state.
    * @param {string} amountEth — Amount in ETH to distribute
    */
   async distribute(amountEth) {
     if (!this.booted) throw new Error('System not booted. Call boot() first.');
 
     console.log('Distributing', amountEth, 'ETH through TreasuryManager...');
+    console.log('Coherence before:', this.coherence.getScore().toFixed(4),
+      '(' + this.coherence.getLevel() + ')');
 
     const result = await this.contracts.callWrite(
       'TreasuryManager', 'distribute', [],
@@ -196,7 +257,16 @@ class SolidarityFinancialSystem {
     );
 
     if (result.success) {
+      // Record in coherence engine — updates demand + recalculates
+      const gasUsed = parseInt(result.gasUsed) || 0;
+      this.coherence.recordTransaction(
+        parseFloat(amountEth),
+        parseFloat(amountEth) * 0.001,  // approximate fee
+        gasUsed
+      );
       console.log('Distribution confirmed. Gas used:', result.gasUsed);
+      console.log('Coherence after:', this.coherence.getScore().toFixed(4),
+        '(' + this.coherence.getLevel() + ')');
     }
 
     return result;
@@ -229,10 +299,13 @@ class SolidarityFinancialSystem {
     console.log('  Total Distributed:', state.totalDistributed);
     console.log('  Distribution Count:', state.distributionCount);
 
+    // Three-Body Coherence
+    this.coherence.printReport();
+
     this.processor.printStatusReport();
     this.contracts.printStatusReport();
 
-    return { balance, state };
+    return { balance, state, coherence: this.coherence.getState() };
   }
 }
 
@@ -251,8 +324,11 @@ module.exports = {
   FinancialConfiguration,
   CoreMathematicsEngine,
   BridgingSafetyCoordinator,
+  ThreeBodyCoherence,
   TREASURY_ABI,
   TREASURY_ADDRESS,
+  TOKEN_ABI,
+  TOKEN_ADDRESS,
 };
 
 // Demo — boots the whole system

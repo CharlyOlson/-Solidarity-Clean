@@ -1,7 +1,7 @@
 /*
  * SOLIDARITY PLATFORM - WALLET MANAGER
  * ===================================
- * 
+ *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
  * DOB: March 31, 1997
@@ -13,6 +13,8 @@
 import React, { useMemo, useState } from 'react';
 import './WalletManager.css';
 import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS, SACRED_NODES } from '../config/constants';
+import { useChainData } from '../hooks/useChainData';
+import { TREASURY_SLOTS } from '../config/chain';
 
 const initialWallets = [
   { id: 'wlt-1', name: 'Primary', symbol: 'SOL', chain: 'Solidarity', balance: 2618.42, safetyLevel: BRIDGING_BASELINE },
@@ -27,10 +29,14 @@ const activitySeed = [
 ];
 
 function calculatePhiSplit(total, buckets) {
-  // Use sacred nodes for phi split if available
   const weights = buckets.map((_, i) => SACRED_NODES[i % SACRED_NODES.length]);
   const sum = weights.reduce((acc, w) => acc + w, 0);
   return buckets.map((_, i) => (weights[i] / sum) * total);
+}
+
+function truncateAddress(addr) {
+  if (!addr || addr.length < 10) return addr || '---';
+  return addr.slice(0, 6) + '...' + addr.slice(-4);
 }
 
 function WalletManager() {
@@ -38,6 +44,13 @@ function WalletManager() {
   const [activities, setActivities] = useState(activitySeed);
   const [selectedWallet, setSelectedWallet] = useState(initialWallets[0].id);
   const [form, setForm] = useState({ mode: 'send', amount: '', address: '', note: '' });
+
+  const {
+    loading: chainLoading,
+    error: chainError,
+    treasuryState,
+    deployerBalance,
+  } = useChainData();
 
   const totals = useMemo(() => {
     const totalBalance = wallets.reduce((acc, w) => acc + w.balance, 0);
@@ -82,7 +95,7 @@ function WalletManager() {
     <div className="wallet-manager">
       <header className="wm-header">
         <div>
-          <p className="wm-kicker">Solidarity Wallet Control · φ baseline {BRIDGING_BASELINE.toFixed(3)}</p>
+          <p className="wm-kicker">Solidarity Wallet Control · phi baseline {BRIDGING_BASELINE.toFixed(3)}</p>
           <h2>Wallet Manager</h2>
           <p className="wm-sub">Send, receive, and monitor holdings with sacred-node-aware safety.</p>
         </div>
@@ -93,11 +106,52 @@ function WalletManager() {
         </div>
       </header>
 
+      {/* Deployer balance from chain */}
+      <section style={{ padding: '12px 16px', background: '#f0f4f8', borderRadius: 8, margin: '0 0 16px' }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: '1rem' }}>Deployer Wallet (Sepolia)</h3>
+        {chainLoading ? (
+          <div>Loading chain data...</div>
+        ) : chainError ? (
+          <div style={{ color: '#ff6600' }}>{chainError}</div>
+        ) : (
+          <div>
+            <div style={{ fontFamily: 'monospace', fontSize: '0.85rem', marginBottom: 4 }}>
+              {treasuryState.ownerAddress || '---'}
+            </div>
+            <div>
+              <strong>{Number(deployerBalance).toFixed(4)} ETH</strong>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Treasury slot addresses */}
+      <section style={{ padding: '12px 16px', background: '#f9f9fb', borderRadius: 8, margin: '0 0 16px' }}>
+        <h3 style={{ margin: '0 0 8px', fontSize: '1rem' }}>Treasury Slot Addresses</h3>
+        {chainLoading ? (
+          <div>Loading...</div>
+        ) : chainError ? (
+          <div style={{ color: '#ff6600' }}>{chainError}</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px', fontSize: '0.85rem' }}>
+            {TREASURY_SLOTS.map((slot) => {
+              const addr = treasuryState.slotAddresses[slot.key];
+              return (
+                <div key={slot.key} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>{slot.label}</span>
+                  <span style={{ fontFamily: 'monospace' }}>{truncateAddress(addr)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
       <section className="wm-grid">
         <div className="wm-card">
           <div className="wm-card-head">
             <h3>Wallets</h3>
-            <span className="wm-pill">φ split</span>
+            <span className="wm-pill">phi split</span>
           </div>
           <div className="wm-wallet-list">
             {wallets.map((wallet, idx) => {
@@ -116,7 +170,7 @@ function WalletManager() {
                   <div className="wm-wallet-balance">
                     <strong>{wallet.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong>
                     <small className={delta >= 0 ? 'wm-positive' : 'wm-negative'}>
-                      {delta >= 0 ? '+' : ''}{delta.toFixed(2)} vs φ target
+                      {delta >= 0 ? '+' : ''}{delta.toFixed(2)} vs phi target
                     </small>
                   </div>
                 </button>
@@ -130,6 +184,9 @@ function WalletManager() {
             <h3>Send / Receive</h3>
             <span className="wm-pill secondary">Baseline {BRIDGING_BASELINE}</span>
           </div>
+          <p style={{ color: '#888', fontSize: '0.85rem', padding: '0 16px' }}>
+            On-chain transactions coming soon. Simulated mode below.
+          </p>
           <form className="wm-form" onSubmit={handleSubmit}>
             <div className="wm-toggle">
               <label>
@@ -184,7 +241,7 @@ function WalletManager() {
               />
             </div>
             <button type="submit" className="wm-submit">
-              {form.mode === 'send' ? 'Send Securely' : 'Acknowledge Receipt'}
+              {form.mode === 'send' ? 'Send (Simulated)' : 'Acknowledge Receipt'}
             </button>
           </form>
         </div>

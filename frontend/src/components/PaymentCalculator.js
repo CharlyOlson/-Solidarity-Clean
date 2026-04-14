@@ -14,6 +14,7 @@
 import React, { useState, useMemo } from 'react';
 import './PaymentCalculator.css';
 import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS } from '../config/constants';
+import { useChainData } from '../hooks/useChainData';
 
 // Industry standard fee rates
 const INDUSTRY_RATES = {
@@ -36,6 +37,17 @@ const PRESETS = [
 ];
 
 export default function PaymentCalculator() {
+  // Chain data for coherence-adjusted rate
+  const {
+    loading: chainLoading,
+    coherenceScore,
+    coherenceLevel,
+  } = useChainData();
+
+  // Coherence multiplier: lower coherence = slightly higher fee (1.0 - 1.15 range)
+  // Score 100 = 1.0x, score 0 = 1.15x
+  const coherenceMultiplier = 1 + 0.15 * (1 - Math.min(coherenceScore, 100) / 100);
+
   // Form state
   const [businessName, setBusinessName] = useState('');
   const [annualVolume, setAnnualVolume] = useState(1000000);
@@ -104,7 +116,7 @@ export default function PaymentCalculator() {
       // Apply φ-ratio optimization formula with safety-adjusted discount
       const volumeFactor = Math.log10(Math.max(methodVolume, 1)) / BASE_RATIO;
       const safetyMultiplier = 1 - (safetyConfig.discount * safetyLevel);
-      const optimizedRate = baseRate * (1 / (1 + volumeFactor)) * safetyMultiplier;
+      const optimizedRate = baseRate * (1 / (1 + volumeFactor)) * safetyMultiplier * coherenceMultiplier;
 
       totalFees += methodVolume * (optimizedRate / 100);
     }
@@ -174,7 +186,7 @@ export default function PaymentCalculator() {
       firstYearROI: savings > 0 ? ((savings - implementationCost) / implementationCost) * 100 : 0
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [annualVolume, paymentMix, safetyLevel, projectionYears, growthRate]);
+  }, [annualVolume, paymentMix, safetyLevel, projectionYears, growthRate, coherenceMultiplier]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // FORMAT HELPERS
@@ -389,8 +401,25 @@ export default function PaymentCalculator() {
         {/* Results Section */}
         <div className="calc-results">
           <div className="results-header">
-            <h3>📈 Your Savings Potential</h3>
-            <span className="phi-badge">φ = {BASE_RATIO}</span>
+            <h3>Your Savings Potential</h3>
+            <span className="phi-badge">phi = {BASE_RATIO}</span>
+            <span
+              className="phi-badge"
+              style={{
+                marginLeft: 8,
+                background:
+                  coherenceLevel === 'elevated' || coherenceLevel === 'stable'
+                    ? '#33cc66'
+                    : coherenceLevel === 'degraded'
+                    ? '#ffcc00'
+                    : '#ff6600',
+                color: '#fff',
+              }}
+            >
+              {chainLoading
+                ? 'Coherence: ...'
+                : `Coherence: ${coherenceScore} (${coherenceLevel})`}
+            </span>
           </div>
 
           {/* Key Metrics */}
