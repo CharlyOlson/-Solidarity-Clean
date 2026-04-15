@@ -66,10 +66,28 @@ body {
   font-family: 'Courier New', monospace;
 }
 
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .nav-tabs {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.nav-user {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #A68529;
+  white-space: nowrap;
+  padding: 0.4rem 0.8rem;
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 6px;
+  border: 1px solid #D4AF37;
 }
 
 .nav-tabs .tab {

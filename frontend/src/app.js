@@ -1,64 +1,98 @@
 /*
- * SOLIDARITY PLATFORM - MAIN APP WITH TAB NAVIGATION
- * ===================================================
+ * SOLIDARITY PLATFORM - MAIN APP WITH TWO-STATE UX
+ * ==================================================
+ * Browse State (unauthenticated): Login, News, Markets, About
+ * Auth State (authenticated): Profile, News, Markets, About, AI Chat,
+ *   Wallets, Hanko Stamps, Devices, Calculator
  *
- * TRADEMARK: Scott Charles Olson - March 31, 1997
+ * TRADEMARK: Scott Charles Olson — March 31, 1997
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.css';
+
+/* Browse-state components */
+import LoginRegister from './components/LoginRegister';
+import News from './components/News';
+import Markets from './components/Markets';
+import About from './components/About';
+
+/* Auth-state components */
+import UserProfile from './components/UserProfile';
 import OllamaHome from './components/OllamaHome';
-import UserLogs from './components/UserLogs';
+import WalletHub from './components/WalletHub';
 import HankoStamps from './components/HankoStamps';
-import WalletManager from './components/WalletManager';
-import Discover from './components/Discover';
 import TrustedDevices from './components/TrustedDevices';
-import ConnectedBanks from './components/ConnectedBanks';
 import PaymentCalculator from './components/PaymentCalculator';
 import LockGate from './components/LockGate';
-import { ensureDemoToken } from './utils/auth';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home');
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
+  const [activeTab, setActiveTab] = useState(() =>
+    localStorage.getItem('token') ? 'profile' : 'login'
+  );
 
-  // Ensure demo token exists on app load
-  useEffect(() => {
-    ensureDemoToken();
+  const handleLoginSuccess = useCallback(() => {
+    setIsAuthenticated(true);
+    setActiveTab('profile');
   }, []);
 
+  const handleLogout = useCallback(() => {
+    setIsAuthenticated(false);
+    setActiveTab('login');
+  }, []);
+
+  /* ── Tab definitions ── */
+  const browseTabs = [
+    { id: 'login', label: 'Login' },
+    { id: 'news', label: 'News' },
+    { id: 'markets', label: 'Markets' },
+    { id: 'about', label: 'About' },
+  ];
+
+  const authTabs = [
+    { id: 'profile', label: 'Profile' },
+    { id: 'news', label: 'News' },
+    { id: 'markets', label: 'Markets' },
+    { id: 'about', label: 'About' },
+    { id: 'ai', label: 'AI Chat' },
+    { id: 'wallets', label: 'Wallets' },
+    { id: 'hanko', label: 'Hanko Stamps' },
+    { id: 'devices', label: 'Devices' },
+    { id: 'calculator', label: 'Calculator' },
+  ];
+
+  const tabs = isAuthenticated ? authTabs : browseTabs;
+
+  /* ── Render active tab ── */
   const renderTab = () => {
     switch (activeTab) {
-      case 'home':
+      case 'login':
+        return <LoginRegister onLoginSuccess={handleLoginSuccess} />;
+      case 'profile':
+        return <UserProfile onLogout={handleLogout} />;
+      case 'news':
+        return <News />;
+      case 'markets':
+        return <Markets />;
+      case 'about':
+        return <About />;
+      case 'ai':
         return <OllamaHome />;
-      case 'logs':
-        return <UserLogs />;
+      case 'wallets':
+        return <WalletHub />;
       case 'hanko':
         return <HankoStamps />;
-      case 'wallet':
-        return <WalletManager />;
-      case 'discover':
-        return <Discover />;
       case 'devices':
         return <TrustedDevices />;
-      case 'banks':
-        return <ConnectedBanks />;
       case 'calculator':
         return <PaymentCalculator />;
       default:
-        return <OllamaHome />;
+        return isAuthenticated ? <UserProfile onLogout={handleLogout} /> : <LoginRegister onLoginSuccess={handleLoginSuccess} />;
     }
   };
 
-  const tabs = [
-    { id: 'home', label: 'Home' },
-    { id: 'logs', label: 'User Logs' },
-    { id: 'hanko', label: 'Hanko Stamps' },
-    { id: 'wallet', label: 'Wallet' },
-    { id: 'discover', label: 'Discover' },
-    { id: 'devices', label: 'Devices' },
-    { id: 'banks', label: 'Banks' },
-    { id: 'calculator', label: 'Calculator' },
-  ];
+  const displayName = localStorage.getItem('userDisplayName') || localStorage.getItem('userEmail') || '';
 
   return (
     <div className="app">
@@ -68,16 +102,21 @@ function App() {
           <h1>SOLIDARITY PLATFORM</h1>
           <p className="trademark">&copy; Scott Charles Olson &mdash; &phi; = 1.618</p>
         </div>
-        <div className="nav-tabs">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              className={activeTab === tab.id ? 'tab active' : 'tab'}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="nav-row">
+          <div className="nav-tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={activeTab === tab.id ? 'tab active' : 'tab'}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          {isAuthenticated && displayName && (
+            <span className="nav-user">{displayName}</span>
+          )}
         </div>
       </nav>
 

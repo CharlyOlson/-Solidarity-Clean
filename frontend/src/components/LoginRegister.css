@@ -1,0 +1,133 @@
+/* LOGIN / REGISTER — Stone + Gold theme */
+
+.login-register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 2rem;
+}
+
+.login-register-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  border: 1px solid #B8B5A8;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.lr-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.lr-header h2 {
+  font-size: 1.6rem;
+  color: #2C2C2C;
+  margin-bottom: 0.4rem;
+}
+
+.lr-subtitle {
+  font-size: 0.9rem;
+  color: #7A7A6C;
+}
+
+.lr-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border: 1px solid #B8B5A8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lr-toggle-btn {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  color: #7A7A6C;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lr-toggle-btn.active {
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
+  color: #fff;
+}
+
+.lr-error {
+  background: rgba(198, 40, 40, 0.1);
+  border: 1px solid #c62828;
+  color: #c62828;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.lr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.lr-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.lr-input {
+  padding: 0.7rem 1rem;
+  border: 1px solid #B8B5A8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.6);
+  color: #2C2C2C;
+  transition: border-color 0.2s ease;
+}
+
+.lr-input:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+}
+
+.lr-submit {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: 0.5rem;
+}
+
+.lr-submit:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+  transform: translateY(-1px);
+}
+
+.lr-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .login-register-card {
+    padding: 1.5rem;
+  }
+}

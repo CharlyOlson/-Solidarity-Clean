@@ -1,0 +1,67 @@
+/* ABOUT — Clean typography sections */
+
+.about-container {
+  padding: 2rem;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.about-section {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid #B8B5A8;
+  border-radius: 10px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.about-section h2 {
+  font-size: 1.3rem;
+  color: #A68529;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #D4AF37;
+  display: inline-block;
+}
+
+.about-section > p {
+  font-size: 0.95rem;
+  color: #3A3A34;
+  line-height: 1.65;
+}
+
+.about-functions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.about-func-item {
+  padding: 1rem;
+  border: 1px solid #D5D2C8;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.about-func-item h3 {
+  font-size: 1rem;
+  color: #2C2C2C;
+  margin-bottom: 0.4rem;
+}
+
+.about-func-item p {
+  font-size: 0.87rem;
+  color: #5A5A50;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    padding: 1rem;
+  }
+
+  .about-functions {
+    grid-template-columns: 1fr;
+  }
+}
