@@ -12,7 +12,7 @@
 
 import React, { useMemo, useState } from 'react';
 import './WalletManager.css';
-import { BASE_RATIO, BRIDGING_BASELINE, SAFETY_THRESHOLDS, SACRED_NODES } from '../config/constants';
+import { BRIDGING_BASELINE, SAFETY_THRESHOLDS, SACRED_NODES } from '../config/constants';
 import { useChainData } from '../hooks/useChainData';
 import { TREASURY_SLOTS } from '../config/chain';
 

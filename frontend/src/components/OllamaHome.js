@@ -11,7 +11,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
+import { BRIDGING_BASELINE } from '../config/constants';
 import './OllamaHome.css';
 import { API_BASE_URL } from '../config/api';
 

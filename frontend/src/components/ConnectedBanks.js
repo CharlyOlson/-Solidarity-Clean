@@ -9,7 +9,7 @@
 
 import React, { useState } from 'react';
 import './ConnectedBanks.css';
-import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
+import { BRIDGING_BASELINE } from '../config/constants';
 
 // Available banks for demo
 const AVAILABLE_BANKS = [
