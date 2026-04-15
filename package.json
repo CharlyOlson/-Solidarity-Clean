@@ -14,7 +14,7 @@
     "compile": "npx hardhat compile",
     "test:contracts": "npx hardhat test",
     "build": "npm run build:frontend",
-    "build:frontend": "cd frontend && npm run build",
+    "build:frontend": "cd frontend && npm install && npm run build",
     "deploy": "node scripts/deploy.js",
     "deploy:token": "node scripts/deploy_solidarity_token.js",
     "lint": "eslint src/ --ext .js,.jsx --fix",
