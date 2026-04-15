@@ -33,7 +33,7 @@ function LoginRegister({ onLoginSuccess }) {
       const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username: email, password }),
       });
 
       const data = await res.json();
@@ -46,8 +46,8 @@ function LoginRegister({ onLoginSuccess }) {
 
       localStorage.setItem('token', data.token);
       if (data.user) {
-        localStorage.setItem('userId', data.user.id || data.user.email);
-        localStorage.setItem('userEmail', data.user.email || email);
+        localStorage.setItem('userId', data.user.id || data.user.username);
+        localStorage.setItem('userEmail', data.user.username || data.user.email || email);
         localStorage.setItem('userTier', data.user.tier || 'Personal');
         localStorage.setItem('userDisplayName', data.user.displayName || '');
       }
