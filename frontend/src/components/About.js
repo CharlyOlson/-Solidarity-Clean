@@ -1,86 +1,112 @@
 /*
  * SOLIDARITY PLATFORM - ABOUT
  * ============================
- * Purpose, mission statement, and platform functions.
+ * Sales pitch with capability cards.
  * Grounded language — no hype per charter rules.
  */
 
 import React from 'react';
 import './About.css';
 
+const CAPABILITIES = [
+  {
+    title: 'Coherence-Gated Operations',
+    description:
+      'Every financial operation passes through a coherence gate before execution. The platform uses golden ratio (\u03c6 = 1.618) convergence as the mathematical validator \u2014 not rule-based compliance, but structural mathematical validation.',
+    quote:
+      "Your transactions aren\u2019t just checked against a list of rules. They\u2019re validated against the same proportional relationships that govern stable systems.",
+  },
+  {
+    title: 'Three-Body Validation',
+    description:
+      'Every transaction is checked across three independent mathematical dimensions. All three must converge before any operation executes, preventing single-point-of-failure in validation logic.',
+    quote: 'Three independent checks. All three agree, or nothing moves.',
+  },
+  {
+    title: 'Distributed Treasury Management',
+    description:
+      '17 on-chain slot wallets managed by smart contracts. Real fund distribution \u2014 not a single hot wallet. A 500 basis point infrastructure reserve ensures operational stability.',
+    quote:
+      'Your funds are distributed across purpose-built wallet slots, each managed by auditable smart contracts on Ethereum.',
+  },
+  {
+    title: 'Hanko Verification Stamps',
+    description:
+      'Cryptographic proof of identity tied to every action. Inspired by the Japanese hanko seal tradition, your digital signature carries weight. Every stamp is verifiable, timestamped, and permanent.',
+    quote:
+      "Every action you take is stamped with your cryptographic identity. Not just logged \u2014 sealed.",
+  },
+  {
+    title: 'AI-Assisted Analysis',
+    description:
+      'Context-aware AI that understands your financial position. Personal tier runs local AI through Ollama \u2014 your data stays on your machine. Pro and Business tiers use cloud AI with full platform context.',
+    quote: 'AI that works with your data, not just about your data.',
+  },
+  {
+    title: 'GENIUS Act Ready',
+    description:
+      'Built with the upcoming regulatory framework in mind. OCC rules take effect July 2026 with full activation in January 2027. Designed for compliance from day one, not retrofitted.',
+    quote:
+      "Regulatory compliance isn\u2019t an afterthought. The platform is built for the framework that\u2019s coming.",
+  },
+];
+
+const TIERS = [
+  {
+    name: 'Personal',
+    price: 'Free',
+    features: ['Local AI (Ollama)', 'Basic wallet', 'Community access', 'Sacred geometry tools'],
+  },
+  {
+    name: 'Pro',
+    price: '$29/mo',
+    features: ['Cloud AI', 'Advanced analytics', 'Priority support', 'All Personal features'],
+  },
+  {
+    name: 'Business',
+    price: 'Custom',
+    features: ['Treasury management', 'Multi-user accounts', 'Hanko verification', 'Full API access'],
+  },
+];
+
 function About() {
   return (
     <div className="about-container">
-      <section className="about-section">
-        <h2>Purpose</h2>
-        <p>
-          Solidarity is a financial equity platform that connects treasury management,
-          identity verification, and AI assistance into a single interface. It is built
-          to give individuals and small businesses access to the same financial tools
-          that larger institutions use, without requiring specialized knowledge to operate.
+      <section className="about-hero">
+        <h1 className="about-hero-title">Solidarity Platform</h1>
+        <p className="about-hero-tagline">
+          Financial infrastructure built on mathematical coherence.
+        </p>
+        <p className="about-hero-sub">
+          A platform where every transaction, every verification, and every AI response
+          is governed by the same mathematical principles that structure nature itself.
         </p>
       </section>
 
-      <section className="about-section">
-        <h2>Mission</h2>
-        <p>
-          To provide transparent, auditable financial infrastructure where every
-          transaction, allocation, and decision is traceable on-chain. The platform
-          prioritizes safety thresholds derived from the golden ratio, ensuring that
-          treasury distributions and fee calculations follow consistent mathematical
-          rules rather than arbitrary policies.
-        </p>
-      </section>
+      <div className="about-cards-grid">
+        {CAPABILITIES.map((cap) => (
+          <div className="about-card" key={cap.title}>
+            <h3 className="about-card-title">{cap.title}</h3>
+            <p className="about-card-desc">{cap.description}</p>
+            <blockquote className="about-card-quote">{cap.quote}</blockquote>
+          </div>
+        ))}
+      </div>
 
-      <section className="about-section">
-        <h2>Platform Functions</h2>
-        <div className="about-functions">
-          <div className="about-func-item">
-            <h3>Treasury Management</h3>
-            <p>
-              On-chain treasury with phi-ratio distribution across designated slots.
-              Reserve settings and distribution counts are publicly readable from the
-              Sepolia testnet contract.
-            </p>
-          </div>
-          <div className="about-func-item">
-            <h3>Coherence-Gated AI</h3>
-            <p>
-              An AI assistant whose access tier is determined by on-chain coherence
-              scores. Safety levels range from critical to optimal, each with defined
-              behavioral constraints.
-            </p>
-          </div>
-          <div className="about-func-item">
-            <h3>Wallet Connectivity</h3>
-            <p>
-              Crypto wallets, connected bank accounts, and payment methods in one hub.
-              Each connection type has an independent verification status.
-            </p>
-          </div>
-          <div className="about-func-item">
-            <h3>Hanko Stamps</h3>
-            <p>
-              Digital identity seals generated from seven personal markers through a
-              sudoku convergence algorithm. Used for authentication across personal,
-              registered, bank, and company contexts.
-            </p>
-          </div>
-          <div className="about-func-item">
-            <h3>Payment Calculator</h3>
-            <p>
-              B2B fee comparison tool that calculates traditional processing costs
-              against phi-ratio optimized rates. Includes multi-year projection and
-              break-even analysis.
-            </p>
-          </div>
-          <div className="about-func-item">
-            <h3>Device Trust</h3>
-            <p>
-              Manage trusted devices with revocable access. Trust ratios are calculated
-              using the golden ratio to weight device reliability and usage history.
-            </p>
-          </div>
+      <section className="about-tiers">
+        <h2 className="about-tiers-heading">Choose Your Tier</h2>
+        <div className="about-tiers-grid">
+          {TIERS.map((tier) => (
+            <div className="about-tier-card" key={tier.name}>
+              <h3 className="about-tier-name">{tier.name}</h3>
+              <span className="about-tier-price">{tier.price}</span>
+              <ul className="about-tier-features">
+                {tier.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
     </div>
