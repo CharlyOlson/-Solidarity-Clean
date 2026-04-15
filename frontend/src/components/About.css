@@ -154,7 +154,7 @@
 }
 
 .about-tier-features li::before {
-  content: '\u03c6';
+  content: '\03C6  ';
   position: absolute;
   left: 0;
   color: #D4AF37;
