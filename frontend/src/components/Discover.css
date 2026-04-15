@@ -1,15 +1,13 @@
 /*
  * SOLIDARITY PLATFORM - DISCOVER STYLES
- * ======================================
- * 
- * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
- * Owner: Scott Charles Olson
- * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+ * Sacred Geometry Stone Theme
+ *
+ * TRADEMARK: Scott Charles Olson
  */
 
 .discover {
   padding: 1.5rem;
-  color: #e8ecff;
+  color: #2C2C2C;
 }
 
 .disc-header {
@@ -22,7 +20,7 @@
 
 .disc-kicker {
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -30,25 +28,31 @@
 .disc-header h2 {
   font-size: 1.8rem;
   margin: 0.25rem 0;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .disc-sub {
-  color: #bcd3ff;
+  color: #5C5C50;
   max-width: 420px;
 }
 
 .disc-search input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #B8B5A8;
   border-radius: 10px;
   padding: 0.7rem 1rem;
   width: 260px;
-  color: #f5f7ff;
+  color: #2C2C2C;
+}
+
+.disc-search input:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .disc-search input::placeholder {
-  color: #8a9dc9;
+  color: #9E9E8E;
 }
 
 .disc-categories {
@@ -59,24 +63,25 @@
 }
 
 .disc-cat-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #B8B5A8;
   border-radius: 999px;
   padding: 0.5rem 1rem;
-  color: #cfd6ff;
+  color: #5C5C50;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .disc-cat-btn:hover {
-  border-color: rgba(255, 215, 0, 0.4);
-  color: #ffd700;
+  border-color: #D4AF37;
+  color: #A68529;
 }
 
 .disc-cat-btn.active {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 237, 78, 0.15) 100%);
-  border-color: rgba(255, 215, 0, 0.6);
-  color: #ffd700;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(232, 212, 139, 0.1) 100%);
+  border-color: #D4AF37;
+  color: #A68529;
+  font-weight: 600;
 }
 
 .disc-grid {
@@ -89,7 +94,7 @@
 .disc-sidebar h3 {
   margin: 0 0 1rem;
   font-size: 1.1rem;
-  color: #f1f4ff;
+  color: #2C2C2C;
 }
 
 .disc-cards {
@@ -99,24 +104,26 @@
 }
 
 .disc-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem;
   display: flex;
   gap: 0.75rem;
   align-items: flex-start;
   transition: border 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .disc-card:hover {
-  border-color: rgba(255, 215, 0, 0.5);
+  border-color: #D4AF37;
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.12);
 }
 
 .disc-card-icon {
   font-size: 2rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(212, 175, 55, 0.08);
   border-radius: 10px;
   width: 52px;
   height: 52px;
@@ -133,13 +140,13 @@
 .disc-card-body h4 {
   margin: 0 0 0.25rem;
   font-size: 1.05rem;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .disc-card-body p {
   margin: 0 0 0.5rem;
   font-size: 0.9rem;
-  color: #a8b8e0;
+  color: #5C5C50;
 }
 
 .disc-card-meta {
@@ -149,37 +156,37 @@
 }
 
 .disc-rating {
-  color: #ffd700;
+  color: #A68529;
 }
 
 .disc-users {
-  color: #9bb6ff;
+  color: #7A7A6C;
 }
 
 .disc-card-action {
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 8px;
   padding: 0.4rem 0.75rem;
-  color: #ffd700;
+  color: #A68529;
   cursor: pointer;
   font-weight: 600;
   transition: background 0.2s ease;
 }
 
 .disc-card-action:hover {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(212, 175, 55, 0.2);
 }
 
 .disc-empty {
-  color: #8a9dc9;
+  color: #9E9E8E;
   padding: 2rem;
   text-align: center;
 }
 
 .disc-sidebar > div {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -195,7 +202,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .disc-trending li:last-child {
@@ -203,12 +210,12 @@
 }
 
 .disc-tag {
-  color: #8fb8ff;
+  color: #A68529;
   font-weight: 600;
 }
 
 .disc-tag-count {
-  color: #7a8cb8;
+  color: #9E9E8E;
   font-size: 0.9rem;
 }
 
@@ -219,11 +226,11 @@
 }
 
 .disc-stat-row span {
-  color: #a8b8e0;
+  color: #5C5C50;
 }
 
 .disc-stat-row strong {
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 @media (max-width: 900px) {

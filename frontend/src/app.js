@@ -30,8 +30,6 @@ function App() {
     switch (activeTab) {
       case 'home':
         return <OllamaHome />;
-      case 'quipnotes':
-        return <div style={{padding: '2rem'}}>QuipNotes has been archived.</div>;
       case 'logs':
         return <UserLogs />;
       case 'hanko':
@@ -51,69 +49,35 @@ function App() {
     }
   };
 
+  const tabs = [
+    { id: 'home', label: 'Home' },
+    { id: 'logs', label: 'User Logs' },
+    { id: 'hanko', label: 'Hanko Stamps' },
+    { id: 'wallet', label: 'Wallet' },
+    { id: 'discover', label: 'Discover' },
+    { id: 'devices', label: 'Devices' },
+    { id: 'banks', label: 'Banks' },
+    { id: 'calculator', label: 'Calculator' },
+  ];
+
   return (
     <div className="app">
       {/* Main Navigation */}
       <nav className="main-nav">
         <div className="nav-brand">
           <h1>SOLIDARITY PLATFORM</h1>
-          <p className="trademark">© Scott Charles Olson - φ = 1.618</p>
+          <p className="trademark">&copy; Scott Charles Olson &mdash; &phi; = 1.618</p>
         </div>
         <div className="nav-tabs">
-          <button
-            className={activeTab === 'home' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('home')}
-          >
-            🏠 HOME
-          </button>
-          <button
-            className={activeTab === 'quipnotes' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('quipnotes')}
-          >
-            🌐 QuipNotes
-          </button>
-          <button
-            className={activeTab === 'logs' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('logs')}
-          >
-            📊 User Logs
-          </button>
-          <button
-            className={activeTab === 'hanko' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('hanko')}
-          >
-            🎴 Hanko Stamps
-          </button>
-          <button
-            className={activeTab === 'wallet' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('wallet')}
-          >
-            💰 Wallet
-          </button>
-          <button
-            className={activeTab === 'discover' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('discover')}
-          >
-            📊 Discover
-          </button>
-          <button
-            className={activeTab === 'devices' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('devices')}
-          >
-            📱 Devices
-          </button>
-          <button
-            className={activeTab === 'banks' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('banks')}
-          >
-            🏦 Banks
-          </button>
-          <button
-            className={activeTab === 'calculator' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('calculator')}
-          >
-            🧮 Calculator
-          </button>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={activeTab === tab.id ? 'tab active' : 'tab'}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </nav>
 

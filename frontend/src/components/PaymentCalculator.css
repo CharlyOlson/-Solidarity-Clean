@@ -1,14 +1,14 @@
 /*
  * SOLIDARITY PLATFORM - PAYMENT CALCULATOR STYLES
- * ================================================
- * 
+ * Sacred Geometry Stone Theme
+ *
  * TRADEMARK: Scott Charles Olson
  */
 
 .payment-calculator {
   min-height: 100%;
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
-  color: #e0e0e0;
+  background: linear-gradient(135deg, #D5D2C8 0%, #C8C4BA 50%, #D5D2C8 100%);
+  color: #2C2C2C;
   padding: 24px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -20,7 +20,7 @@
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  border-bottom: 1px solid #E8D48B;
 }
 
 .calc-title {
@@ -36,15 +36,12 @@
 .calc-title h2 {
   margin: 0;
   font-size: 28px;
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #A68529;
 }
 
 .calc-title p {
   margin: 4px 0 0;
-  color: #888;
+  color: #7A7A6C;
   font-size: 14px;
 }
 
@@ -53,12 +50,13 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 20px;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: #5C5C50;
 }
 
 .safety-dot {
@@ -70,17 +68,17 @@
 
 .safety-badge[data-level="CRITICAL_EMERGENCY"] .safety-dot,
 .safety-badge[data-level="CRITICAL_UPPER"] .safety-dot {
-  background: #f44336;
+  background: #c62828;
 }
 
 .safety-badge[data-level="WARNING_LEVEL"] .safety-dot,
 .safety-badge[data-level="UPPER_WARNING"] .safety-dot {
-  background: #ff9800;
+  background: #e65100;
 }
 
 .safety-badge[data-level="CAUTION_RANGE"] .safety-dot,
 .safety-badge[data-level="UPPER_CAUTION"] .safety-dot {
-  background: #ffeb3b;
+  background: #f9a825;
 }
 
 /* Body Layout */
@@ -104,16 +102,17 @@
 }
 
 .input-section {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 16px;
   padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .input-section h3 {
   margin: 0 0 16px;
   font-size: 16px;
-  color: #ffd700;
+  color: #A68529;
 }
 
 .input-group {
@@ -124,25 +123,25 @@
   display: block;
   margin-bottom: 8px;
   font-size: 13px;
-  color: #aaa;
+  color: #5C5C50;
 }
 
 .input-group input[type="text"],
 .input-group input[type="number"] {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #B8B5A8;
   border-radius: 8px;
-  color: #fff;
+  color: #2C2C2C;
   font-size: 16px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #ffd700;
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .input-with-prefix {
@@ -154,7 +153,7 @@
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #888;
+  color: #7A7A6C;
   font-size: 16px;
 }
 
@@ -168,7 +167,7 @@
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #D5D2C8;
   border-radius: 3px;
   outline: none;
 }
@@ -178,10 +177,10 @@
   appearance: none;
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  background: linear-gradient(135deg, #D4AF37, #BF9B30);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
 }
 
 /* Presets */
@@ -194,36 +193,37 @@
 
 .preset-btn {
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #B8B5A8;
   border-radius: 20px;
-  color: #aaa;
+  color: #5C5C50;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .preset-btn:hover {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: rgba(255, 215, 0, 0.3);
-  color: #ffd700;
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+  color: #A68529;
 }
 
 .preset-btn.active {
-  background: rgba(255, 215, 0, 0.2);
-  border-color: #ffd700;
-  color: #ffd700;
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #D4AF37;
+  color: #A68529;
+  font-weight: 600;
 }
 
 /* Payment Mix */
 .mix-total {
   font-size: 12px;
-  color: #888;
+  color: #7A7A6C;
   margin-bottom: 12px;
 }
 
 .mix-total[data-valid="false"] {
-  color: #f44336;
+  color: #c62828;
 }
 
 .payment-mix-grid {
@@ -243,7 +243,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #aaa;
+  color: #5C5C50;
 }
 
 .mix-icon {
@@ -253,10 +253,10 @@
 .rate-badge {
   margin-left: auto;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   font-size: 10px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .mix-input {
@@ -268,16 +268,16 @@
 .mix-input input {
   width: 60px;
   padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #B8B5A8;
   border-radius: 6px;
-  color: #fff;
+  color: #2C2C2C;
   font-size: 14px;
   text-align: center;
 }
 
 .mix-input span {
-  color: #888;
+  color: #7A7A6C;
   font-size: 12px;
 }
 
@@ -291,14 +291,14 @@
   -webkit-appearance: none;
   appearance: none;
   height: 8px;
-  background: linear-gradient(to right, 
-    #f44336 0%, 
-    #ff9800 15%, 
-    #ffeb3b 25%, 
-    #4caf50 50%, 
-    #ffeb3b 75%, 
-    #ff9800 85%, 
-    #f44336 100%
+  background: linear-gradient(to right,
+    #c62828 0%,
+    #e65100 15%,
+    #f9a825 25%,
+    #4caf50 50%,
+    #f9a825 75%,
+    #e65100 85%,
+    #c62828 100%
   );
   border-radius: 4px;
   outline: none;
@@ -310,9 +310,10 @@
   width: 24px;
   height: 24px;
   background: #fff;
+  border: 2px solid #B8B5A8;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .safety-labels {
@@ -320,11 +321,11 @@
   justify-content: space-between;
   margin-top: 8px;
   font-size: 11px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .safety-value {
-  color: #ffd700;
+  color: #A68529;
   font-weight: 600;
 }
 
@@ -333,30 +334,31 @@
   width: 100%;
   padding: 12px;
   background: none;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px dashed #B8B5A8;
   border-radius: 8px;
-  color: #888;
+  color: #7A7A6C;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .advanced-toggle:hover {
-  border-color: rgba(255, 215, 0, 0.4);
-  color: #ffd700;
+  border-color: #D4AF37;
+  color: #A68529;
 }
 
 .input-section.advanced {
   border-style: dashed;
-  border-color: rgba(255, 215, 0, 0.2);
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
 /* Results Section */
 .calc-results {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 215, 0, 0.15);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 20px;
   padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .results-header {
@@ -369,16 +371,16 @@
 .results-header h3 {
   margin: 0;
   font-size: 20px;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .phi-badge {
   padding: 6px 12px;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 170, 0, 0.1));
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(191, 155, 48, 0.08));
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 20px;
   font-size: 12px;
-  color: #ffd700;
+  color: #A68529;
   font-weight: 600;
 }
 
@@ -394,51 +396,48 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
 }
 
 .metric-label {
   font-size: 12px;
-  color: #888;
+  color: #7A7A6C;
   margin-bottom: 8px;
 }
 
 .metric-value {
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .metric-sub {
   font-size: 11px;
-  color: #666;
+  color: #9E9E8E;
   margin-top: 4px;
 }
 
 .metric-card.current .metric-value {
-  color: #f44336;
+  color: #c62828;
 }
 
 .metric-card.optimized .metric-value {
-  color: #4caf50;
+  color: #388E3C;
 }
 
 .metric-card.savings.highlight {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.05));
-  border-color: rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(191, 155, 48, 0.05));
+  border-color: rgba(212, 175, 55, 0.3);
 }
 
 .metric-card.savings .metric-value {
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #A68529;
 }
 
 .savings-percent {
-  color: #4caf50 !important;
+  color: #388E3C !important;
   font-weight: 600;
 }
 
@@ -446,14 +445,14 @@
 .roi-section {
   margin-bottom: 24px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 12px;
 }
 
 .roi-section h4 {
   margin: 0 0 16px;
   font-size: 14px;
-  color: #aaa;
+  color: #5C5C50;
 }
 
 .roi-grid {
@@ -469,18 +468,18 @@
 .roi-label {
   display: block;
   font-size: 11px;
-  color: #888;
+  color: #7A7A6C;
   margin-bottom: 4px;
 }
 
 .roi-value {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .roi-value.positive {
-  color: #4caf50;
+  color: #388E3C;
 }
 
 /* Projection Chart */
@@ -491,7 +490,7 @@
 .projection-section h4 {
   margin: 0 0 16px;
   font-size: 14px;
-  color: #aaa;
+  color: #5C5C50;
 }
 
 .projection-chart {
@@ -500,7 +499,7 @@
   justify-content: space-between;
   height: 150px;
   padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #D5D2C8;
 }
 
 .projection-bar-container {
@@ -513,7 +512,7 @@
 
 .projection-bar {
   width: 60%;
-  background: linear-gradient(to top, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.8));
+  background: linear-gradient(to top, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.7));
   border-radius: 4px 4px 0 0;
   display: flex;
   align-items: flex-start;
@@ -524,14 +523,15 @@
 
 .bar-value {
   font-size: 10px;
-  color: #fff;
+  color: #2C2C2C;
   white-space: nowrap;
+  font-weight: 600;
 }
 
 .bar-label {
   margin-top: 8px;
   font-size: 11px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .projection-summary {
@@ -540,21 +540,18 @@
   align-items: center;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #D5D2C8;
 }
 
 .projection-summary span:first-child {
   font-size: 13px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .total-savings {
   font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #A68529;
 }
 
 /* Benefits */
@@ -565,7 +562,7 @@
 .benefits-section h4 {
   margin: 0 0 16px;
   font-size: 14px;
-  color: #aaa;
+  color: #5C5C50;
 }
 
 .benefits-grid {
@@ -580,7 +577,7 @@
   align-items: center;
   text-align: center;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 12px;
 }
 
@@ -592,13 +589,13 @@
 .benefit-value {
   font-size: 18px;
   font-weight: 600;
-  color: #ffd700;
+  color: #A68529;
   margin-bottom: 4px;
 }
 
 .benefit-label {
   font-size: 11px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 /* Calculate Button */
@@ -611,7 +608,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s;
-  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  background: linear-gradient(135deg, #4caf50, #388E3C);
   border: 2px solid #4caf50;
   color: #fff;
   text-transform: uppercase;
@@ -620,8 +617,8 @@
 
 .calculate-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
-  background: linear-gradient(135deg, #66bb6a, #43a047);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
 }
 
 .calculate-btn:active {
@@ -631,7 +628,7 @@
 .last-calc {
   text-align: center;
   font-size: 12px;
-  color: #666;
+  color: #9E9E8E;
   margin-top: 8px;
 }
 
@@ -653,38 +650,38 @@
 }
 
 .cta-primary {
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  background: linear-gradient(135deg, #D4AF37, #BF9B30);
   border: none;
-  color: #000;
+  color: #fff;
 }
 
 .cta-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
 }
 
 .cta-secondary {
   background: transparent;
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  color: #ffd700;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #A68529;
 }
 
 .cta-secondary:hover {
-  background: rgba(255, 215, 0, 0.1);
+  background: rgba(212, 175, 55, 0.08);
 }
 
 /* Footer */
 .calc-footer {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #D5D2C8;
   text-align: center;
 }
 
 .calc-footer p {
   margin: 0;
   font-size: 12px;
-  color: #666;
+  color: #9E9E8E;
 }
 
 /* Responsive */
@@ -692,27 +689,27 @@
   .payment-calculator {
     padding: 16px;
   }
-  
+
   .calc-header {
     flex-direction: column;
     gap: 16px;
     text-align: center;
   }
-  
+
   .calc-title {
     flex-direction: column;
   }
-  
+
   .metrics-grid,
   .roi-grid,
   .benefits-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .payment-mix-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .cta-section {
     flex-direction: column;
   }

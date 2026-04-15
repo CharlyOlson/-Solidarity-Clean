@@ -1,4 +1,6 @@
-/* SOLIDARITY PLATFORM - MAIN APP STYLES */
+/* SOLIDARITY PLATFORM - MAIN APP STYLES
+ * Sacred Geometry Theme — Engraved Flower of Life on Stone
+ */
 
 * {
   box-sizing: border-box;
@@ -7,31 +9,43 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-  color: #e0e0e0;
+  background: #D5D2C8;
+  color: #2C2C2C;
   min-height: 100vh;
 }
+
+/* ============================================================
+   ENGRAVED FLOWER OF LIFE — SVG BACKGROUND PATTERN
+   Rendered as carved-into-stone using 14% opacity variations
+   of the grey base with light/shadow offset for 3D depth.
+   ============================================================ */
 
 .app {
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  background-color: #D5D2C8;
+  /* Inline SVG flower of life — tiling engraved pattern */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='174'%3E%3Cdefs%3E%3Cfilter id='engrave'%3E%3CfeGaussianBlur in='SourceAlpha' stdDeviation='1' result='blur'/%3E%3CfeOffset in='blur' dx='-0.7' dy='-0.7' result='lightOffset'/%3E%3CfeOffset in='blur' dx='0.7' dy='0.7' result='shadowOffset'/%3E%3CfeFlood flood-color='%23E8E5DC' flood-opacity='0.14' result='lightColor'/%3E%3CfeFlood flood-color='%23A8A598' flood-opacity='0.14' result='shadowColor'/%3E%3CfeComposite in='lightColor' in2='lightOffset' operator='in' result='light'/%3E%3CfeComposite in='shadowColor' in2='shadowOffset' operator='in' result='shadow'/%3E%3CfeMerge%3E%3CfeMergeNode in='light'/%3E%3CfeMergeNode in='shadow'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23engrave)' fill='none' stroke='%23B8B5A8' stroke-width='0.8'%3E%3Ccircle cx='100' cy='87' r='29'/%3E%3Ccircle cx='100' cy='58' r='29'/%3E%3Ccircle cx='100' cy='116' r='29'/%3E%3Ccircle cx='125' cy='72.5' r='29'/%3E%3Ccircle cx='75' cy='72.5' r='29'/%3E%3Ccircle cx='125' cy='101.5' r='29'/%3E%3Ccircle cx='75' cy='101.5' r='29'/%3E%3Ccircle cx='100' cy='29' r='29'/%3E%3Ccircle cx='100' cy='145' r='29'/%3E%3Ccircle cx='150' cy='58' r='29'/%3E%3Ccircle cx='50' cy='58' r='29'/%3E%3Ccircle cx='150' cy='116' r='29'/%3E%3Ccircle cx='50' cy='116' r='29'/%3E%3Ccircle cx='150' cy='87' r='29'/%3E%3Ccircle cx='50' cy='87' r='29'/%3E%3Ccircle cx='125' cy='43.5' r='29'/%3E%3Ccircle cx='75' cy='43.5' r='29'/%3E%3Ccircle cx='125' cy='130.5' r='29'/%3E%3Ccircle cx='75' cy='130.5' r='29'/%3E%3Cline x1='100' y1='87' x2='100' y2='29' stroke-width='0.4'/%3E%3Cline x1='100' y1='87' x2='100' y2='145' stroke-width='0.4'/%3E%3Cline x1='100' y1='87' x2='150' y2='58' stroke-width='0.4'/%3E%3Cline x1='100' y1='87' x2='50' y2='58' stroke-width='0.4'/%3E%3Cline x1='100' y1='87' x2='150' y2='116' stroke-width='0.4'/%3E%3Cline x1='100' y1='87' x2='50' y2='116' stroke-width='0.4'/%3E%3Cline x1='100' y1='29' x2='150' y2='58' stroke-width='0.4'/%3E%3Cline x1='150' y1='58' x2='150' y2='116' stroke-width='0.4'/%3E%3Cline x1='150' y1='116' x2='100' y2='145' stroke-width='0.4'/%3E%3Cline x1='100' y1='145' x2='50' y2='116' stroke-width='0.4'/%3E%3Cline x1='50' y1='116' x2='50' y2='58' stroke-width='0.4'/%3E%3Cline x1='50' y1='58' x2='100' y2='29' stroke-width='0.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 174px;
 }
 
-/* Main Navigation */
+/* Main Navigation — clean horizontal nav on stone */
 .main-nav {
-  background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+  background: linear-gradient(180deg, #EAE7DF 0%, #E2DED5 100%);
   padding: 1rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   position: sticky;
   top: 0;
   z-index: 1000;
+  border-bottom: 2px solid #D4AF37;
 }
 
 .nav-brand {
@@ -41,16 +55,13 @@ body {
 .nav-brand h1 {
   font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #A68529;
   letter-spacing: 2px;
 }
 
 .trademark {
   font-size: 0.75rem;
-  color: #a0a0a0;
+  color: #7A7A6C;
   margin-top: 0.25rem;
   font-family: 'Courier New', monospace;
 }
@@ -62,29 +73,30 @@ body {
 }
 
 .nav-tabs .tab {
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
-  color: #e0e0e0;
-  font-size: 0.95rem;
+  padding: 0.6rem 1.25rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #B8B5A8;
+  border-radius: 6px;
+  color: #2C2C2C;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  letter-spacing: 0.5px;
 }
 
 .nav-tabs .tab:hover {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: rgba(255, 215, 0, 0.6);
-  transform: translateY(-2px);
+  background: #F5E6B8;
+  border-color: #D4AF37;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
 }
 
 .nav-tabs .tab.active {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 237, 78, 0.2) 100%);
-  border-color: #ffd700;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
+  border-color: #A68529;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.35);
 }
 
 /* Tab Content Area */
@@ -102,32 +114,32 @@ body {
   align-items: center;
   min-height: 400px;
   font-size: 1.2rem;
-  color: #ffd700;
+  color: #D4AF37;
 }
 
 /* Error State */
 .error {
   padding: 2rem;
   text-align: center;
-  color: #ff6b6b;
+  color: #c62828;
 }
 
-/* Scrollbar Styling */
+/* Scrollbar Styling — subtle stone tones */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: #E2DED5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 215, 0, 0.3);
-  border-radius: 6px;
+  background: #B8B5A8;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 215, 0, 0.5);
+  background: #9E9E8E;
 }
 
 /* Responsive Design */
@@ -145,7 +157,7 @@ body {
   }
 
   .nav-tabs .tab {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
   }
 }

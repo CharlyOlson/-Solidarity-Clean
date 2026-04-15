@@ -1,15 +1,13 @@
 /*
  * SOLIDARITY PLATFORM - CONNECTED BANKS STYLES
- * =============================================
- * 
- * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
- * Owner: Scott Charles Olson
- * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+ * Sacred Geometry Stone Theme
+ *
+ * TRADEMARK: Scott Charles Olson
  */
 
 .connected-banks {
   padding: 1.5rem;
-  color: #e8ecff;
+  color: #2C2C2C;
 }
 
 .cb-header {
@@ -22,7 +20,7 @@
 
 .cb-kicker {
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -30,11 +28,11 @@
 .cb-header h2 {
   font-size: 1.8rem;
   margin: 0.25rem 0;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .cb-sub {
-  color: #bcd3ff;
+  color: #5C5C50;
   max-width: 380px;
 }
 
@@ -50,20 +48,20 @@
 .cb-overview-item span {
   display: block;
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
 }
 
 .cb-overview-item strong {
   font-size: 1.4rem;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .cb-overview-item strong.positive {
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 .cb-overview-item strong.negative {
-  color: #ff9b9b;
+  color: #c62828;
 }
 
 .cb-actions {
@@ -71,11 +69,11 @@
 }
 
 .cb-link-btn {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 237, 78, 0.14) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.5);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(232, 212, 139, 0.1) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 10px;
   padding: 0.65rem 1.25rem;
-  color: #ffd700;
+  color: #A68529;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -83,7 +81,7 @@
 
 .cb-link-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.15);
 }
 
 .cb-list {
@@ -94,23 +92,24 @@
 }
 
 .cb-bank {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   transition: border 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .cb-bank:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: #D4AF37;
 }
 
 .cb-bank-icon {
   font-size: 1.75rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(212, 175, 55, 0.08);
   border-radius: 10px;
   width: 48px;
   height: 48px;
@@ -130,7 +129,7 @@
 }
 
 .cb-bank-meta {
-  color: #9bb6ff;
+  color: #7A7A6C;
   font-size: 0.9rem;
 }
 
@@ -145,16 +144,16 @@
 }
 
 .cb-bank-balance strong.positive {
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 .cb-bank-balance strong.negative {
-  color: #ff9b9b;
+  color: #c62828;
 }
 
 .cb-bank-balance span {
   font-size: 0.85rem;
-  color: #7a8cb8;
+  color: #9E9E8E;
 }
 
 .cb-bank-status {
@@ -169,21 +168,21 @@
 }
 
 .cb-status.connected {
-  background: rgba(124, 255, 212, 0.12);
-  border: 1px solid rgba(124, 255, 212, 0.4);
-  color: #7cffe0;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.35);
+  color: #388E3C;
 }
 
 .cb-status.attention {
-  background: rgba(255, 215, 0, 0.12);
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  color: #ffd700;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #A68529;
 }
 
 .cb-status.disconnected {
-  background: rgba(255, 155, 155, 0.12);
-  border: 1px solid rgba(255, 155, 155, 0.4);
-  color: #ff9b9b;
+  background: rgba(198, 40, 40, 0.08);
+  border: 1px solid rgba(198, 40, 40, 0.25);
+  color: #c62828;
 }
 
 .cb-bank-actions {
@@ -201,45 +200,45 @@
 }
 
 .cb-refresh {
-  background: rgba(123, 178, 255, 0.1);
-  border: 1px solid rgba(123, 178, 255, 0.4);
-  color: #8fb8ff;
+  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #388E3C;
 }
 
 .cb-refresh:hover {
-  background: rgba(123, 178, 255, 0.18);
+  background: rgba(76, 175, 80, 0.15);
 }
 
 .cb-disconnect {
-  background: rgba(255, 155, 155, 0.08);
-  border: 1px solid rgba(255, 155, 155, 0.3);
-  color: #ff9b9b;
+  background: rgba(198, 40, 40, 0.06);
+  border: 1px solid rgba(198, 40, 40, 0.25);
+  color: #c62828;
 }
 
 .cb-disconnect:hover {
-  background: rgba(255, 155, 155, 0.15);
+  background: rgba(198, 40, 40, 0.12);
 }
 
 .cb-empty {
   text-align: center;
   padding: 3rem;
-  color: #8a9dc9;
+  color: #9E9E8E;
 }
 
 .cb-empty button {
   margin-top: 1rem;
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.5);
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 10px;
   padding: 0.6rem 1.2rem;
-  color: #ffd700;
+  color: #A68529;
   font-weight: 600;
   cursor: pointer;
 }
 
 .cb-security-note {
-  background: rgba(124, 255, 212, 0.05);
-  border: 1px solid rgba(124, 255, 212, 0.2);
+  background: rgba(76, 175, 80, 0.05);
+  border: 1px solid rgba(76, 175, 80, 0.2);
   border-radius: 12px;
   padding: 1rem 1.25rem;
 }
@@ -247,41 +246,43 @@
 .cb-security-note h3 {
   margin: 0 0 0.5rem;
   font-size: 1rem;
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 .cb-security-note p {
   margin: 0;
-  color: #a8b8e0;
+  color: #5C5C50;
   font-size: 0.95rem;
 }
 
 .cb-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(44, 44, 44, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .cb-modal {
-  background: linear-gradient(135deg, #1a1f3d 0%, #0d1225 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #EAE7DF;
+  border: 2px solid #D4AF37;
   border-radius: 16px;
   padding: 1.5rem;
   max-width: 420px;
   width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .cb-modal h3 {
   margin: 0 0 0.25rem;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .cb-modal > p {
-  color: #bcd3ff;
+  color: #5C5C50;
   margin-bottom: 1rem;
 }
 
@@ -293,8 +294,8 @@
 }
 
 .cb-bank-option {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 10px;
   padding: 0.75rem;
   display: flex;
@@ -302,13 +303,13 @@
   align-items: center;
   gap: 0.3rem;
   cursor: pointer;
-  color: #cfd6ff;
+  color: #5C5C50;
   transition: all 0.2s ease;
 }
 
 .cb-bank-option:hover {
-  border-color: rgba(255, 215, 0, 0.5);
-  color: #ffd700;
+  border-color: #D4AF37;
+  color: #A68529;
 }
 
 .cb-bank-logo {
@@ -322,28 +323,28 @@
 
 .cb-modal-footer input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #B8B5A8;
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
-  color: #f5f7ff;
+  color: #2C2C2C;
 }
 
 .cb-modal-footer input::placeholder {
-  color: #7a8cb8;
+  color: #9E9E8E;
 }
 
 .cb-modal-cancel {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #B8B5A8;
   border-radius: 8px;
   padding: 0.6rem 1rem;
-  color: #cfd6ff;
+  color: #5C5C50;
   cursor: pointer;
 }
 
 .cb-modal-cancel:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: #9E9E8E;
 }
 
 @media (max-width: 800px) {

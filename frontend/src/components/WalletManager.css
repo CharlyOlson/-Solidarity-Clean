@@ -1,18 +1,13 @@
 /*
  * SOLIDARITY PLATFORM - WALLET MANAGER STYLES
- * ==========================================
- * 
- * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
- * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
- * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+ * Sacred Geometry Stone Theme
+ *
+ * TRADEMARK: Scott Charles Olson
  */
 
 .wallet-manager {
   padding: 1.5rem;
-  color: #e8ecff;
+  color: #2C2C2C;
 }
 
 .wm-header {
@@ -25,7 +20,7 @@
 
 .wm-kicker {
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -33,17 +28,17 @@
 .wm-header h2 {
   font-size: 1.8rem;
   margin: 0.25rem 0;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .wm-sub {
-  color: #bcd3ff;
+  color: #5C5C50;
   max-width: 540px;
 }
 
 .wm-total {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(255, 255, 255, 0.4) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   padding: 1rem 1.25rem;
   border-radius: 14px;
   text-align: right;
@@ -53,17 +48,17 @@
 .wm-total span {
   display: block;
   font-size: 0.9rem;
-  color: #f4e6a1;
+  color: #A68529;
 }
 
 .wm-total strong {
   display: block;
   font-size: 1.7rem;
-  color: #ffffff;
+  color: #2C2C2C;
 }
 
 .wm-total small {
-  color: #cfd6ff;
+  color: #7A7A6C;
 }
 
 .wm-grid {
@@ -73,11 +68,16 @@
 }
 
 .wm-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.2s ease;
+}
+
+.wm-card:hover {
+  border-color: #D4AF37;
 }
 
 .wm-card-head {
@@ -90,28 +90,28 @@
 .wm-card h3 {
   margin: 0;
   font-size: 1.1rem;
-  color: #f1f4ff;
+  color: #2C2C2C;
 }
 
 .wm-pill {
   padding: 0.3rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 215, 0, 0.5);
-  color: #ffd700;
-  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #A68529;
+  background: rgba(212, 175, 55, 0.08);
   font-size: 0.8rem;
 }
 
 .wm-pill.secondary {
-  border-color: rgba(123, 178, 255, 0.6);
-  color: #8fb8ff;
-  background: rgba(123, 178, 255, 0.1);
+  border-color: rgba(76, 175, 80, 0.5);
+  color: #388E3C;
+  background: rgba(76, 175, 80, 0.08);
 }
 
 .wm-pill.tertiary {
-  border-color: rgba(124, 255, 212, 0.6);
-  color: #7cffe0;
-  background: rgba(124, 255, 212, 0.08);
+  border-color: #B8B5A8;
+  color: #5C5C50;
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .wm-wallet-list {
@@ -122,8 +122,8 @@
 
 .wm-wallet {
   width: 100%;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid #B8B5A8;
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
   display: flex;
@@ -131,18 +131,18 @@
   justify-content: space-between;
   cursor: pointer;
   text-align: left;
-  color: #e8ecff;
+  color: #2C2C2C;
   transition: border 0.2s ease, transform 0.2s ease;
 }
 
 .wm-wallet:hover {
-  border-color: rgba(255, 215, 0, 0.6);
+  border-color: #D4AF37;
   transform: translateY(-2px);
 }
 
 .wm-wallet.active {
-  border-color: #ffd700;
-  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.3);
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
 }
 
 .wm-wallet-name {
@@ -151,7 +151,7 @@
 }
 
 .wm-wallet-meta {
-  color: #9bb6ff;
+  color: #7A7A6C;
   font-size: 0.9rem;
 }
 
@@ -169,11 +169,11 @@
 }
 
 .wm-positive {
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 .wm-negative {
-  color: #ff9b9b;
+  color: #c62828;
 }
 
 .wm-form {
@@ -186,7 +186,7 @@
   display: flex;
   gap: 1rem;
   font-weight: 600;
-  color: #dfe6ff;
+  color: #2C2C2C;
 }
 
 .wm-field {
@@ -197,25 +197,32 @@
 
 .wm-field label {
   font-size: 0.95rem;
-  color: #cfd6ff;
+  color: #5C5C50;
 }
 
 .wm-field input,
 .wm-field select {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #B8B5A8;
   border-radius: 8px;
   padding: 0.65rem 0.75rem;
-  color: #f5f7ff;
+  color: #2C2C2C;
+}
+
+.wm-field input:focus,
+.wm-field select:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .wm-submit {
   margin-top: 0.25rem;
   padding: 0.75rem;
   border-radius: 10px;
-  border: 1px solid rgba(255, 215, 0, 0.6);
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.22) 0%, rgba(255, 237, 78, 0.18) 100%);
-  color: #1f1300;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(232, 212, 139, 0.15) 100%);
+  color: #A68529;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -223,7 +230,7 @@
 
 .wm-submit:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(255, 215, 0, 0.25);
+  box-shadow: 0 8px 18px rgba(212, 175, 55, 0.2);
 }
 
 .wm-activity {
@@ -233,8 +240,8 @@
 }
 
 .wm-activity-row {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid #B8B5A8;
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
   display: flex;
@@ -248,7 +255,7 @@
 
 .wm-activity-meta {
   font-size: 0.9rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
 }
 
 .wm-status {
@@ -258,8 +265,8 @@
   text-transform: capitalize;
 }
 
-.wm-status.pending { background: rgba(255, 215, 0, 0.15); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.35); }
-.wm-status.confirmed { background: rgba(124, 255, 212, 0.15); color: #7cffe0; border: 1px solid rgba(124, 255, 212, 0.35); }
+.wm-status.pending { background: rgba(212, 175, 55, 0.12); color: #A68529; border: 1px solid rgba(212, 175, 55, 0.35); }
+.wm-status.confirmed { background: rgba(76, 175, 80, 0.1); color: #388E3C; border: 1px solid rgba(76, 175, 80, 0.3); }
 
 @media (max-width: 720px) {
   .wm-header { flex-direction: column; }

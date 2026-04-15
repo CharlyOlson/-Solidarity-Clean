@@ -1,10 +1,10 @@
-/* User Logs Tab Styles */
+/* User Logs Tab Styles — Sacred Geometry Stone Theme */
 
 .user-logs-container {
   padding: 20px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, #D5D2C8 0%, #C8C4BA 100%);
   min-height: 100vh;
-  color: white;
+  color: #2C2C2C;
 }
 
 .logs-header {
@@ -13,17 +13,17 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+  border-bottom: 2px solid #E8D48B;
 }
 
 .logs-title h1 {
-  color: #FFD700;
+  color: #A68529;
   font-size: 2rem;
   margin-bottom: 5px;
 }
 
 .logs-subtitle {
-  color: #B0B0B0;
+  color: #7A7A6C;
   font-size: 0.95rem;
 }
 
@@ -40,13 +40,13 @@
   display: block;
   font-size: 2rem;
   font-weight: bold;
-  color: #FFD700;
+  color: #A68529;
 }
 
 .stat-label {
   display: block;
   font-size: 0.85rem;
-  color: #B0B0B0;
+  color: #7A7A6C;
 }
 
 /* Controls */
@@ -56,9 +56,9 @@
   align-items: center;
   margin-bottom: 25px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 10px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid #B8B5A8;
 }
 
 .filter-section,
@@ -69,39 +69,39 @@
 }
 
 .filter-section label {
-  color: #FFD700;
+  color: #A68529;
   font-size: 0.9rem;
 }
 
 .filter-select {
   padding: 8px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #B8B5A8;
   border-radius: 6px;
-  color: white;
+  color: #2C2C2C;
   font-size: 0.9rem;
   cursor: pointer;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #FFD700;
+  border-color: #D4AF37;
 }
 
 .search-input {
   padding: 8px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #B8B5A8;
   border-radius: 6px;
-  color: white;
+  color: #2C2C2C;
   font-size: 0.9rem;
   min-width: 250px;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #FFD700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .action-buttons {
@@ -122,17 +122,17 @@
 }
 
 .btn-download {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
   color: white;
 }
 
 .btn-email {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: white;
 }
 
 .btn-clear {
-  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
 }
 
@@ -140,7 +140,7 @@
 .btn-email:hover,
 .btn-clear:hover {
   transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
 }
 
 /* Logs List */
@@ -158,17 +158,17 @@
 }
 
 .logs-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 4px;
 }
 
 .logs-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 215, 0, 0.3);
+  background: #B8B5A8;
   border-radius: 4px;
 }
 
 .logs-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 215, 0, 0.5);
+  background: #9E9E8E;
 }
 
 .log-entry {
@@ -176,15 +176,17 @@
   align-items: flex-start;
   gap: 15px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-left: 4px solid #FFD700;
+  background: rgba(255, 255, 255, 0.5);
+  border-left: 4px solid #D4AF37;
   border-radius: 8px;
   transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .log-entry:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.65);
   transform: translateX(5px);
+  border-left-color: #A68529;
 }
 
 .log-icon {
@@ -213,22 +215,22 @@
 
 .log-timestamp {
   font-size: 0.8rem;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .log-action {
   font-size: 1rem;
   font-weight: 500;
-  color: white;
+  color: #2C2C2C;
   margin-bottom: 8px;
 }
 
 .log-details {
   padding: 10px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 6px;
   font-size: 0.85rem;
-  color: #B0B0B0;
+  color: #5C5C50;
   font-family: 'Courier New', monospace;
   white-space: pre-wrap;
   word-break: break-word;
@@ -236,25 +238,27 @@
 
 .log-delete-btn {
   padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #B8B5A8;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.9rem;
+  color: #5C5C50;
 }
 
 .log-delete-btn:hover {
-  background: rgba(244, 67, 54, 0.2);
-  border-color: #F44336;
+  background: rgba(198, 40, 40, 0.1);
+  border-color: #c62828;
   transform: scale(1.1);
+  color: #c62828;
 }
 
 /* No Logs State */
 .no-logs {
   text-align: center;
   padding: 60px 20px;
-  color: #888;
+  color: #7A7A6C;
 }
 
 .no-logs-icon {
@@ -273,48 +277,50 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(44, 44, 44, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10000;
+  backdrop-filter: blur(4px);
 }
 
 .email-dialog {
-  background: #1a1a2e;
-  border: 2px solid #FFD700;
+  background: #EAE7DF;
+  border: 2px solid #D4AF37;
   border-radius: 15px;
   padding: 30px;
   max-width: 400px;
   width: 90%;
   text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .email-dialog h2 {
-  color: #FFD700;
+  color: #A68529;
   margin-bottom: 15px;
 }
 
 .email-dialog p {
-  color: #B0B0B0;
+  color: #7A7A6C;
   margin-bottom: 20px;
 }
 
 .email-input {
   width: 100%;
   padding: 12px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #B8B5A8;
   border-radius: 8px;
-  color: white;
+  color: #2C2C2C;
   font-size: 1rem;
   margin-bottom: 20px;
 }
 
 .email-input:focus {
   outline: none;
-  border-color: #FFD700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .dialog-actions {
@@ -334,14 +340,14 @@
 }
 
 .btn-send {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: white;
 }
 
 .btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.06);
+  color: #5C5C50;
+  border: 1px solid #B8B5A8;
 }
 
 .btn-send:hover,

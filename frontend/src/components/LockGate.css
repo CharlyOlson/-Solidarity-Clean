@@ -1,4 +1,4 @@
-/* LockGate Security Overlay Styles */
+/* LockGate Security Overlay Styles — Sacred Geometry Stone Theme */
 
 .lockgate-overlay {
   position: fixed;
@@ -12,10 +12,10 @@
   gap: 5px;
   z-index: 9999;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(10px);
   min-width: 150px;
+  border: 1px solid #B8B5A8;
 }
 
 .lockgate-overlay.secured {
@@ -24,7 +24,7 @@
 
 @keyframes greenFlash {
   0%, 100% {
-    opacity: 0.75;
+    opacity: 0.85;
   }
   50% {
     opacity: 1;
@@ -66,7 +66,7 @@
 .lockgate-label {
   font-size: 0.85rem;
   font-weight: bold;
-  color: white;
+  color: #2C2C2C;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
@@ -74,7 +74,7 @@
 
 .lockgate-timestamp {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #5C5C50;
   margin-top: 3px;
 }
 
@@ -85,12 +85,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(44, 44, 44, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100000;
   animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 
 @keyframes fadeIn {
@@ -103,14 +104,14 @@
 }
 
 .intrusion-popup {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 3px solid #FF9800;
+  background: #EAE7DF;
+  border: 3px solid #e65100;
   border-radius: 20px;
   padding: 40px;
   max-width: 600px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 10px 50px rgba(255, 152, 0, 0.5);
+  box-shadow: 0 10px 50px rgba(230, 81, 0, 0.25);
   animation: slideDown 0.3s ease;
 }
 
@@ -126,19 +127,19 @@
 }
 
 .intrusion-popup h2 {
-  color: #FF9800;
+  color: #e65100;
   font-size: 2rem;
   margin-bottom: 15px;
 }
 
 .alert-message {
-  color: white;
+  color: #2C2C2C;
   font-size: 1.1rem;
   margin-bottom: 25px;
 }
 
 .attempts-list {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 25px;
@@ -148,7 +149,7 @@
 }
 
 .attempts-list h3 {
-  color: #FF9800;
+  color: #e65100;
   margin-bottom: 15px;
   font-size: 1.1rem;
 }
@@ -157,8 +158,8 @@
   display: flex;
   gap: 15px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-left: 3px solid #F44336;
+  background: rgba(255, 255, 255, 0.5);
+  border-left: 3px solid #c62828;
   border-radius: 8px;
   margin-bottom: 10px;
 }
@@ -172,19 +173,19 @@
 }
 
 .attempt-type {
-  color: white;
+  color: #2C2C2C;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
 .attempt-timestamp {
-  color: #888;
+  color: #7A7A6C;
   font-size: 0.85rem;
   margin-bottom: 5px;
 }
 
 .attempt-info {
-  color: #B0B0B0;
+  color: #5C5C50;
   font-size: 0.9rem;
 }
 
@@ -208,31 +209,31 @@
 }
 
 .btn-block {
-  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
 }
 
 .btn-investigate {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: white;
 }
 
 .btn-dismiss {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.06);
+  color: #5C5C50;
+  border: 1px solid #B8B5A8;
 }
 
 .btn-block:hover,
 .btn-investigate:hover,
 .btn-dismiss:hover {
   transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
 }
 
 .popup-note {
   font-size: 0.85rem;
-  color: #888;
+  color: #7A7A6C;
   font-style: italic;
 }
 
@@ -243,7 +244,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+  background: linear-gradient(135deg, #3d0000 0%, #5c0000 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -253,22 +254,22 @@
 
 @keyframes redFlash {
   0%, 100% {
-    background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+    background: linear-gradient(135deg, #3d0000 0%, #5c0000 100%);
   }
   50% {
-    background: linear-gradient(135deg, #330000 0%, #1a0000 100%);
+    background: linear-gradient(135deg, #5c0000 0%, #3d0000 100%);
   }
 }
 
 .burn-protocol-screen {
-  background: rgba(0, 0, 0, 0.8);
-  border: 5px solid #F44336;
+  background: rgba(0, 0, 0, 0.7);
+  border: 5px solid #c62828;
   border-radius: 20px;
   padding: 50px;
   max-width: 700px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 0 100px rgba(244, 67, 54, 0.8);
+  box-shadow: 0 0 100px rgba(198, 40, 40, 0.6);
 }
 
 .burn-icon {
@@ -287,7 +288,7 @@
 }
 
 .burn-protocol-screen h1 {
-  color: #F44336;
+  color: #ef5350;
   font-size: 2.5rem;
   margin-bottom: 20px;
   text-transform: uppercase;
@@ -316,7 +317,7 @@
   padding: 12px;
   margin-bottom: 10px;
   background: rgba(0, 0, 0, 0.3);
-  border-left: 3px solid #F44336;
+  border-left: 3px solid #c62828;
   border-radius: 8px;
   color: white;
   font-size: 1rem;
@@ -328,7 +329,7 @@
 
 .btn-burn {
   padding: 20px 40px;
-  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
   border: none;
   border-radius: 15px;
@@ -338,17 +339,17 @@
   transition: all 0.2s;
   text-transform: uppercase;
   letter-spacing: 2px;
-  box-shadow: 0 10px 30px rgba(244, 67, 54, 0.5);
+  box-shadow: 0 10px 30px rgba(198, 40, 40, 0.5);
 }
 
 .btn-burn:hover {
   transform: scale(1.05);
-  box-shadow: 0 15px 40px rgba(244, 67, 54, 0.7);
+  box-shadow: 0 15px 40px rgba(198, 40, 40, 0.7);
 }
 
 .burn-warning {
   margin-top: 20px;
-  color: #FF9800;
+  color: #e65100;
   font-size: 0.9rem;
   font-weight: bold;
 }

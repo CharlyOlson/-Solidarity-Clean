@@ -1,15 +1,13 @@
 /*
  * SOLIDARITY PLATFORM - TRUSTED DEVICES STYLES
- * =============================================
- * 
- * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
- * Owner: Scott Charles Olson
- * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
+ * Sacred Geometry Stone Theme
+ *
+ * TRADEMARK: Scott Charles Olson
  */
 
 .trusted-devices {
   padding: 1.5rem;
-  color: #e8ecff;
+  color: #2C2C2C;
 }
 
 .td-header {
@@ -22,7 +20,7 @@
 
 .td-kicker {
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -30,11 +28,11 @@
 .td-header h2 {
   font-size: 1.8rem;
   margin: 0.25rem 0;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .td-sub {
-  color: #bcd3ff;
+  color: #5C5C50;
   max-width: 400px;
 }
 
@@ -50,20 +48,20 @@
 .td-stat span {
   display: block;
   font-size: 0.85rem;
-  color: #9bb6ff;
+  color: #7A7A6C;
 }
 
 .td-stat strong {
   font-size: 1.4rem;
-  color: #fff;
+  color: #2C2C2C;
 }
 
 .td-stat strong.positive {
-  color: #7cffe0;
+  color: #388E3C;
 }
 
 .td-stat strong.caution {
-  color: #ffd700;
+  color: #A68529;
 }
 
 .td-actions {
@@ -74,23 +72,23 @@
 
 .td-add-btn,
 .td-refresh-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 10px;
   padding: 0.6rem 1rem;
-  color: #cfd6ff;
+  color: #5C5C50;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .td-add-btn:hover {
-  border-color: rgba(255, 215, 0, 0.5);
-  color: #ffd700;
+  border-color: #D4AF37;
+  color: #A68529;
 }
 
 .td-refresh-btn:hover {
-  border-color: rgba(123, 178, 255, 0.5);
-  color: #8fb8ff;
+  border-color: #4CAF50;
+  color: #388E3C;
 }
 
 .td-list {
@@ -101,28 +99,29 @@
 }
 
 .td-device {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   transition: border 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .td-device:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: #D4AF37;
 }
 
 .td-device.current {
-  border-color: rgba(124, 255, 212, 0.4);
-  background: rgba(124, 255, 212, 0.05);
+  border-color: rgba(76, 175, 80, 0.4);
+  background: rgba(76, 175, 80, 0.05);
 }
 
 .td-device-icon {
   font-size: 1.75rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(212, 175, 55, 0.08);
   border-radius: 10px;
   width: 48px;
   height: 48px;
@@ -145,17 +144,17 @@
 }
 
 .td-current-badge {
-  background: rgba(124, 255, 212, 0.15);
-  border: 1px solid rgba(124, 255, 212, 0.4);
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.35);
   border-radius: 999px;
   padding: 0.15rem 0.5rem;
   font-size: 0.75rem;
-  color: #7cffe0;
+  color: #388E3C;
   font-weight: 600;
 }
 
 .td-device-meta {
-  color: #9bb6ff;
+  color: #7A7A6C;
   font-size: 0.9rem;
   display: flex;
   gap: 0.4rem;
@@ -173,15 +172,15 @@
 }
 
 .td-trust-badge.trusted {
-  background: rgba(124, 255, 212, 0.12);
-  border: 1px solid rgba(124, 255, 212, 0.4);
-  color: #7cffe0;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.35);
+  color: #388E3C;
 }
 
 .td-trust-badge.untrusted {
-  background: rgba(255, 155, 155, 0.12);
-  border: 1px solid rgba(255, 155, 155, 0.4);
-  color: #ff9b9b;
+  background: rgba(198, 40, 40, 0.08);
+  border: 1px solid rgba(198, 40, 40, 0.3);
+  color: #c62828;
 }
 
 .td-device-actions {
@@ -199,15 +198,15 @@
 }
 
 .td-trust-toggle.grant {
-  background: rgba(124, 255, 212, 0.1);
-  border: 1px solid rgba(124, 255, 212, 0.4);
-  color: #7cffe0;
+  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.35);
+  color: #388E3C;
 }
 
 .td-trust-toggle.revoke {
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  color: #ffd700;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #A68529;
 }
 
 .td-trust-toggle:disabled {
@@ -216,18 +215,18 @@
 }
 
 .td-remove {
-  background: rgba(255, 155, 155, 0.08);
-  border: 1px solid rgba(255, 155, 155, 0.3);
-  color: #ff9b9b;
+  background: rgba(198, 40, 40, 0.06);
+  border: 1px solid rgba(198, 40, 40, 0.25);
+  color: #c62828;
 }
 
 .td-remove:hover {
-  background: rgba(255, 155, 155, 0.15);
+  background: rgba(198, 40, 40, 0.12);
 }
 
 .td-security-tips {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #B8B5A8;
   border-radius: 12px;
   padding: 1rem 1.25rem;
 }
@@ -235,7 +234,7 @@
 .td-security-tips h3 {
   margin: 0 0 0.75rem;
   font-size: 1rem;
-  color: #f1f4ff;
+  color: #2C2C2C;
 }
 
 .td-security-tips ul {
@@ -246,53 +245,55 @@
 
 .td-security-tips li {
   padding: 0.35rem 0;
-  color: #a8b8e0;
+  color: #5C5C50;
   font-size: 0.95rem;
 }
 
 .td-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(44, 44, 44, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .td-modal {
-  background: linear-gradient(135deg, #1a1f3d 0%, #0d1225 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #EAE7DF;
+  border: 2px solid #D4AF37;
   border-radius: 16px;
   padding: 1.5rem;
   max-width: 360px;
   text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .td-modal h3 {
   margin: 0 0 0.5rem;
-  color: #fff6b0;
+  color: #A68529;
 }
 
 .td-modal p {
-  color: #bcd3ff;
+  color: #5C5C50;
   margin-bottom: 1rem;
 }
 
 .td-qr-placeholder {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 3rem;
   margin-bottom: 1rem;
-  color: #7a8cb8;
+  color: #9E9E8E;
 }
 
 .td-modal-close {
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.5);
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   border-radius: 10px;
   padding: 0.6rem 1.5rem;
-  color: #ffd700;
+  color: #A68529;
   font-weight: 600;
   cursor: pointer;
 }
