@@ -71,6 +71,7 @@ app.get('/api/health', (req, res) => {
 // Auth (public — registration doesn't need license, but login does set tier context)
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/subscription', require('./routes/subscription'));
+app.use('/api/stripe', require('./routes/stripe'));
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LICENSED ROUTES — Require valid license key + tier access

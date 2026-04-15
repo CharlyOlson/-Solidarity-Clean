@@ -25,6 +25,7 @@ import HankoStamps from './components/HankoStamps';
 import TrustedDevices from './components/TrustedDevices';
 import PaymentCalculator from './components/PaymentCalculator';
 import LockGate from './components/LockGate';
+import Subscribe from './components/Subscribe';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
@@ -55,6 +56,7 @@ function App() {
     { id: 'news', label: 'News' },
     { id: 'markets', label: 'Markets' },
     { id: 'about', label: 'About' },
+    { id: 'subscribe', label: 'Subscribe' },
     { id: 'ai', label: 'AI Chat' },
     { id: 'wallets', label: 'Wallets' },
     { id: 'hanko', label: 'Hanko Stamps' },
@@ -77,6 +79,8 @@ function App() {
         return <Markets />;
       case 'about':
         return <About />;
+      case 'subscribe':
+        return <Subscribe />;
       case 'ai':
         return <OllamaHome />;
       case 'wallets':
@@ -93,6 +97,7 @@ function App() {
   };
 
   const displayName = localStorage.getItem('userDisplayName') || localStorage.getItem('userEmail') || '';
+  const userTier = localStorage.getItem('userTier') || 'Personal';
 
   return (
     <div className="app">
@@ -115,7 +120,10 @@ function App() {
             ))}
           </div>
           {isAuthenticated && displayName && (
-            <span className="nav-user">{displayName}</span>
+            <span className="nav-user">
+              {displayName}
+              <span className="tier-badge">{userTier}</span>
+            </span>
           )}
         </div>
       </nav>

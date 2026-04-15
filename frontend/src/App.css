@@ -88,6 +88,20 @@ body {
   background: rgba(212, 175, 55, 0.1);
   border-radius: 6px;
   border: 1px solid #D4AF37;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tier-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
+  color: #fff;
 }
 
 .nav-tabs .tab {
