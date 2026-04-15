@@ -111,9 +111,13 @@ app.use('/api/*', (req, res) => {
     });
 });
 
-// Catch-all route for frontend (non-API routes)
+// Catch-all route for frontend (SPA — non-API routes)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
+    if (process.env.NODE_ENV === 'production') {
+        res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
+    } else {
+        res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
+    }
 });
 
 // Error handling middleware
@@ -159,12 +163,7 @@ function startServerWithFallback(maxRetries = 10) {
     tryListen();
 }
 
-// SPA catch-all — serve React index.html for unmatched routes in production
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
-  });
-}
+// (SPA catch-all merged into the main catch-all above)
 
 // Start server when run directly (not when imported for testing)
 if (require.main === module) {
