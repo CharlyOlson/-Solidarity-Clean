@@ -38,7 +38,7 @@ function LoginRegister({ onLoginSuccess }) {
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || data.success === false) {
         setError(data.error || data.message || 'Authentication failed.');
         setLoading(false);
         return;
@@ -54,7 +54,13 @@ function LoginRegister({ onLoginSuccess }) {
 
       onLoginSuccess();
     } catch (err) {
-      setError('Unable to connect to server. Please try again.');
+      if (!navigator.onLine) {
+        setError('You appear to be offline. Check your internet connection.');
+      } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setError('Unable to reach the server. It may be restarting — try again in a moment.');
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

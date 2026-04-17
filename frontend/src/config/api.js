@@ -6,8 +6,9 @@
  * Uses environment variable or falls back to default
  */
 
-// API Base URL - configurable via environment variable
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+// API Base URL - empty string = same-origin (works in production on Railway)
+// Override with REACT_APP_API_URL for local dev pointing at a remote backend
+export const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 // Helper function to build API URLs
 export const apiUrl = (endpoint) => {
