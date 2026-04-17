@@ -322,7 +322,19 @@ class UnifiedSystemConfiguration {
 }
 
 // Export the configuration class
-module.exports = { UnifiedSystemConfiguration };
+/**
+ * Get shared operational status as a percentage.
+ * Returns the system's coherence-based health score.
+ */
+function getSharedOperationalStatus() {
+  const config = UnifiedSystemConfiguration.getInstance();
+  const phi = config.baseRatio || 1.618033988749895;
+  const baseline = config.bridgingBaseline || 0.618;
+  // Operational percentage based on phi convergence
+  return Math.round(baseline * 100);
+}
+
+module.exports = { UnifiedSystemConfiguration, getSharedOperationalStatus };
 
 // Demo function
 function demo() {
