@@ -95,10 +95,11 @@ app.use('/api/hanko', requireTier('practitioner'), requireFeature('hanko'), requ
 
 // Financial routes — Practitioner tier minimum, test mode enforced
 app.use('/api/financial', requireTier('practitioner'), require('./routes/financial'));
-app.use('/devices', requireTier('practitioner'), require('./routes/devices'));
+app.use('/api/devices', requireTier('practitioner'), require('./routes/devices'));
 
 // User settings & activity logs — Student tier and above
 app.use('/api/user', requireTier('student'), require('./routes/settings'));
+app.use('/api/security', requireTier('student'), require('./routes/security'));
 app.use('/api/logs', requireTier('student'), require('./routes/settings'));
 
 // Centralized API Router — Practitioner tier

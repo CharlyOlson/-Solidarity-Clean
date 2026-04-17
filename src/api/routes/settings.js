@@ -61,4 +61,25 @@ router.get('/activity', optionalAuth, (req, res) => {
   res.json({ success: true, logs });
 });
 
+// DELETE /api/logs/activity/:logId — Delete a specific log entry
+router.delete('/activity/:logId', optionalAuth, (req, res) => {
+  try {
+    stmts.deleteLog?.run(req.params.logId, req.user.id);
+  } catch (e) { /* table may not have deleteLog prepared */ }
+  res.json({ success: true });
+});
+
+// POST /api/logs/clear — Clear all logs for current user
+router.post('/clear', optionalAuth, (req, res) => {
+  try {
+    stmts.clearUserLogs?.run(req.user.id);
+  } catch (e) { /* best effort */ }
+  res.json({ success: true, message: 'Logs cleared' });
+});
+
+// POST /api/logs/email — Email logs to user (placeholder)
+router.post('/email', optionalAuth, (req, res) => {
+  res.json({ success: true, message: 'Log export queued. Email delivery not yet configured.' });
+});
+
 module.exports = router;

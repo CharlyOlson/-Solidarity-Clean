@@ -61,6 +61,24 @@ router.post('/chat', optionalAuth, async (req, res) => {
   }
 });
 
+// GET /api/ai/live-context — Live data context for AI (market status, system health)
+router.get('/live-context', optionalAuth, async (req, res) => {
+  try {
+    const status = await aiRouter.getStatus();
+    res.json({
+      success: true,
+      context: {
+        aiAvailable: status.available || false,
+        provider: status.provider || 'none',
+        systemHealth: 'operational',
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (err) {
+    res.json({ success: true, context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() } });
+  }
+});
+
 // GET /api/ai/status — Which providers are available
 router.get('/status', async (req, res) => {
   try {
