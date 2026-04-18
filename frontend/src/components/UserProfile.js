@@ -5,7 +5,8 @@
  * Shows email, tier badge, display name, logout.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import './UserProfile.css';
 
 const TIER_COLORS = {
@@ -19,8 +20,27 @@ function UserProfile({ onLogout }) {
   const storedTier = localStorage.getItem('userTier') || 'Personal';
   const storedName = localStorage.getItem('userDisplayName') || '';
 
+  const [tier, setTier] = useState(storedTier);
   const [displayName, setDisplayName] = useState(storedName);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    fetch(`${API_BASE_URL}/api/stripe/subscription-status`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.tier) {
+          const displayTier = data.tier.charAt(0).toUpperCase() + data.tier.slice(1);
+          setTier(displayTier);
+          localStorage.setItem('userTier', displayTier);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSave = () => {
     localStorage.setItem('userDisplayName', displayName);
@@ -55,9 +75,9 @@ function UserProfile({ onLogout }) {
           <span className="profile-label">Tier</span>
           <span
             className="profile-tier-badge"
-            style={{ background: TIER_COLORS[storedTier] || '#B8B5A8' }}
+            style={{ background: TIER_COLORS[tier] || '#B8B5A8' }}
           >
-            {storedTier}
+            {tier}
           </span>
         </div>
 

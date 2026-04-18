@@ -115,7 +115,7 @@ export default function PaymentCalculator() {
 
       // Apply φ-ratio optimization formula with safety-adjusted discount
       const volumeFactor = Math.log10(Math.max(methodVolume, 1)) / BASE_RATIO;
-      const safetyMultiplier = 1 - (safetyConfig.discount * safetyLevel);
+      const safetyMultiplier = 1 - ((safetyConfig.discount || 0) * safetyLevel);
       const optimizedRate = baseRate * (1 / (1 + volumeFactor)) * safetyMultiplier * coherenceMultiplier;
 
       totalFees += methodVolume * (optimizedRate / 100);
