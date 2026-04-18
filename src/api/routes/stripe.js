@@ -18,11 +18,14 @@ const logger = require('../../utils/logger');
 const DEMO_ACCOUNT_ID = '55cc5056-8dd6-4631-9eb9-c4967acabc04';
 const DEMO_ACCOUNT_EMAIL = 'soulson1997@gmail.com';
 
-/* ── Stripe Price IDs (created as "Business" but used for Pro) ── */
+/* ── Stripe Price IDs ── */
 const PRICE_MAP = {
   pro: {
-    month: 'price_1TMGOVHKDThuncCuYosS7fPb',
-    year: 'price_1TMGOaHKDThuncCuHKq5Z8Ao',
+    month: 'price_1TNMrcHKDThuncCuRne8HXY1',  // Pro $29/mo
+    year: 'price_1TNMrcHKDThuncCuYxLlMMJ3',    // Pro $290/yr
+  },
+  business: {
+    year: 'price_1TMGOaHKDThuncCuHKq5Z8Ao',    // Business annual-only
   },
 };
 
@@ -91,12 +94,12 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
 
   /* Validate tier */
   if (!tier || !PRICE_MAP[tier]) {
-    return res.status(400).json({ error: 'Invalid tier. Use "pro".' });
+    return res.status(400).json({ error: 'Invalid tier. Use "pro" or "business".' });
   }
 
-  /* Business is annual-only & pricing TBD */
-  if (tier === 'business') {
-    return res.status(400).json({ error: 'Business tier pricing is not yet available.' });
+  /* Business is annual-only */
+  if (tier === 'business' && interval !== 'year') {
+    return res.status(400).json({ error: 'Business tier is annual-only.' });
   }
 
   /* Validate interval */
