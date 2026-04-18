@@ -17,7 +17,11 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../utils/logger');
 
-const DATA_DIR = path.join(__dirname, '../../data');
+// Use RAILWAY_VOLUME_MOUNT or DATA_DIR env var for persistent storage,
+// fall back to local ./data directory for development
+const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT
+  ? path.join(process.env.RAILWAY_VOLUME_MOUNT, 'db')
+  : process.env.DATA_DIR || path.join(__dirname, '../../data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const db = new Database(path.join(DATA_DIR, 'solidarity.db'));
