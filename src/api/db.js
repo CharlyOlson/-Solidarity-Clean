@@ -17,10 +17,11 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../utils/logger');
 
-// Use RAILWAY_VOLUME_MOUNT or DATA_DIR env var for persistent storage,
-// fall back to local ./data directory for development
-const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT
-  ? path.join(process.env.RAILWAY_VOLUME_MOUNT, 'db')
+// Railway auto-sets RAILWAY_VOLUME_MOUNT_PATH when a volume is attached.
+// Fall back to DATA_DIR env var or local ./data for development.
+const volumePath = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.RAILWAY_VOLUME_MOUNT;
+const DATA_DIR = volumePath
+  ? path.join(volumePath, 'db')
   : process.env.DATA_DIR || path.join(__dirname, '../../data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
