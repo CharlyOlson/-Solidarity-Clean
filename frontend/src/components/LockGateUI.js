@@ -28,7 +28,7 @@ export function LockGateUI() {
       <input class="input" id="action" placeholder="deploy:treasury" value="deploy:treasury" />
       
       <label class="subtitle">Notes</label>
-      <textarea class="textarea" id="notes" rows="4" placeholder="Purpose, scope, references...">Testing Omega Lock Gate with φ-ratio security baseline 0.618</textarea>
+      <textarea class="textarea" id="notes" rows="4" placeholder="Purpose, scope, references...">Testing Omega Lock Gate security baseline</textarea>
 
       <div style="margin-top:8px">
         <div class="subtitle">Client-side SHA-256 preview (UX only)</div>

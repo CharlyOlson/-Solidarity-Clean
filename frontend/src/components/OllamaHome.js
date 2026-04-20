@@ -129,7 +129,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
 
   return (
     <div className="ollama-home">
-      {/* Sacred Geometry Background */}
+      {/* Geometric Pattern Background */}
       <div className="geometric-pattern-bg"></div>
 
       {/* Settings Button (Top Right) */}

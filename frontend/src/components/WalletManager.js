@@ -95,9 +95,9 @@ function WalletManager() {
     <div className="wallet-manager">
       <header className="wm-header">
         <div>
-          <p className="wm-kicker">Solidarity Wallet Control · phi baseline {BRIDGING_BASELINE.toFixed(3)}</p>
+          <p className="wm-kicker">Solidarity Wallet Control</p>
           <h2>Wallet Manager</h2>
-          <p className="wm-sub">Send, receive, and monitor holdings with sacred-node-aware safety.</p>
+          <p className="wm-sub">Send, receive, and monitor holdings with node-aware safety.</p>
         </div>
         <div className="wm-total">
           <span>Total Holdings</span>

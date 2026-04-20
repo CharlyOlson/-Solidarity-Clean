@@ -39,7 +39,7 @@ const OperationalStatus = () => {
       <div><b>Global Safety Level:</b> {status.globalSafetyLevel}</div>
       <div><b>Base Ratio (φ):</b> {BASE_RATIO}</div>
       <div><b>Bridging Baseline:</b> {BRIDGING_BASELINE}</div>
-      <div><b>Sacred Nodes:</b> {SACRED_NODES.join(', ')}</div>
+      <div><b>Active Nodes:</b> {SACRED_NODES.join(', ')}</div>
       <div><b>Subsystems:</b></div>
       <ul>
         {Object.entries(status.componentSafety).map(([k,v]) => (

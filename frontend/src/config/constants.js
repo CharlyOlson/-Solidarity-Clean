@@ -1,6 +1,6 @@
 // SOLIDARITY PLATFORM - FRONTEND CONSTANTS & SAFETY CONFIG
 // ================================================
-// Centralized constants, safety tiers, sacred nodes, and phi logic for frontend
+// Centralized constants, safety tiers, node configuration, and ratio logic for frontend
 //
 // TRADEMARKED BY SCOTT CHARLES OLSON
 

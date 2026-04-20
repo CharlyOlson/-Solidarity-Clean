@@ -16,7 +16,7 @@ const BRIDGING_BASELINE = 0.618;
 // Featured apps/protocols
 const FEATURED_ITEMS = [
   { id: 1, name: 'DeFi Bridge', category: 'defi', icon: '🌉', description: 'Cross-chain asset bridging with φ-ratio optimization', users: 12400 },
-  { id: 2, name: 'NFT Gallery', category: 'nft', icon: '🖼️', description: 'Curated NFT collections with sacred numerics', users: 8900 },
+  { id: 2, name: 'NFT Gallery', category: 'nft', icon: '🖼️', description: 'Curated NFT collections with geometric numerics', users: 8900 },
   { id: 3, name: 'DAO Voting', category: 'dao', icon: '🗳️', description: 'Decentralized governance using Henry 7-14-49', users: 5600 },
   { id: 4, name: 'Yield Optimizer', category: 'defi', icon: '📈', description: 'Auto-compounding with golden ratio strategies', users: 15200 },
   { id: 5, name: 'Soul Staking', category: 'staking', icon: '💎', description: 'Stake tokens with bridging baseline rewards', users: 21000 },

@@ -127,7 +127,7 @@ function Subscribe() {
             <li>Local AI (Ollama)</li>
             <li>Basic wallet</li>
             <li>Community access</li>
-            <li>Sacred geometry tools</li>
+            <li>Geometric analysis tools</li>
           </ul>
           {currentTier === 'personal' ? (
             <button className="subscribe-btn current-btn">Your Current Plan</button>

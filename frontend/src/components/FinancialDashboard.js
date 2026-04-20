@@ -11,9 +11,9 @@ import { getSafetyTier } from '../utils/safetyUtils';
 const HELP_TEXT = `
 Financial Dashboard Help:
 - Add wallets for Ethereum, Solana, Bitcoin, Polygon
-- φ-ratio (1.618) optimization and safety baseline (0.618)
+- Ratio-based optimization and safety baseline
 - Safety tiers: ${Object.keys(SAFETY_TIERS).join(', ')}
-- Sacred nodes: ${SACRED_NODES.join(', ')}
+- Active nodes: ${SACRED_NODES.join(', ')}
 - All actions are safety-aware and error-protected
 `;
 

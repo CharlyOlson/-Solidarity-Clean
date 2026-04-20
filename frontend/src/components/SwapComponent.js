@@ -36,8 +36,8 @@ export function SwapComponent() {
     <div style="margin-top:14px; padding:12px; background:rgba(97,218,251,0.06); border-radius:8px; border:1px solid rgba(97,218,251,0.2)">
       <h3 style="margin:0 0 8px 0; color:#61dafb">ℹ️ Swap Mechanics</h3>
       <ul style="margin:0; padding-left:20px; font-size:0.9rem; color:var(--muted)">
-        <li>Sacred node-based value exchange (nodes 1,3,4,7,14,21,49)</li>
-        <li>φ-ratio weighted transaction processing</li>
+        <li>Node-based value exchange (nodes 1,3,4,7,14,21,49)</li>
+        <li>Ratio-weighted transaction processing</li>
         <li>Force balance verification (angel/daemon equilibrium)</li>
         <li>Coil currency conversion: 1 USD = 10,000,000 Coils</li>
         <li>Audit trail with timestamp and safety level</li>
@@ -63,13 +63,13 @@ export function SwapComponent() {
         result.textContent = '✅ Devices loaded successfully.';
       } else {
         // Fallback mock data if backend unavailable
-        metaA.textContent = 'Device A — active — value: 1.618 (φ)';
-        metaB.textContent = 'Device B — active — value: 0.618 (1/φ)';
+        metaA.textContent = 'Device A — active';
+        metaB.textContent = 'Device B — active';
         result.textContent = '⚠️ Backend unavailable. Showing mock data.\n\nStart backend with: npm start';
       }
     } catch (e) {
-      metaA.textContent = 'Device A — offline — value: 1.618 (φ)';
-      metaB.textContent = 'Device B — offline — value: 0.618 (1/φ)';
+      metaA.textContent = 'Device A — offline';
+      metaB.textContent = 'Device B — offline';
       result.textContent = `⚠️ Load error: ${e.message}\n\nBackend may not be running. Mock data shown.`;
     }
   }
