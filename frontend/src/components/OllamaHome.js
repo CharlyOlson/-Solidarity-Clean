@@ -28,7 +28,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
     "What's the current state of crypto markets?",
     "Show me investment opportunities within my budget",
     "What's the latest financial news in my area?",
-    "Explain how the φ-ratio works in this platform",
+    "Explain how proportional validation works in this platform",
     "Help me understand my Hanko stamps",
     "What can this platform do for me?"
   ];
@@ -130,7 +130,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
   return (
     <div className="ollama-home">
       {/* Sacred Geometry Background */}
-      <div className="sacred-geometry-bg"></div>
+      <div className="geometric-pattern-bg"></div>
 
       {/* Settings Button (Top Right) */}
       <button 
@@ -149,7 +149,7 @@ const OllamaHome = ({ safetyLevel = 0.618, userPermissions = {} }) => {
             <div className="welcome-logo">🤖</div>
             <h1 className="welcome-title">Welcome to Solidarity Platform</h1>
             <p className="welcome-subtitle">
-              Powered by Ollama AI • φ-Ratio Intelligence • Live Market Data
+              Powered by Ollama AI • Proportional Intelligence • Live Market Data
             </p>
 
             {/* Live Data Preview */}
@@ -306,7 +306,7 @@ const SettingsPanel = ({ onClose }) => {
           <select value={theme} onChange={(e) => setTheme(e.target.value)}>
             <option value="default">Default (Golden)</option>
             <option value="dark">Dark Mode</option>
-            <option value="sacred">Sacred Geometry</option>
+            <option value="sacred">Geometric Patterns</option>
             <option value="matrix">Matrix Green</option>
           </select>
         </div>

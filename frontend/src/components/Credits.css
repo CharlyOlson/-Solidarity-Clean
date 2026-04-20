@@ -1,0 +1,66 @@
+/* CREDITS — Platform credits and attribution */
+
+.credits-container {
+  padding: 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.credits-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid #B8B5A8;
+  border-radius: 12px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.credits-brand {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #A68529;
+  letter-spacing: 2px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #D4AF37;
+}
+
+.credits-section {
+  margin-bottom: 1.75rem;
+}
+
+.credits-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #7A7A6C;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.credits-names {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.credits-tool {
+  font-size: 1rem;
+  color: #5A5A50;
+}
+
+.credits-divider {
+  width: 60px;
+  height: 2px;
+  background: #D4AF37;
+  margin: 1.5rem auto;
+}
+
+.credits-trademark {
+  font-size: 0.8rem;
+  color: #7A7A6C;
+  line-height: 1.6;
+  font-family: 'Courier New', monospace;
+}

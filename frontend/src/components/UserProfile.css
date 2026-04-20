@@ -91,13 +91,15 @@
 
 .profile-save-btn {
   padding: 0.6rem 1rem;
-  border: 1px solid #D4AF37;
+  border: 1.5px solid #D4AF37;
   border-radius: 8px;
-  background: rgba(212, 175, 55, 0.1);
+  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(212,175,55,0.1) 100%);
   color: #A68529;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .profile-save-btn:hover {
@@ -107,15 +109,17 @@
 .profile-logout-btn {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #c62828;
+  border: 1.5px solid #c62828;
   border-radius: 8px;
-  background: rgba(198, 40, 40, 0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(198,40,40,0.08) 100%);
   color: #c62828;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: 1rem;
   transition: all 0.2s ease;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 1px 3px rgba(198,40,40,0.1);
 }
 
 .profile-logout-btn:hover {

@@ -1,4 +1,4 @@
-/* WALLET HUB — Three sections, dim → active lighting */
+/* WALLET HUB — Three sections, dim to active lighting */
 
 .wallet-hub-container {
   padding: 2rem;
@@ -7,6 +7,7 @@
 }
 
 .wallet-hub-title {
+  font-family: 'Lora', Georgia, serif;
   font-size: 1.5rem;
   color: #2C2C2C;
   margin-bottom: 0.3rem;
@@ -53,6 +54,7 @@
 }
 
 .wallet-section-header h3 {
+  font-family: 'Lora', Georgia, serif;
   font-size: 1.1rem;
   color: #2C2C2C;
   flex: 1;
@@ -101,18 +103,34 @@
 
 .wallet-connect-btn {
   padding: 0.55rem 1.25rem;
-  border: 1px solid #D4AF37;
+  border: 1.5px solid #9E9B8E;
   border-radius: 8px;
-  background: rgba(212, 175, 55, 0.1);
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.35) 100%);
   color: #A68529;
+  font-family: 'Aleo', Georgia, serif;
   font-weight: 600;
   font-size: 0.88rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .wallet-connect-btn:hover {
-  background: rgba(212, 175, 55, 0.25);
+  background: linear-gradient(180deg, #F5E6B8 0%, #EDD99C 100%);
+  border-color: #D4AF37;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(212,175,55,0.2);
+}
+
+.wallet-connect-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wallet-error {
+  color: #c62828;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 768px) {

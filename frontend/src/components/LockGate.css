@@ -1,4 +1,4 @@
-/* LockGate Security Overlay Styles — Sacred Geometry Stone Theme */
+/* LockGate Security Overlay Styles — Geometric Pattern Stone Theme */
 
 .lockgate-overlay {
   position: fixed;
@@ -200,28 +200,32 @@
 .btn-dismiss {
   flex: 1;
   padding: 12px;
-  border: none;
+  border: 1.5px solid transparent;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.95rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .btn-block {
   background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
+  border-color: #8E0000;
 }
 
 .btn-investigate {
   background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: white;
+  border-color: #A68529;
 }
 
 .btn-dismiss {
-  background: rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
   color: #5C5C50;
-  border: 1px solid #B8B5A8;
+  border: 1.5px solid #B8B5A8;
 }
 
 .btn-block:hover,
@@ -331,7 +335,7 @@
   padding: 20px 40px;
   background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
-  border: none;
+  border: 2px solid #8E0000;
   border-radius: 15px;
   font-size: 1.3rem;
   font-weight: bold;
@@ -339,7 +343,8 @@
   transition: all 0.2s;
   text-transform: uppercase;
   letter-spacing: 2px;
-  box-shadow: 0 10px 30px rgba(198, 40, 40, 0.5);
+  box-shadow: 0 10px 30px rgba(198, 40, 40, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  font-family: 'Aleo', Georgia, serif;
 }
 
 .btn-burn:hover {

@@ -1,7 +1,7 @@
 /**
  * SOLIDARITY PLATFORM - MAIN STYLES
- * Sacred Geometry Design System — Stone, Gold & Green
- * φ-based spacing with engraved flower of life motif
+ * Geometric Pattern Design System — Stone, Gold & Green
+ * Proportional spacing with engraved geometric overlay motif
  */
 
 :root{
@@ -52,7 +52,7 @@
 
   /* Typography */
   --mono: 'Courier New', monospace;
-  --sans: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sans: 'Aleo', Georgia, serif;
 
   /* Sacred nodes */
   --scale-1: 1rem;
@@ -472,7 +472,7 @@ body {
   margin-top: 0.25rem;
 }
 
-/* Sacred Geometry Specific */
+/* Geometric Pattern Specific */
 .constants-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

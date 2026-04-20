@@ -1,4 +1,4 @@
-/* Hanko Stamps Tab Styles — Sacred Geometry Stone Theme */
+/* Hanko Stamps Tab Styles — Geometric Pattern Stone Theme */
 
 .hanko-stamps-container {
   padding: 20px;
@@ -31,12 +31,14 @@
   padding: 12px 25px;
   background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
   color: white;
-  border: none;
+  border: 1.5px solid #2E7D32;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 6px rgba(76,175,80,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-request-stamp:hover {
@@ -294,12 +296,14 @@
   padding: 15px 30px;
   background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: #fff;
-  border: none;
+  border: 1.5px solid #A68529;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1.1rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-create-first:hover {
@@ -406,23 +410,26 @@
 .btn-cancel {
   flex: 1;
   padding: 15px;
-  border: none;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1rem;
+  font-family: 'Aleo', Georgia, serif;
 }
 
 .btn-create-stamp {
   background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
   color: white;
+  border: 1.5px solid #2E7D32;
+  box-shadow: 0 2px 6px rgba(76,175,80,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-cancel {
-  background: rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
   color: #5C5C50;
-  border: 1px solid #B8B5A8;
+  border: 1.5px solid #B8B5A8;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .btn-create-stamp:hover,
@@ -567,12 +574,14 @@
   padding: 15px;
   background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
   color: white;
-  border: none;
+  border: 1.5px solid #8E0000;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 6px rgba(198,40,40,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .btn-revoke:hover {
@@ -855,11 +864,13 @@
   padding: 12px 25px;
   background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
   color: #fff;
-  border: none;
+  border: 1.5px solid #A68529;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-next:hover:not(:disabled) {
@@ -874,13 +885,15 @@
 
 .btn-back {
   padding: 12px 25px;
-  background: transparent;
+  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
   color: #A68529;
-  border: 2px solid #D4AF37;
+  border: 1.5px solid #D4AF37;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .btn-back:hover {

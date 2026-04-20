@@ -12,11 +12,45 @@ import './WalletHub.css';
 function CryptoWallet() {
   const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState('');
+  const [ethBalance, setEthBalance] = useState('0.00');
+  const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleConnect = () => {
-    setAddress('0x7a3B...eF4d');
-    setConnected(true);
+  const handleConnect = async () => {
+    setError('');
+    if (!window.ethereum) {
+      setError('MetaMask not detected. Please install MetaMask to connect.');
+      return;
+    }
+    setConnecting(true);
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if (accounts && accounts.length > 0) {
+        const addr = accounts[0];
+        setAddress(addr);
+        setConnected(true);
+        // Fetch real ETH balance
+        try {
+          const balHex = await window.ethereum.request({
+            method: 'eth_getBalance',
+            params: [addr, 'latest']
+          });
+          const balWei = parseInt(balHex, 16);
+          const balEth = (balWei / 1e18).toFixed(6);
+          setEthBalance(balEth);
+        } catch (balErr) {
+          console.error('Balance fetch error:', balErr);
+        }
+      }
+    } catch (err) {
+      console.error('MetaMask connection error:', err);
+      setError('Connection rejected or failed. Please try again.');
+    } finally {
+      setConnecting(false);
+    }
   };
+
+  const shortAddr = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
 
   return (
     <div className={connected ? 'wallet-section wallet-active' : 'wallet-section wallet-dim'}>
@@ -27,14 +61,17 @@ function CryptoWallet() {
       </div>
       {connected ? (
         <div className="wallet-section-body">
-          <div className="wallet-detail"><span>Address</span><span>{address}</span></div>
+          <div className="wallet-detail"><span>Address</span><span>{shortAddr}</span></div>
           <div className="wallet-detail"><span>SLDRT</span><span>0.00</span></div>
-          <div className="wallet-detail"><span>ETH</span><span>0.00</span></div>
+          <div className="wallet-detail"><span>ETH</span><span>{ethBalance}</span></div>
         </div>
       ) : (
         <div className="wallet-section-body">
           <p className="wallet-placeholder">Connect your crypto wallet to view balances.</p>
-          <button className="wallet-connect-btn" onClick={handleConnect}>Connect Wallet</button>
+          {error && <p className="wallet-error" style={{ color: '#e74c3c', fontSize: '0.85rem', margin: '0.5rem 0' }}>{error}</p>}
+          <button className="wallet-connect-btn" onClick={handleConnect} disabled={connecting}>
+            {connecting ? 'Connecting...' : 'Connect Wallet'}
+          </button>
         </div>
       )}
     </div>

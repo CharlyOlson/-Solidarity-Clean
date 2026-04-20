@@ -1,4 +1,4 @@
-/* Ollama AI Homepage Styles — Sacred Geometry Stone Theme */
+/* Ollama AI Homepage Styles — Geometric Pattern Stone Theme */
 
 .ollama-home {
   position: relative;
@@ -9,8 +9,8 @@
   overflow: hidden;
 }
 
-/* Sacred Geometry Background */
-.sacred-geometry-bg {
+/* Geometric Pattern Background */
+.geometric-pattern-bg {
   position: absolute;
   top: 0;
   left: 0;
@@ -187,14 +187,16 @@
 
 .prompt-suggestion {
   padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid #B8B5A8;
+  background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.35) 100%);
+  border: 1.5px solid #B8B5A8;
   border-radius: 12px;
   color: #2C2C2C;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.95rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .prompt-suggestion:hover {
@@ -405,13 +407,14 @@
   width: 50px;
   height: 50px;
   background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
-  border: none;
+  border: 1.5px solid #A68529;
   border-radius: 50%;
   font-size: 1.3rem;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
   color: #fff;
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3);
 }
 
 .send-btn:hover:not(:disabled) {
@@ -523,28 +526,33 @@
   width: 100%;
   padding: 15px;
   margin-top: 10px;
-  border: none;
+  border: 1.5px solid transparent;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1rem;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-change-passcode {
   background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
   color: white;
+  border-color: #6A1B9A;
 }
 
 .btn-request-hanko {
   background: linear-gradient(135deg, #BF9B30 0%, #A68529 100%);
   color: white;
+  border-color: #8B6914;
 }
 
 .btn-save-settings {
   background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
   color: white;
   margin-top: 20px;
+  border-color: #2E7D32;
 }
 
 .btn-change-passcode:hover,

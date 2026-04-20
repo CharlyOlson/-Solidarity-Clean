@@ -8,45 +8,79 @@
  */
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './TrustedDevices.css';
-import { BASE_RATIO, BRIDGING_BASELINE } from '../config/constants';
+import { API_BASE_URL } from '../config/api';
 
-// Demo devices for display
-const DEMO_DEVICES = [
+// Fallback devices shown only when API is unreachable
+const FALLBACK_DEVICES = [
   { id: 1, name: 'Windows Desktop', type: 'desktop', browser: 'Chrome 120', os: 'Windows 11', lastActive: 'Now', trusted: true, current: true },
   { id: 2, name: 'iPhone 15 Pro', type: 'mobile', browser: 'Safari 17', os: 'iOS 17.2', lastActive: '2 hours ago', trusted: true, current: false },
   { id: 3, name: 'MacBook Pro', type: 'laptop', browser: 'Firefox 121', os: 'macOS 14', lastActive: '1 day ago', trusted: true, current: false },
 ];
 
 function TrustedDevices() {
-  const [devices, setDevices] = useState(DEMO_DEVICES);
+  const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
+  const fetchDevices = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/api/devices`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDevices(data.devices || data || []);
+      } else {
+        setDevices(FALLBACK_DEVICES);
+      }
+    } catch (err) {
+      console.error('Failed to fetch devices:', err);
+      setDevices(FALLBACK_DEVICES);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleRevokeTrust = (deviceId) => {
-    if (window.confirm('Are you sure you want to revoke trust for this device?')) {
-      setDevices(devices.map(d => 
-        d.id === deviceId ? { ...d, trusted: false } : d
-      ));
+  useEffect(() => {
+    fetchDevices();
+  }, [fetchDevices]);
+
+  const apiDeviceAction = async (deviceId, action) => {
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`${API_BASE_URL}/api/devices/${deviceId}/${action}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (err) {
+      console.error(`Device ${action} API error:`, err);
     }
   };
 
-  const handleRestoreTrust = (deviceId) => {
-    setDevices(devices.map(d => 
-      d.id === deviceId ? { ...d, trusted: true } : d
-    ));
+  const handleRevokeTrust = async (deviceId) => {
+    if (window.confirm('Are you sure you want to revoke trust for this device?')) {
+      setDevices(devices.map(d =>
+        d.id === deviceId ? { ...d, trusted: false } : d
+      ));
+      await apiDeviceAction(deviceId, 'revoke');
+    }
   };
 
-  const handleRemoveDevice = (deviceId) => {
+  const handleRestoreTrust = async (deviceId) => {
+    setDevices(devices.map(d =>
+      d.id === deviceId ? { ...d, trusted: true } : d
+    ));
+    await apiDeviceAction(deviceId, 'restore');
+  };
+
+  const handleRemoveDevice = async (deviceId) => {
     if (window.confirm('Remove this device from your trusted list?')) {
       setDevices(devices.filter(d => d.id !== deviceId));
+      await apiDeviceAction(deviceId, 'remove');
     }
   };
 
@@ -60,9 +94,8 @@ function TrustedDevices() {
     }
   };
 
-  // Calculate trust ratio using φ
   const trustedCount = devices.filter(d => d.trusted).length;
-  const trustRatio = devices.length > 0 ? (trustedCount / devices.length * BASE_RATIO).toFixed(3) : 0;
+  const trustPercent = devices.length > 0 ? Math.round(trustedCount / devices.length * 100) : 0;
 
   return (
     <div className="trusted-devices-container">
@@ -89,8 +122,8 @@ function TrustedDevices() {
           <span className="stat-label">Trusted</span>
         </div>
         <div className="trust-stat">
-          <span className="stat-value">{trustRatio}</span>
-          <span className="stat-label">Trust Ratio (φ)</span>
+          <span className="stat-value">{trustPercent}%</span>
+          <span className="stat-label">Trust Level</span>
         </div>
       </div>
 
@@ -164,7 +197,7 @@ function TrustedDevices() {
           <li>Regularly review your trusted devices</li>
           <li>Revoke access for devices you no longer use</li>
           <li>Enable 2FA for additional protection</li>
-          <li>Trust ratio above {BRIDGING_BASELINE} indicates healthy security</li>
+          <li>A high trust level indicates healthy security posture</li>
         </ul>
       </div>
 

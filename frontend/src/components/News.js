@@ -4,10 +4,11 @@
  * Placeholder news feed with platform launch updates.
  */
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './News.css';
+import { API_BASE_URL } from '../config/api';
 
-const NEWS_ITEMS = [
+const FALLBACK_NEWS = [
   {
     id: 1,
     title: 'Solidarity Platform Launch',
@@ -36,21 +37,54 @@ const NEWS_ITEMS = [
     id: 4,
     title: 'AI Integration Update',
     description:
-      'The coherence-gated AI assistant is connected to live market data and on-chain treasury state. Safety levels are determined by the golden ratio threshold system.',
+      'The coherence-gated AI assistant is connected to live market data and on-chain treasury state. Safety levels are determined by the proportional threshold system.',
     date: 'January 2026',
     tag: 'AI',
   },
 ];
 
 function News() {
+  const [newsItems, setNewsItems] = useState(FALLBACK_NEWS);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchNews = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const res = await fetch(`${API_BASE_URL}/api/news`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setNewsItems(data);
+        } else if (data.items && data.items.length > 0) {
+          setNewsItems(data.items);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch news:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
+
   return (
     <div className="news-container">
       <div className="news-header">
-        <h2>Latest Updates</h2>
-        <p className="news-subtitle">Platform news and development progress</p>
+        <div>
+          <h2>Latest Updates</h2>
+          <p className="news-subtitle">Platform news and development progress</p>
+        </div>
+        <button className="news-refresh-btn" onClick={fetchNews} disabled={refreshing}>
+          {refreshing ? 'Refreshing...' : 'Refresh'}
+        </button>
       </div>
       <div className="news-grid">
-        {NEWS_ITEMS.map((item) => (
+        {newsItems.map((item) => (
           <div key={item.id} className="news-card">
             <div className="news-card-top">
               <span className="news-tag">{item.tag}</span>

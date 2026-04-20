@@ -1,6 +1,6 @@
 /*
  * SOLIDARITY PLATFORM - PAYMENT CALCULATOR STYLES
- * Sacred Geometry Stone Theme
+ * Geometric Pattern Stone Theme
  *
  * TRADEMARK: Scott Charles Olson
  */
@@ -10,7 +10,7 @@
   background: linear-gradient(135deg, #D5D2C8 0%, #C8C4BA 50%, #D5D2C8 100%);
   color: #2C2C2C;
   padding: 24px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Aleo', Georgia, serif;
 }
 
 /* Header */
@@ -193,13 +193,16 @@
 
 .preset-btn {
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid #B8B5A8;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.35) 100%);
+  border: 1.5px solid #9E9B8E;
   border-radius: 20px;
   color: #5C5C50;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Aleo', Georgia, serif;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .preset-btn:hover {
@@ -333,13 +336,16 @@
 .advanced-toggle {
   width: 100%;
   padding: 12px;
-  background: none;
-  border: 1px dashed #B8B5A8;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 100%);
+  border: 1.5px dashed #B8B5A8;
   border-radius: 8px;
   color: #7A7A6C;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Aleo', Georgia, serif;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .advanced-toggle:hover {
@@ -609,10 +615,12 @@
   cursor: pointer;
   transition: all 0.3s;
   background: linear-gradient(135deg, #4caf50, #388E3C);
-  border: 2px solid #4caf50;
+  border: 1.5px solid #2E7D32;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-family: 'Aleo', Georgia, serif;
+  box-shadow: 0 2px 8px rgba(76,175,80,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .calculate-btn:hover {
@@ -651,8 +659,9 @@
 
 .cta-primary {
   background: linear-gradient(135deg, #D4AF37, #BF9B30);
-  border: none;
+  border: 1.5px solid #A68529;
   color: #fff;
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .cta-primary:hover {
@@ -661,9 +670,10 @@
 }
 
 .cta-secondary {
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
   color: #A68529;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .cta-secondary:hover {

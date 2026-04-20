@@ -1,4 +1,4 @@
-/* MARKETS — SVG chart cards with ticker selector and phi-lattice overlay */
+/* MARKETS — SVG chart cards with ticker selector and predictive overlay */
 
 .markets-container {
   padding: 2rem;
@@ -20,27 +20,31 @@
 
 .ticker-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid #B8B5A8;
+  border: 1.5px solid #9E9B8E;
   border-radius: 6px;
-  background: rgba(184, 181, 168, 0.3);
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.35) 100%);
   color: #2C2C2C;
+  font-family: 'Aleo', Georgia, serif;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .ticker-btn:hover {
-  background: #F5E6B8;
+  background: linear-gradient(180deg, #F5E6B8 0%, #EDD99C 100%);
   border-color: #D4AF37;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(212,175,55,0.2);
 }
 
 .ticker-btn.ticker-active {
   background: linear-gradient(135deg, #D4AF37 0%, #BF9B30 100%);
-  border-color: #A68529;
+  border: 1.5px solid #A68529;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 /* Section Layout */
@@ -49,6 +53,7 @@
 }
 
 .markets-section-title {
+  font-family: 'Lora', Georgia, serif;
   font-size: 1.3rem;
   color: #2C2C2C;
   margin-bottom: 1rem;
@@ -86,6 +91,7 @@
 }
 
 .market-name {
+  font-family: 'Lora', Georgia, serif;
   font-size: 1rem;
   color: #2C2C2C;
   font-weight: 600;

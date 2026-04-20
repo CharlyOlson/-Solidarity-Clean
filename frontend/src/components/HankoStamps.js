@@ -156,7 +156,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
     } catch (error) {
       console.log('Ollama not available, using default description');
     }
-    return 'Quantum-aligned radial stamp with φ-ratio proportions and sacred geometry';
+    return 'Radial stamp with proportional geometry and convergence-based patterns';
   };
 
   // Hanko stamp types with Japanese characters and descriptions
@@ -642,9 +642,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                     </div>
                     {calculateSudokuConvergence() && (
                       <div className="convergence-info">
-                        📍 Convergence Point: ({calculateSudokuConvergence().x}, {calculateSudokuConvergence().y})
-                        | Spokes: {calculateSudokuConvergence().spokeCount}
-                        | Rotation: {calculateSudokuConvergence().rotation}°
+                        📍 Pattern generated — unique identity seal ready
                       </div>
                     )}
                   </div>
@@ -778,7 +776,7 @@ Describe the stamp's visual characteristics in 2-3 sentences focusing on:
                   {stampTypes[selectedStamp.stamp_type].romaji} - {stampTypes[selectedStamp.stamp_type].japanese}
                 </p>
                 <div className="crypto-info">
-                  🔐 Quantum-Resistant • φ 1.618 • SHA-3-512
+                  🔐 Quantum-Resistant • SHA-3-512
                 </div>
               </div>
             </div>

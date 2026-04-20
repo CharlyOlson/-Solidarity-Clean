@@ -231,7 +231,7 @@ export default function PaymentCalculator() {
           <span className="calc-icon">💰</span>
           <div>
             <h2>Payment Savings Calculator</h2>
-            <p>See how much you can save with φ-ratio optimization</p>
+            <p>See how much you can save with optimized fee calculations</p>
           </div>
         </div>
         <div className="safety-badge" data-level={results.safetyConfig.level}>
@@ -342,7 +342,7 @@ export default function PaymentCalculator() {
               />
               <div className="safety-labels">
                 <span>Conservative</span>
-                <span className="safety-value">{safetyLevel.toFixed(3)}</span>
+                <span className="safety-value">{Math.round(safetyLevel * 100)}%</span>
                 <span>Aggressive</span>
               </div>
             </div>
@@ -402,11 +402,9 @@ export default function PaymentCalculator() {
         <div className="calc-results">
           <div className="results-header">
             <h3>Your Savings Potential</h3>
-            <span className="phi-badge">phi = {BASE_RATIO}</span>
             <span
               className="phi-badge"
               style={{
-                marginLeft: 8,
                 background:
                   coherenceLevel === 'elevated' || coherenceLevel === 'stable'
                     ? '#33cc66'
@@ -417,8 +415,8 @@ export default function PaymentCalculator() {
               }}
             >
               {chainLoading
-                ? 'Coherence: ...'
-                : `Coherence: ${coherenceScore} (${coherenceLevel})`}
+                ? 'Status: Loading...'
+                : `Status: ${coherenceLevel}`}
             </span>
           </div>
 
@@ -551,7 +549,7 @@ export default function PaymentCalculator() {
       {/* Footer */}
       <div className="calc-footer">
         <p>
-          Powered by φ-ratio optimization • Base Ratio: {BASE_RATIO} • Bridging Baseline: {BRIDGING_BASELINE}
+          Powered by proportional optimization engine
         </p>
       </div>
     </div>

@@ -12,7 +12,7 @@ const CAPABILITIES = [
   {
     title: 'Coherence-Gated Operations',
     description:
-      'Every financial operation passes through a coherence gate before execution. The platform uses golden ratio (\u03c6 = 1.618) convergence as the mathematical validator \u2014 not rule-based compliance, but structural mathematical validation.',
+      'Every financial operation passes through a coherence gate before execution. The platform uses proportional convergence as the mathematical validator \u2014 not rule-based compliance, but structural mathematical validation.',
     quote:
       "Your transactions aren\u2019t just checked against a list of rules. They\u2019re validated against the same proportional relationships that govern stable systems.",
   },
@@ -55,7 +55,7 @@ const TIERS = [
   {
     name: 'Personal',
     price: 'Free',
-    features: ['Local AI (Ollama)', 'Basic wallet', 'Community access', 'Sacred geometry tools'],
+    features: ['Local AI (Ollama)', 'Basic wallet', 'Community access', 'Geometric pattern tools'],
   },
   {
     name: 'Pro',

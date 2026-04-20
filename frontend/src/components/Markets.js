@@ -1,7 +1,7 @@
 /*
  * SOLIDARITY PLATFORM - MARKETS
  * ==============================
- * SVG line charts with selectable tickers and phi-lattice prediction.
+ * SVG line charts with selectable tickers and predictive overlay.
  * No external charting library — pure SVG paths.
  */
 
@@ -52,7 +52,7 @@ ALL_TICKERS.forEach((ticker) => {
 });
 
 /* ============================================================
-   PHI-LATTICE PREDICTIVE ALGORITHM
+   PREDICTIVE OVERLAY ALGORITHM
    ============================================================ */
 
 const PHI = 1.618033988749895;
@@ -189,7 +189,7 @@ function MarketCard({ ticker }) {
         </span>
         <span className="legend-item legend-pred">
           <span className="legend-line legend-dashed" />
-          {'\u03c6'}-Lattice Projection
+          Predictive Overlay
         </span>
       </div>
     </div>
