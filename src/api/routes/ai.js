@@ -17,6 +17,7 @@ const router = express.Router();
 const AIRouter = require('../../ai/AIRouter');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
+const { PHI, BRIDGING_BASELINE, SACRED_NODES, HENRY_BASE, HENRY_DOUBLE, HENRY_SQUARE } = require('../../utils/constants');
 
 // AIRouter instance — coherence engine can be attached after system boot
 const aiRouter = new AIRouter();
@@ -42,6 +43,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
         error: result.content,
         offline: true,
         provider: 'none',
+        fallbackSuggestion: 'Start Ollama with: ollama serve',
       });
     }
 
@@ -67,15 +69,28 @@ router.get('/live-context', optionalAuth, async (req, res) => {
     const status = await aiRouter.getStatus();
     res.json({
       success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: { base: HENRY_BASE, double: HENRY_DOUBLE, square: HENRY_SQUARE },
+      flowMode: status.coherence ? status.coherence.mode : 'standard',
       context: {
-        aiAvailable: status.available || false,
-        provider: status.provider || 'none',
+        aiAvailable: status.ollama ? status.ollama.available : false,
+        provider: status.ollama && status.ollama.available ? 'ollama' : 'none',
         systemHealth: 'operational',
         timestamp: new Date().toISOString(),
       },
     });
   } catch (err) {
-    res.json({ success: true, context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() } });
+    res.json({
+      success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: { base: HENRY_BASE, double: HENRY_DOUBLE, square: HENRY_SQUARE },
+      flowMode: 'standard',
+      context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() },
+    });
   }
 });
 
