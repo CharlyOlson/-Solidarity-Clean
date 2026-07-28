@@ -18,6 +18,7 @@ const { ComprehensiveSolidarityDiscovery } = require('./ComprehensiveSolidarityD
 const { MobileDeviceManager } = require('./MobileDeviceManager');
 const { QuantumEngine } = require('./QuantumEngine');
 const focusedPassCorrector = require('./focusedPassCorrector');
+const { HarmoniousSafetyCoordinator, SAFETY_TIERS, PHI_INV } = require('./HarmoniousSafetyCoordinator');
 
 module.exports = {
   SolidarityEngine,
@@ -27,5 +28,8 @@ module.exports = {
   ComprehensiveSolidarityDiscovery,
   MobileDeviceManager,
   QuantumEngine,
-  focusedPassCorrector
+  focusedPassCorrector,
+  HarmoniousSafetyCoordinator,
+  SAFETY_TIERS,
+  PHI_INV
 };
