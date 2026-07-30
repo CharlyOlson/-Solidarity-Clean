@@ -17,6 +17,7 @@ const router = express.Router();
 const AIRouter = require('../../ai/AIRouter');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
+const { PHI, BRIDGING_BASELINE, SACRED_NODES, HENRY_BASE, HENRY_DOUBLE, HENRY_SQUARE } = require('../../../constants');
 
 // AIRouter instance — coherence engine can be attached after system boot
 const aiRouter = new AIRouter();
@@ -42,6 +43,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
         error: result.content,
         offline: true,
         provider: 'none',
+        fallbackSuggestion: 'Start Ollama locally with `ollama serve` to enable AI features.',
       });
     }
 
@@ -57,6 +59,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
       success: false,
       error: err.message,
       offline: true,
+      fallbackSuggestion: 'Start Ollama locally with `ollama serve` to enable AI features.',
     });
   }
 });
@@ -67,6 +70,11 @@ router.get('/live-context', optionalAuth, async (req, res) => {
     const status = await aiRouter.getStatus();
     res.json({
       success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: { base: HENRY_BASE, double: HENRY_DOUBLE, square: HENRY_SQUARE },
+      flowMode: status.available ? 'active' : 'offline',
       context: {
         aiAvailable: status.available || false,
         provider: status.provider || 'none',
@@ -75,7 +83,15 @@ router.get('/live-context', optionalAuth, async (req, res) => {
       },
     });
   } catch (err) {
-    res.json({ success: true, context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() } });
+    res.json({
+      success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: { base: HENRY_BASE, double: HENRY_DOUBLE, square: HENRY_SQUARE },
+      flowMode: 'offline',
+      context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() },
+    });
   }
 });
 
