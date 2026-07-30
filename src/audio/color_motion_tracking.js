@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { spawn, exec } = require('child_process');
+const { exec } = require('child_process');
 
 // 🛡️ Harmonious Safety Thresholds for Color Motion Processing
 const MOTION_SAFETY_THRESHOLDS = {
@@ -22,7 +22,6 @@ let globalMotionSafetyLevel = 0.618; // Anchor Ratio - bridging starting point
 
 // Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');
-const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {

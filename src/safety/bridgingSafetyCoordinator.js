@@ -209,7 +209,7 @@ class BridgingSafetyCoordinator {
         const status = this.getSystemStatus();
         
         console.log('\n🛡️ BRIDGING SAFETY COORDINATOR REPORT');
-        console.log('=' * 50);
+        console.log('='.repeat(50));
         console.log(`🕐 Timestamp: ${status.timestamp}`);
         console.log(`🎛️ Flow Mode: ${status.flowMode}`);
         console.log(`${status.system.emoji} System Safety: ${status.system.value.toFixed(3)} (${status.system.level})`);
@@ -231,7 +231,7 @@ class BridgingSafetyCoordinator {
             status.recommendations.forEach(rec => console.log(`  • ${rec}`));
         }
         
-        console.log('=' * 50);
+        console.log('='.repeat(50));
         
         return status;
     }

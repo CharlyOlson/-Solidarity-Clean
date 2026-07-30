@@ -21,8 +21,6 @@
  * - Live calculation mode for interactive UI
  */
 
-const EventEmitter = require('events');
-const PaymentConnector = require('./payment_connector.js');
 const fs = require('fs');
 
 // Delegated to core module for all calculation logic

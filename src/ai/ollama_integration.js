@@ -30,8 +30,6 @@
  */
 
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
 
 // Ollama default endpoint (install Ollama locally: https://ollama.ai)
 const OLLAMA_API_URL = 'http://localhost:11434/api/generate';
