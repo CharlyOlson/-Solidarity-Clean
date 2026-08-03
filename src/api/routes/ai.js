@@ -59,6 +59,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
       success: false,
       error: err.message,
       offline: true,
+      provider: 'none',
       fallbackSuggestion: 'Start Ollama locally with `ollama serve` to enable AI features.',
     });
   }
@@ -68,16 +69,20 @@ router.post('/chat', optionalAuth, async (req, res) => {
 router.get('/live-context', optionalAuth, async (req, res) => {
   try {
     const status = await aiRouter.getStatus();
+    const aiAvailable = (status.ollama && status.ollama.available) || (status.perplexity && status.perplexity.configured) || false;
+    const activeProvider = (status.ollama && status.ollama.available) ? 'ollama'
+      : (status.perplexity && status.perplexity.configured) ? 'perplexity'
+      : 'none';
     res.json({
       success: true,
       safetyLevel: BRIDGING_BASELINE,
       phi: PHI,
       sacredNodes: SACRED_NODES,
       henryProgression: { base: HENRY_BASE, double: HENRY_DOUBLE, square: HENRY_SQUARE },
-      flowMode: status.available ? 'active' : 'offline',
+      flowMode: aiAvailable ? 'active' : 'offline',
       context: {
-        aiAvailable: status.available || false,
-        provider: status.provider || 'none',
+        aiAvailable,
+        provider: activeProvider,
         systemHealth: 'operational',
         timestamp: new Date().toISOString(),
       },
