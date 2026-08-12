@@ -16,6 +16,15 @@ const express = require('express');
 const router = express.Router();
 const AIRouter = require('../../ai/AIRouter');
 const { optionalAuth } = require('../middleware/auth');
+const {
+  PHI,
+  BRIDGING_BASELINE,
+  HENRY_BASE,
+  HENRY_DOUBLE,
+  HENRY_SQUARE,
+  CONTROL_RATIO,
+  SACRED_NODES
+} = require('../../utils/constants');
 const logger = require('../../utils/logger');
 
 // AIRouter instance — coherence engine can be attached after system boot
@@ -42,6 +51,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
         error: result.content,
         offline: true,
         provider: 'none',
+        fallbackSuggestion: 'Start Ollama locally with `ollama serve`, then retry your request.',
       });
     }
 
@@ -57,6 +67,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
       success: false,
       error: err.message,
       offline: true,
+      fallbackSuggestion: 'Verify the local AI service is available, or retry once system health returns to optimal range.',
     });
   }
 });
@@ -65,17 +76,48 @@ router.post('/chat', optionalAuth, async (req, res) => {
 router.get('/live-context', optionalAuth, async (req, res) => {
   try {
     const status = await aiRouter.getStatus();
+    const provider = status.ollama?.available
+      ? 'ollama'
+      : (status.tier === 'business' && status.perplexity?.configured ? 'perplexity' : 'none');
     res.json({
       success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: {
+        base: HENRY_BASE,
+        double: HENRY_DOUBLE,
+        square: HENRY_SQUARE,
+        controlRatio: CONTROL_RATIO,
+      },
+      flowMode: status.coherence?.mode || 'standard',
       context: {
-        aiAvailable: status.available || false,
-        provider: status.provider || 'none',
+        aiAvailable: status.ollama?.available || false,
+        provider,
         systemHealth: 'operational',
         timestamp: new Date().toISOString(),
       },
     });
   } catch (err) {
-    res.json({ success: true, context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() } });
+    res.json({
+      success: true,
+      safetyLevel: BRIDGING_BASELINE,
+      phi: PHI,
+      sacredNodes: SACRED_NODES,
+      henryProgression: {
+        base: HENRY_BASE,
+        double: HENRY_DOUBLE,
+        square: HENRY_SQUARE,
+        controlRatio: CONTROL_RATIO,
+      },
+      flowMode: 'standard',
+      context: {
+        aiAvailable: false,
+        provider: 'none',
+        systemHealth: 'operational',
+        timestamp: new Date().toISOString()
+      }
+    });
   }
 });
 
