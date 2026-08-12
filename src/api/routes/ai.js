@@ -76,6 +76,9 @@ router.post('/chat', optionalAuth, async (req, res) => {
 router.get('/live-context', optionalAuth, async (req, res) => {
   try {
     const status = await aiRouter.getStatus();
+    const provider = status.ollama?.available
+      ? 'ollama'
+      : (status.tier === 'business' && status.perplexity?.configured ? 'perplexity' : 'none');
     res.json({
       success: true,
       safetyLevel: BRIDGING_BASELINE,
@@ -89,8 +92,8 @@ router.get('/live-context', optionalAuth, async (req, res) => {
       },
       flowMode: status.coherence?.mode || 'standard',
       context: {
-        aiAvailable: status.available || false,
-        provider: status.provider || 'none',
+        aiAvailable: status.ollama?.available || false,
+        provider,
         systemHealth: 'operational',
         timestamp: new Date().toISOString(),
       },
