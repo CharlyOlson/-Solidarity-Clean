@@ -9,9 +9,6 @@ on:
     # Run security scan weekly on Mondays at 9 AM UTC
     - cron: '0 9 * * 1'
 
-env:
-  npm_config_cache: ${{ runner.temp }}/npm-cache
-
 jobs:
   security-tests:
     runs-on: ubuntu-latest
@@ -26,6 +23,8 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
+      env:
+        NPM_CONFIG_CACHE: ${{ runner.temp }}/npm-cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
       run: npm ci --ignore-scripts
       
     - name: Run security tests
