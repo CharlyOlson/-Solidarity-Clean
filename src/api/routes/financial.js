@@ -55,7 +55,7 @@ function initializeFinancialSystems(safetyLevel = BRIDGING_BASELINE) {
       transactionProcessor = new TransactionProcessor({ safetyLevel });
     }
     if (FinancialOptimizer && !financialOptimizer) {
-      financialOptimizer = new FinancialOptimizer({ safetyLevel });
+      financialOptimizer = new FinancialOptimizer({ safetyLevel: safetyLevel });
     }
   } catch (e) {
     console.warn('Could not initialize financial systems:', e.message);

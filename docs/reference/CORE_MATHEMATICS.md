@@ -86,6 +86,7 @@ function calculateCoilHarmony(charge1, charge2, intensity) {
 ```
 
 **Why This Works**:
+
 - **Same charges** (++) create expansion → Division by φ (containment)
 - **Opposing charges** (+−) create attraction → Multiplication by φ (amplification)
 - **Balance point** (harmony) → Division by φ² (stabilization)

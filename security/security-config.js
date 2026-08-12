@@ -221,6 +221,6 @@ module.exports = {
   SecurityConfig,
   securityConfig,
   SecureURLValidator,
-  InputSanitizer,
+  InputSanitizer: InputSanitizer,
   SecurityHeaders
 };

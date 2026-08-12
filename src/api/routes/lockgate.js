@@ -54,8 +54,8 @@ router.post('/nonce', (req, res) => {
     
     res.json({
       success: true,
-      nonce,
-      timestamp,
+      nonce: nonce,
+      timestamp: timestamp,
       expiresIn: NONCE_EXPIRY / 1000,
       safetyLevel: 0.618
     });
