@@ -20,11 +20,11 @@ module.exports = {
   env: {
     node: true,
     es2020: true,
-    commonjs: true,
+    commonjs: true
   },
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'commonjs',
+    sourceType: 'commonjs'
   },
   rules: {
     // Allow require() at module level and inside functions (CommonJS pattern)
@@ -34,6 +34,6 @@ module.exports = {
     // Template literals are preferred over concatenation
     'prefer-template': 'warn',
     // No unused variables (catches typos without blocking valid patterns)
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-  },
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+  }
 };
