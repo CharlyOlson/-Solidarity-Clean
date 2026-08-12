@@ -112,7 +112,7 @@
     "@openzeppelin/contracts": "^5.0.0",
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8.39.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^1.7.1",
