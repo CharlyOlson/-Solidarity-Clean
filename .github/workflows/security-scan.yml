@@ -30,7 +30,7 @@ jobs:
       
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-test-results
         path: security/
@@ -58,7 +58,7 @@ jobs:
       run: npm audit --json > npm-audit-report.json || true
       
     - name: Upload audit report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: npm-audit-report
         path: npm-audit-report.json
