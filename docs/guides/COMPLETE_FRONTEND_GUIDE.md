@@ -200,6 +200,7 @@ location.reload()
 - Edit re-populates the form (delete old, save new)
 
 ### Lock Gate
+
 - Client SHA-256 is preview only
 - Backend performs authoritative verification
 - Request nonce for replay attack prevention
@@ -326,7 +327,7 @@ You now have a **complete, working frontend** with:
 ✅ Persistent data storage  
 ✅ 7 fully functional tabs  
 
-**Access now at: http://localhost:3000**
+**Access now at: <http://localhost:3000>**
 
 **Login with:**
 - Username: `scott.charles` (or any name)
