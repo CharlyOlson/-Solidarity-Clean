@@ -40,12 +40,11 @@ const financialRateLimit = rateLimit({
   windowMs: 60 * 1000,
   max: 120,
   standardHeaders: true,
-  legacyHeaders: false
-});
-
-router.use(financialRateLimit);
-router.use(optionalAuth);
-
+const rateLimit = require('express-rate-limit');
+const { v4: uuidv4 } = require('uuid');
+const { stmts } = require('../db');
+const { optionalAuth } = require('../middleware/auth');
+const { PHI, BRIDGING_BASELINE } = require('../../utils/constants');
 function stableStringify(value) {
   if (value === null || typeof value !== 'object') {
     return JSON.stringify(value);
