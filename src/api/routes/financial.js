@@ -619,9 +619,6 @@ router.put('/transaction/:id', (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Insufficient wallet balance for updated transaction amount' });
     }
 
-    const transactionHash = hashPayload(buildTransactionPayload(updatedRecord));
-    const signature = signPayload(buildTransactionPayload(updatedRecord), wallet.private_key);
-    const verified = verifyPayload(buildTransactionPayload(updatedRecord), signature, wallet.public_key);
     const oldValues = normalizeTransaction(current);
     const metadata = {
       ...parseJson(current.metadata, {}),
@@ -629,6 +626,12 @@ router.put('/transaction/:id', (req, res, next) => {
       signedAt: updatedRecord.timestamp,
       updatedAt: updatedRecord.timestamp
     };
+
+    updatedRecord.metadata = metadata;
+    const payload = buildTransactionPayload(updatedRecord);
+    const transactionHash = hashPayload(payload);
+    const signature = signPayload(payload, wallet.private_key);
+    const verified = verifyPayload(payload, signature, wallet.public_key);
 
     stmts.updateFinancialTransaction.run(
       updatedRecord.to,
