@@ -213,10 +213,14 @@ describe('Financial API Routes', () => {
       expect(updated.status).toBe(200);
       expect(updated.body.transaction.amount).toBe(20);
 
+      const verify = await authed(token).get(`/api/financial/transaction/${created.body.transaction.id}/verify`);
+      expect(verify.status).toBe(200);
+      expect(verify.body.verified).toBe(true);
+      expect(verify.body.transactionHashMatches).toBe(true);
+
       const audit = await authed(token).get(`/api/financial/transaction/${created.body.transaction.id}/audit`);
       expect(audit.body.count).toBe(2);
       expect(audit.body.audit[1].operation).toBe('UPDATE');
-    });
 
     it('soft deletes a transaction and records delete audit', async () => {
       const { token } = await registerUser('tx-delete');
