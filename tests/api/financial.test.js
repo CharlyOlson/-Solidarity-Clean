@@ -221,6 +221,7 @@ describe('Financial API Routes', () => {
       const audit = await authed(token).get(`/api/financial/transaction/${created.body.transaction.id}/audit`);
       expect(audit.body.count).toBe(2);
       expect(audit.body.audit[1].operation).toBe('UPDATE');
+    });
 
     it('soft deletes a transaction and records delete audit', async () => {
       const { token } = await registerUser('tx-delete');
