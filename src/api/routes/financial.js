@@ -13,6 +13,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
 const { stmts } = require('../db');
+const { optionalAuth } = require('../middleware/auth');
 const { PHI, BRIDGING_BASELINE } = require('../../utils/constants');
 
 const router = express.Router();
@@ -40,11 +41,9 @@ const financialRateLimit = rateLimit({
   windowMs: 60 * 1000,
   max: 120,
   standardHeaders: true,
-const rateLimit = require('express-rate-limit');
-const { v4: uuidv4 } = require('uuid');
-const { stmts } = require('../db');
-const { optionalAuth } = require('../middleware/auth');
-const { PHI, BRIDGING_BASELINE } = require('../../utils/constants');
+  legacyHeaders: false
+});
+
 function stableStringify(value) {
   if (value === null || typeof value !== 'object') {
     return JSON.stringify(value);
