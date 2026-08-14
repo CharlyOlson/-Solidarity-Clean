@@ -13,7 +13,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
 const { stmts } = require('../db');
-const { optionalAuth } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
 const { PHI, BRIDGING_BASELINE } = require('../../utils/constants');
 
 const router = express.Router();
