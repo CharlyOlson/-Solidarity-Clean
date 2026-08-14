@@ -599,11 +599,9 @@ router.put('/transaction/:id', (req, res, next) => {
       ...req.body,
       id: current.id,
       to: req.body.to ?? current.to_address,
-      amount: req.body.amount ?? current.amount,
-      chain: req.body.chain ?? current.chain,
       type: req.body.type ?? current.type,
       safetyLevel: req.body.safetyLevel ?? current.safety_level
-    }, req.body.status || current.status);
+    }, current.status);
 
     const safetyValidation = validateSafetyLevel(updatedRecord.safetyLevel, Number(updatedRecord.amount));
     if (!safetyValidation.valid) {
