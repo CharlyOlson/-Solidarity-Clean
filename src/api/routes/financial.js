@@ -21,8 +21,11 @@ const router = express.Router();
 const VALID_NODES = [1, 3, 4, 7, 14, 21];
 const DEFAULT_GAS_PRICE = 20;
 const SIGNING_SECRET = process.env.FINANCIAL_KEY_SECRET
-  || process.env.JWT_SECRET
-  || 'solidarity-financial-signing-dev-only';
+  || (process.env.NODE_ENV === 'production' ? null : 'solidarity-financial-signing-dev-only');
+
+if (!SIGNING_SECRET) {
+  throw new Error('FINANCIAL_KEY_SECRET must be set in production to encrypt/sign wallet keys');
+}
 
 const SAFETY_TIERS = [
   { label: 'emergency', min: 0, max: 0.05, canTransact: false, maxAmount: 0 },
