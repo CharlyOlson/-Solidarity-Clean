@@ -12,11 +12,21 @@
  */
 
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const { startSession, loadHistory, logInteraction, pushToBin } = require('../../../launcher');
 const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
+
+const sessionRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+router.use(sessionRateLimit);
 
 // POST /api/session/start — Start new session and get AI answer
 router.post('/start', optionalAuth, async (req, res) => {

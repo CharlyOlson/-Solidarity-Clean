@@ -12,6 +12,7 @@
 
 const crypto = require('crypto');
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { v4: uuidv4 } = require('uuid');
 const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
@@ -35,6 +36,14 @@ const SAFETY_TIERS = [
   { label: 'critical-upper', min: 0.95, max: 1.01, canTransact: false, maxAmount: 0 }
 ];
 
+const financialRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+router.use(financialRateLimit);
 router.use(optionalAuth);
 
 function stableStringify(value) {
