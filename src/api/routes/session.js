@@ -14,6 +14,7 @@
 const express = require('express');
 const router = express.Router();
 const { startSession, loadHistory, logInteraction, pushToBin } = require('../../../launcher');
+const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
 const logger = require('../../utils/logger');
 
@@ -61,6 +62,66 @@ router.get('/history', optionalAuth, (req, res) => {
     res.json({ success: true, history });
   } catch (err) {
     logger.error('Session history error', { error: err.message });
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/session/complete — Record completion marker and metrics
+router.post('/complete', optionalAuth, (req, res) => {
+  try {
+    const {
+      sessionId,
+      filesModified = 0,
+      testsPassing = 0,
+      vulnerabilitiesFixed = 0,
+      metrics = {}
+    } = req.body;
+
+    const completionSessionId = sessionId || `session-${Date.now()}`;
+    const finalMetrics = {
+      sessionEndMarker: true,
+      completedAt: new Date().toISOString(),
+      ...metrics
+    };
+
+    stmts.insertSessionCompletionReport.run(
+      req.user.id,
+      completionSessionId,
+      'completed',
+      Number(filesModified) || 0,
+      Number(testsPassing) || 0,
+      Number(vulnerabilitiesFixed) || 0,
+      JSON.stringify(finalMetrics)
+    );
+
+    res.json({
+      success: true,
+      sessionId: completionSessionId,
+      status: 'completed',
+      metrics: finalMetrics
+    });
+  } catch (err) {
+    logger.error('Session completion error', { error: err.message });
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/session/completion-reports — Retrieve completion markers
+router.get('/completion-reports', optionalAuth, (req, res) => {
+  try {
+    const reports = stmts.listSessionCompletionReportsByUser.all(req.user.id).map((row) => ({
+      id: row.id,
+      sessionId: row.session_id,
+      status: row.status,
+      filesModified: row.files_modified,
+      testsPassing: row.tests_passing,
+      vulnerabilitiesFixed: row.vulnerabilities_fixed,
+      metrics: JSON.parse(row.metrics || '{}'),
+      completedAt: row.completed_at
+    }));
+    res.json({ success: true, reports });
+  } catch (err) {
+    logger.error('Session completion history error', { error: err.message });
     res.status(500).json({ success: false, error: err.message });
   }
 });
