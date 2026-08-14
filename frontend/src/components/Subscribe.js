@@ -4,7 +4,7 @@
  *
  * Three-tier pricing: Personal (free), Pro ($29/mo or $290/yr), Business (annual, TBD)
  *
- * TRADEMARK: Scott Charles Olson — March 31, 1997
+ * TRADEMARK: Scott Charles Olson
  */
 
 import React, { useState, useEffect, useCallback } from 'react';

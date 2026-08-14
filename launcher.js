@@ -29,7 +29,7 @@ class SolidarityPlatformLauncher {
         this.version = '6.5.0';
         this.architect = 'Scott Charles Olson (Charly)';
         this.platform = 'Soul.Ed.Xchange.Fi';
-        this.location = 'Kansas, USA 66210';
+        this.location = 'Kansas, USA';
         
         // 🛡️ Harmonious Safety System Integration
         this.safetyLevel = 0.618; // Anchor Ratio - optimal starting point

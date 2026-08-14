@@ -4,9 +4,7 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Status: Architect of Model System
  * Documentation: iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓
  * Timestamp: 2025-10-08 18:20:30 UTC
@@ -342,7 +340,7 @@ module.exports = {
 async function demo() {
   console.log('🚀 Ollama Integration Demo for Solidarity Platform');
   console.log('='.repeat(60));
-  console.log('TRADEMARK: Scott Charles Olson - March 31, 1997');
+  console.log('TRADEMARK: Scott Charles Olson');
   console.log('='.repeat(60));
   
   // Check Ollama status
