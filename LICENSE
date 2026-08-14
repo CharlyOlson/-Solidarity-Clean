@@ -1,32 +1,82 @@
-# SOLIDARITY PLATFORM - LICENSE NOTICE
+# SOLIDARITY PLATFORM — HUMANITARIAN USE LICENSE
 
-Copyright (c) 2025 CharlyOlson  
-Copyright (c) 2025 Scott Charles Olson
-
-The Solidarity Platform is no longer licensed under the MIT License.
-
-Please refer to TRADEMARK.md for the current licensing terms.
-
----
-
-## Terms and Conditions
-
-Read carefully. Do not copy without permission or adherence to this full document and implementing it onto further expansion of technology, starting 05/19/2025.
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
----
-
-## Commercial Use & Trademark Notice
-
-This platform is **open for non-commercial use** up to version 2.00.0. 
-
-For commercial use, partnership, or special features, you must review TRADEMARK.md and contact Scott Charles Olson ("Charly") for compliance and payment instructions.
-
-Unauthorized commercial use or misuse of proprietary information is strictly prohibited.
-
-**Copyright © 2025 Scott Charles Olson (CharlyOlson)**  
-**All Rights Reserved**  
+**Copyright © 2025–2026 Scott Charles Olson (CharlyOlson)**
+**aka Charly, Scooter, Scotchy, Scotty, Escoot**
 **TRADEMARKED BY SCOTT CHARLES OLSON**
+**Effective Date: May 19, 2025**
+
+---
+
+## The Purpose
+
+This platform was built by one person, from nothing, to do something real for people who have been left behind by financial systems, economic inequality, and the failures of the past several years. It is offered to the world — not to extract value from it.
+
+The Solidarity Platform exists to:
+- Reduce payment fees for small businesses, nonprofits, independent workers, and governments operating in underserved communities
+- Give people access to financial tools that were previously only available to institutions
+- Demonstrate that mathematical fairness (φ-ratio optimization) can be embedded into software and used to benefit people at scale
+- Provide privacy-first, locally-run AI so that anyone — regardless of income — can access intelligent tooling without ongoing API costs
+
+---
+
+## Your Rights (What You Can Do)
+
+You are **free** to:
+
+1. **Use** — Run this software for any personal, educational, nonprofit, humanitarian, or public good purpose
+2. **Study** — Read, learn from, and teach with this codebase
+3. **Modify** — Adapt the software to serve your community's specific needs
+4. **Distribute** — Share copies, forks, and derivative works with others, provided this license is included
+5. **Deploy** — Host and operate this platform to serve others, including at no charge to end users
+
+---
+
+## Your Responsibilities (What You Must Do)
+
+If you use, modify, or distribute this software:
+
+1. **Credit** — You must retain the copyright notice and a clear attribution to Scott Charles Olson (Charly) as the original author and architect
+2. **Keep it humanitarian** — Any deployment or fork must preserve the core mission: reducing financial harm, not amplifying it
+3. **Share improvements** — If you improve the platform, contribute those improvements back to the community
+4. **No extraction** — You may not use this software as the primary engine of a for-profit product that extracts fees from vulnerable populations, or that concentrates financial benefit away from end users
+
+---
+
+## Commercial Use
+
+Commercial use is permitted **only when the primary beneficiaries are the end users**, not the deployer. Specifically:
+
+- ✅ Allowed: A nonprofit charging a small operational fee to sustain a deployment serving low-income communities
+- ✅ Allowed: A cooperative or worker-owned business using this to reduce their own payment costs
+- ✅ Allowed: A government or public institution deploying this for citizens
+- ❌ Not allowed: A for-profit company using this as a core product without a licensing agreement
+- ❌ Not allowed: Any deployment that removes the fee-reduction benefits from end users
+
+For commercial licensing inquiries, contact the trademark holder via the repository.
+
+---
+
+## Trademark
+
+The following are trademarked by Scott Charles Olson and may not be used in competing products:
+
+- **SOLIDARITY PLATFORM**
+- **Henry 7 Step 14 Trott Waltz** (the numerological framework)
+- **Bridging Anchor Processing** (the signal processing methodology)
+- **Coil Currency** (the internal ledger unit system)
+- **HankoStamps** (the digital seal verification system)
+
+---
+
+## Warranty Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. THE AUTHOR MAKES NO GUARANTEES REGARDING FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS. USE AT YOUR OWN RISK.
+
+---
+
+## In Plain Language
+
+This was built by someone who has lived through hard times, for people going through hard times. Take it. Use it. Make it better. Help people with it. Just don't take the help away from the people it was built for.
+
+— Scott Charles Olson (Charly)
+  Kansas, USA · 2025

@@ -3,8 +3,8 @@
  * ================================================
  * 
  * TRADEMARK: Scott Charles Olson
- * DOB: March 31, 1997
- * Location: Kansas, USA 66210
+
+
  */
 
 
