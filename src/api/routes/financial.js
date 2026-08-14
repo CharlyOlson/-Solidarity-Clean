@@ -765,7 +765,8 @@ router.post('/batch', (req, res, next) => {
     }
 
     const safetyLevel = Number(req.body.safetyLevel ?? getUserSafetyLevel(req.user.id));
-    const validation = validateSafetyLevel(safetyLevel);
+    const totalAmount = req.body.operations.reduce((sum, op) => sum + Number(op.amount || 0), 0);
+    const validation = validateSafetyLevel(safetyLevel, totalAmount || 1);
     if (!validation.valid) {
       return res.status(403).json({ success: false, error: validation.error });
     }
