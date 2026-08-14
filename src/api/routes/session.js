@@ -16,7 +16,7 @@ const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const { startSession, loadHistory, logInteraction, pushToBin } = require('../../../launcher');
 const { stmts } = require('../db');
-const { optionalAuth, requireAuth } = require('../middleware/auth');
+const { optionalAuth } = require('../middleware/auth');
 
 const sessionRateLimit = rateLimit({
   windowMs: 60 * 1000,
