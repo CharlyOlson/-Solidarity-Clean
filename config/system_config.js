@@ -329,7 +329,6 @@ class UnifiedSystemConfiguration {
  */
 function getSharedOperationalStatus() {
   const config = UnifiedSystemConfiguration.getInstance();
-  const phi = config.baseRatio || PHI;
   const baseline = config.bridgingBaseline || PHI_RECIPROCAL;
   // Operational percentage based on phi convergence
   return Math.round(baseline * 100);
