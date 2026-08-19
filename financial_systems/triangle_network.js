@@ -11,45 +11,43 @@
  *
  * ================================================
  *
- * BFS-expanding triangle network.
+ * BFS-expanding fractal triangle network.
  *
- * Starting from any center entity, the builder:
+ * Starting from any center entity the builder:
  *   1. Fetches the entity's connections from the registry
- *   2. Picks pairs of connectors to form triangles
- *      (each triangle = center + connA + connB)
- *   3. Each vertex (connA, connB) is itself an entity —
- *      so it becomes the center of its own triangle next
+ *   2. Pairs connectors to form triangles (each triangle = center + connA + connB)
+ *   3. Each vertex IS a registered entity — it becomes the center of its own
+ *      triangle next, connected at the shared tip (no duplication)
  *   4. Expansion continues BFS-outward until:
  *      a) a node has fewer than 2 unvisited connections, OR
  *      b) maxDepth is reached
  *
- * Result is a GRAPH — every node is unique (shared tips are
- * the same node object, not a copy), giving the fractal
- * mesh of connected triangles described in the spec.
+ * Every triangle carries full Pythagorean balance data:
+ *   balance score, corrected signals, hypotenuse, all three means.
  *
  * Output shape:
  * {
- *   nodes:     Map<id, NodeRecord>
- *   edges:     Set<"idA--idB">        (undirected, no duplicates)
- *   triangles: TriangleRecord[]
- *   depth:     number                 (max depth reached)
- *   centerEntityId: string
- *   coherenceMap: Map<id, number>     (per-node average coherence)
- *   networkCoherence: number          (φ-weighted overall score)
+ *   nodes:            Map<id, NodeRecord>
+ *   edges:            Set<"idA--idB">        (undirected, no duplicates)
+ *   triangles:        TriangleRecord[]
+ *   depth:            number
+ *   centerEntityId:   string
+ *   coherenceMap:     Map<id, number>        (per-node average coherence)
+ *   networkCoherence: number                 (φ-weighted overall)
+ *   pythagoreanSummary: object               (network-wide balance stats)
  * }
  *
- * NodeRecord  { id, name, role, signal, tier, depth, movementWeight }
+ * NodeRecord {
+ *   id, name, role, signal, tier, depth, movementWeight
+ * }
+ *
  * TriangleRecord {
- *   id: string,            "centerId--connA--connB"
- *   vertices: [id,id,id],
- *   coherenceScore: number,
- *   safetyTier: string,
- *   isOptimal: boolean,
- *   depth: number,
+ *   id, vertices:[id,id,id], coherenceScore, rawCoherence,
+ *   safetyTier, isOptimal, depth,
+ *   pythagorean: { balance, balanceLabel, isBalanced, hypotenuse,
+ *                  means:{arithmetic,geometric,harmonic},
+ *                  corrected:{a,b,c,corrected}, pythagoreanBonus }
  * }
- *
- * Henry node set for maxDepth default: {1,3,4,7,14,21}
- * φ = 1.618   safetyLevel = 0.618
  */
 
 'use strict';
@@ -58,17 +56,17 @@ const registry     = require('./entity_registry');
 const { computeTriangle, resolveTier } = require('./three_point_connector');
 const { PHI, SAFETY_LEVEL, clamp01 }  = registry;
 
-const DEFAULT_MAX_DEPTH = 7;   // Henry node 7
+const DEFAULT_MAX_DEPTH = 7;
 
 /**
  * Build the fractal triangle network starting from `centerEntityId`.
  *
  * @param {string} centerEntityId
  * @param {object} [opts]
- * @param {number} [opts.maxDepth=7]
- * @param {Map<string,number>} [opts.overrides]  signal overrides
- * @param {number} [opts.safetyLevel=0.618]
- * @returns {object}  graph described in module header
+ * @param {number}             [opts.maxDepth=7]
+ * @param {Map<string,number>} [opts.overrides]
+ * @param {number}             [opts.safetyLevel=0.618]
+ * @returns {object}
  */
 function buildNetwork(centerEntityId, opts = {}) {
   const maxDepth    = opts.maxDepth    !== undefined ? opts.maxDepth    : DEFAULT_MAX_DEPTH;
@@ -79,7 +77,6 @@ function buildNetwork(centerEntityId, opts = {}) {
     throw new Error(`TriangleNetwork: entity "${centerEntityId}" not found in registry`);
   }
 
-  // ── Output structures ──────────────────────────────────────────
   /** @type {Map<string, object>} */
   const nodes     = new Map();
   /** @type {Set<string>} */
@@ -87,19 +84,16 @@ function buildNetwork(centerEntityId, opts = {}) {
   /** @type {object[]} */
   const triangles = [];
 
-  // Track which triangles each node has already been the CENTER of
-  // (prevents infinite loops on shared tips)
+  // Prevents a node from being used as a center more than once
   const centeredAlready = new Set();
 
-  // BFS queue entries: { entityId, depth }
+  // BFS queue
   const queue = [{ entityId: centerEntityId, depth: 0 }];
-
   let maxDepthReached = 0;
 
-  // ── Helper: ensure a node is registered in output ─────────────
+  // ── Helpers ──────────────────────────────────────────────────
   function ensureNode(entityId, depth) {
     if (nodes.has(entityId)) {
-      // Update depth to the shallowest seen
       const existing = nodes.get(entityId);
       if (depth < existing.depth) existing.depth = depth;
       return;
@@ -119,34 +113,27 @@ function buildNetwork(centerEntityId, opts = {}) {
     });
   }
 
-  // ── Helper: record an undirected edge ─────────────────────────
   function addEdge(a, b) {
-    const key = [a, b].sort().join('--');
-    edges.add(key);
+    edges.add([a, b].sort().join('--'));
   }
 
-  // ── BFS ───────────────────────────────────────────────────────
+  // ── BFS ──────────────────────────────────────────────────────
   while (queue.length > 0) {
     const { entityId, depth } = queue.shift();
 
     if (centeredAlready.has(entityId)) continue;
-    if (depth > maxDepth) continue;
+    if (depth > maxDepth)              continue;
 
     centeredAlready.add(entityId);
     ensureNode(entityId, depth);
-
     if (depth > maxDepthReached) maxDepthReached = depth;
 
-    // Fetch connections from registry (bidirectional)
     const connIds = registry.getConnections(entityId)
       .filter(cid => registry.has(cid));
 
-    if (connIds.length < 2) continue;  // can't form a triangle
+    if (connIds.length < 2) continue;
 
-    // Pair connectors: every adjacent pair forms one triangle
-    // (connIds[0]+connIds[1], connIds[1]+connIds[2], …)
-    // This gives N-1 triangles for N connections, all sharing
-    // the center entity, maximising coverage without repetition.
+    // Each adjacent pair forms one triangle
     for (let i = 0; i < connIds.length - 1; i++) {
       const connA = connIds[i];
       const connB = connIds[i + 1];
@@ -156,21 +143,24 @@ function buildNetwork(centerEntityId, opts = {}) {
 
       addEdge(entityId, connA);
       addEdge(entityId, connB);
-      addEdge(connA, connB);
+      addEdge(connA,    connB);
 
+      // Compute triangle — full Pythagorean analysis included
       const tri = computeTriangle(entityId, connA, connB, overrides, safetyLevel);
 
-      const triangleId = `${entityId}--${connA}--${connB}`;
       triangles.push({
-        id:             triangleId,
+        id:             `${entityId}--${connA}--${connB}`,
         vertices:       [entityId, connA, connB],
         coherenceScore: tri.coherenceScore,
+        rawCoherence:   tri.rawCoherence,
         safetyTier:     tri.safetyTier,
         isOptimal:      tri.isOptimal,
         depth,
+        pythagorean:    tri.pythagorean,
+        means:          tri.means,
       });
 
-      // Enqueue tips as future centers if not already processed
+      // Enqueue tips
       if (!centeredAlready.has(connA) && depth + 1 <= maxDepth) {
         queue.push({ entityId: connA, depth: depth + 1 });
       }
@@ -180,30 +170,28 @@ function buildNetwork(centerEntityId, opts = {}) {
     }
   }
 
-  // ── Per-node coherence average ─────────────────────────────────
-  const coherenceMap = _buildCoherenceMap(nodes, triangles);
-
-  // ── Network-wide coherence (φ-weighted by movementWeight) ─────
-  const networkCoherence = _networkCoherence(triangles);
+  const coherenceMap      = _buildCoherenceMap(nodes, triangles);
+  const networkCoherence  = _networkCoherence(triangles);
+  const pythagoreanSummary = _pythagoreanSummary(triangles);
 
   return {
     nodes,
     edges,
     triangles,
-    depth:            maxDepthReached,
+    depth:              maxDepthReached,
     centerEntityId,
     coherenceMap,
     networkCoherence,
+    pythagoreanSummary,
     safetyLevel,
   };
 }
 
 /**
- * Render the network as a plain JSON-serialisable object
- * (nodes as array, edges as array of {source,target} objects).
- * Suitable for D3, Cytoscape, or any graph renderer.
+ * Convert the network to a plain JSON-serialisable graph object
+ * suitable for D3, Cytoscape, or any renderer.
  *
- * @param {object} network  result of buildNetwork()
+ * @param {object} network
  * @returns {object}
  */
 function toRenderableGraph(network) {
@@ -226,55 +214,74 @@ function toRenderableGraph(network) {
       id:             t.id,
       vertices:       t.vertices,
       coherenceScore: parseFloat(t.coherenceScore.toFixed(4)),
+      rawCoherence:   parseFloat(t.rawCoherence.toFixed(4)),
       safetyTier:     t.safetyTier,
       isOptimal:      t.isOptimal,
       depth:          t.depth,
+      pythagorean: {
+        balance:          t.pythagorean.balance,
+        balanceLabel:     t.pythagorean.balanceLabel,
+        isBalanced:       t.pythagorean.isBalanced,
+        hypotenuse:       t.pythagorean.hypotenuse,
+        pythagoreanBonus: t.pythagorean.pythagoreanBonus,
+      },
+      means: t.means,
     })),
     summary: {
-      centerEntityId:   network.centerEntityId,
-      nodeCount:        network.nodes.size,
-      edgeCount:        network.edges.size,
-      triangleCount:    network.triangles.size || network.triangles.length,
-      maxDepth:         network.depth,
-      networkCoherence: parseFloat(network.networkCoherence.toFixed(4)),
-      safetyTier:       resolveTier(network.networkCoherence),
-      isOptimal:        network.networkCoherence >= 0.25 && network.networkCoherence < 0.75,
+      centerEntityId:      network.centerEntityId,
+      nodeCount:           network.nodes.size,
+      edgeCount:           network.edges.size,
+      triangleCount:       network.triangles.length,
+      maxDepth:            network.depth,
+      networkCoherence:    parseFloat(network.networkCoherence.toFixed(4)),
+      safetyTier:          resolveTier(network.networkCoherence),
+      isOptimal:           network.networkCoherence >= 0.25 && network.networkCoherence < 0.75,
+      pythagorean:         network.pythagoreanSummary,
     },
   };
 }
 
 /**
- * Print a compact text report of the network to stdout.
+ * Print a compact text report to stdout.
  * @param {object} network
  */
 function printReport(network) {
   const g = toRenderableGraph(network);
-  console.log('\n' + '═'.repeat(64));
-  console.log(`TRIANGLE NETWORK — center: ${g.summary.centerEntityId}`);
-  console.log('═'.repeat(64));
-  console.log(`Nodes     : ${g.summary.nodeCount}`);
-  console.log(`Edges     : ${g.summary.edgeCount}`);
-  console.log(`Triangles : ${g.summary.triangleCount}`);
-  console.log(`Max Depth : ${g.summary.maxDepth}`);
-  console.log(`Net Coh.  : ${g.summary.networkCoherence} [${g.summary.safetyTier}]`);
-  console.log(`Optimal?  : ${g.summary.isOptimal ? '✅ YES' : '⚠️  NO'}`);
-  console.log('─'.repeat(64));
+  const s = g.summary;
+  console.log('\n' + '═'.repeat(68));
+  console.log(`TRIANGLE NETWORK — center: ${s.centerEntityId}`);
+  console.log('═'.repeat(68));
+  console.log(`Nodes       : ${s.nodeCount}`);
+  console.log(`Edges       : ${s.edgeCount}`);
+  console.log(`Triangles   : ${s.triangleCount}`);
+  console.log(`Max Depth   : ${s.maxDepth}`);
+  console.log(`Net Coh.    : ${s.networkCoherence} [${s.safetyTier}]`);
+  console.log(`Optimal?    : ${s.isOptimal ? '✅ YES' : '⚠️  NO'}`);
+  console.log('─'.repeat(68));
+  console.log('PYTHAGOREAN SUMMARY');
+  console.log(`  Avg Balance    : ${s.pythagorean.avgBalance}`);
+  console.log(`  Balanced Tri.  : ${s.pythagorean.balancedCount} / ${s.triangleCount}`);
+  console.log(`  Dominant Label : ${s.pythagorean.dominantLabel}`);
+  console.log(`  Arith Mean     : ${s.pythagorean.meanArithmetic}`);
+  console.log(`  Geom  Mean     : ${s.pythagorean.meanGeometric}`);
+  console.log(`  Harm  Mean     : ${s.pythagorean.meanHarmonic}`);
+  console.log('─'.repeat(68));
 
-  // Group triangles by depth
   const byDepth = {};
   g.triangles.forEach(t => {
     (byDepth[t.depth] = byDepth[t.depth] || []).push(t);
   });
-  Object.keys(byDepth).sort((a,b)=>a-b).forEach(d => {
+  Object.keys(byDepth).sort((a,b) => a-b).forEach(d => {
     console.log(`\nDepth ${d} triangles:`);
     byDepth[d].forEach(t => {
       console.log(
         `  [${t.safetyTier.padEnd(14)}] coh=${t.coherenceScore.toFixed(4)}` +
+        `  bal=${t.pythagorean.balance.toFixed(3)} (${t.pythagorean.balanceLabel.padEnd(8)})` +
         `  ${t.vertices.join(' → ')}`
       );
     });
   });
-  console.log('═'.repeat(64));
+  console.log('═'.repeat(68));
 }
 
 // ── Private helpers ───────────────────────────────────────────────────────────
@@ -283,14 +290,12 @@ function _buildCoherenceMap(nodes, triangles) {
   const sums   = new Map();
   const counts = new Map();
   for (const id of nodes.keys()) { sums.set(id, 0); counts.set(id, 0); }
-
   triangles.forEach(t => {
     t.vertices.forEach(id => {
-      sums.set(id, (sums.get(id) || 0) + t.coherenceScore);
+      sums.set(id,   (sums.get(id)   || 0) + t.coherenceScore);
       counts.set(id, (counts.get(id) || 0) + 1);
     });
   });
-
   const map = new Map();
   for (const id of nodes.keys()) {
     const c = counts.get(id) || 0;
@@ -301,16 +306,48 @@ function _buildCoherenceMap(nodes, triangles) {
 
 function _networkCoherence(triangles) {
   if (triangles.length === 0) return SAFETY_LEVEL;
-  // Weight each triangle's coherence by its movementWeight sum via φ-decay by depth
   let weightedSum = 0;
   let totalWeight = 0;
   triangles.forEach(t => {
-    // Deeper triangles contribute less (φ^depth decay)
     const w = 1 / Math.pow(PHI, t.depth);
     weightedSum += t.coherenceScore * w;
     totalWeight += w;
   });
   return clamp01(weightedSum / totalWeight);
+}
+
+function _pythagoreanSummary(triangles) {
+  if (triangles.length === 0) {
+    return { avgBalance: 0, balancedCount: 0, dominantLabel: 'NONE',
+             meanArithmetic: 0, meanGeometric: 0, meanHarmonic: 0 };
+  }
+  let balanceSum = 0;
+  let balancedCount = 0;
+  let arithSum = 0, geoSum = 0, harmSum = 0;
+  const labelCounts = {};
+
+  triangles.forEach(t => {
+    const p = t.pythagorean;
+    balanceSum += p.balance;
+    if (p.isBalanced) balancedCount++;
+    arithSum += t.means.arithmetic;
+    geoSum   += t.means.geometric;
+    harmSum  += t.means.harmonic;
+    labelCounts[p.balanceLabel] = (labelCounts[p.balanceLabel] || 0) + 1;
+  });
+
+  const n = triangles.length;
+  const dominantLabel = Object.keys(labelCounts)
+    .sort((a,b) => labelCounts[b] - labelCounts[a])[0];
+
+  return {
+    avgBalance:      parseFloat((balanceSum / n).toFixed(4)),
+    balancedCount,
+    dominantLabel,
+    meanArithmetic:  parseFloat((arithSum / n).toFixed(4)),
+    meanGeometric:   parseFloat((geoSum   / n).toFixed(4)),
+    meanHarmonic:    parseFloat((harmSum  / n).toFixed(4)),
+  };
 }
 
 function _edgeType(sourceId, targetId) {

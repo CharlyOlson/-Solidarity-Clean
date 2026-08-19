@@ -11,31 +11,38 @@
  *
  * ================================================
  *
- * Applies the Henry 7→14→49 recursion pattern to a built
- * triangle network and produces a forward projection vector.
+ * Applies the Henry 7→14→49 recursion to a built triangle network
+ * and produces a forward projection vector.
  *
  * Henry progression:
- *   seed  = 7   (base cycle)
- *   mid   = 14  (2× seed)
- *   full  = 49  (7× seed — "the big ask")
- *   ratio = 3.5 (control ratio: 49/14 = 3.5)
+ *   seed  =  7   (base cycle)
+ *   mid   = 14   (2 × seed)
+ *   full  = 49   (7 × seed — "the big ask")
+ *   ratio =  3.5 (control ratio: 49/14)
  *
- * For each recursion level 1…depth the engine:
- *   1. Scales the network coherence by φ^(1/level) (diminishing gain)
- *   2. Applies safety-tier damping (halts at safetyLevel < 0.15)
- *   3. Accumulates into shortTerm (levels 1–7), midTerm (8–14),
- *      longTerm (15–49)
+ * Three Pythagorean lenses — each mean drives one projection bucket:
+ *
+ *   shortTerm  ← arithmetic mean   (levels 1–7)
+ *     "current state" — direct average of three signals
+ *
+ *   midTerm    ← geometric mean    (levels 8–14)
+ *     "growth momentum" — proportional balance across signals
+ *
+ *   longTerm   ← harmonic mean     (levels 15–49)
+ *     "structural stability" — sensitive to weak/zero signals
+ *
+ * For each recursion level the engine:
+ *   1. Scales the network's Pythagorean mean by φ^(1/level) gain
+ *   2. Applies safety-tier damping (halts if safetyLevel < 0.15)
+ *   3. Accumulates into the appropriate bucket
  *
  * Output:
  * {
- *   shortTerm:        number [0-1]
- *   midTerm:          number [0-1]
- *   longTerm:         number [0-1]
- *   coherenceScore:   number [0-1]
- *   safetyTier:       string
- *   recursionDepth:   number  (levels actually run before halt)
- *   halted:           boolean (true if safety tier forced early stop)
- *   networkSummary:   object  (from toRenderableGraph summary)
+ *   entityId, shortTerm, midTerm, longTerm,
+ *   coherenceScore, safetyTier, isOptimal,
+ *   recursionDepth, halted, safetyLevel,
+ *   pythagorean: { arithmetic, geometric, harmonic, avgBalance, dominantLabel },
+ *   henryProgression, networkSummary
  * }
  */
 
@@ -49,19 +56,19 @@ const { PHI, SAFETY_LEVEL, clamp01 }     = registry;
 const HENRY_SEED  = 7;
 const HENRY_MID   = 14;
 const HENRY_FULL  = 49;
-const HENRY_RATIO = 3.5;   // control ratio
+const HENRY_RATIO = 3.5;
 
-const HALT_THRESHOLD = 0.15;   // CAUTION lower bound — halt below this
+const HALT_THRESHOLD = 0.15;
 
 /**
  * Run the projection engine on any registered entity.
  *
- * @param {string} entityId         – center entity
+ * @param {string} entityId
  * @param {object} [opts]
- * @param {number} [opts.maxRecursion=49]     – Henry full by default
- * @param {number} [opts.maxDepth=7]          – triangle network depth
+ * @param {number}             [opts.maxRecursion=49]
+ * @param {number}             [opts.maxDepth=7]
  * @param {Map<string,number>} [opts.overrides]
- * @param {number} [opts.safetyLevel=0.618]
+ * @param {number}             [opts.safetyLevel=0.618]
  * @returns {object}
  */
 function project(entityId, opts = {}) {
@@ -70,51 +77,61 @@ function project(entityId, opts = {}) {
   const overrides    = opts.overrides    instanceof Map ? opts.overrides   : new Map();
   const safetyLevel  = opts.safetyLevel  !== undefined ? opts.safetyLevel  : SAFETY_LEVEL;
 
-  // Build the triangle network once
   const network = buildNetwork(entityId, { maxDepth, overrides, safetyLevel });
   const graph   = toRenderableGraph(network);
-  const baseCoherence = network.networkCoherence;
 
-  // ── Henry recursion ──────────────────────────────────────────
-  let shortSum = 0; let shortCount = 0;
-  let midSum   = 0; let midCount   = 0;
-  let longSum  = 0; let longCount  = 0;
+  // Network-wide Pythagorean means (from summary)
+  const ps          = network.pythagoreanSummary;
+  const baseArith   = ps.meanArithmetic  || network.networkCoherence;
+  const baseGeo     = ps.meanGeometric   || network.networkCoherence;
+  const baseHarm    = ps.meanHarmonic    || network.networkCoherence;
 
-  let currentCoherence = baseCoherence;
-  let halted           = false;
-  let levelsRun        = 0;
+  // ── Henry recursion — three separate mean accumulators ────────
+  let shortSum = 0; let shortCount = 0;  // arithmetic lens, levels 1–7
+  let midSum   = 0; let midCount   = 0;  // geometric  lens, levels 8–14
+  let longSum  = 0; let longCount  = 0;  // harmonic   lens, levels 15–49
+
+  let currentArith = baseArith;
+  let currentGeo   = baseGeo;
+  let currentHarm  = baseHarm;
+
+  let halted   = false;
+  let levelsRun = 0;
 
   for (let level = 1; level <= maxRecursion; level++) {
-    // Safety halt
-    if (currentCoherence < HALT_THRESHOLD) {
+    // Safety halt: any mean below threshold stops projection
+    const minSignal = Math.min(currentArith, currentGeo, currentHarm);
+    if (minSignal < HALT_THRESHOLD) {
       halted = true;
       break;
     }
 
     levelsRun = level;
 
-    // φ-scaled gain: each level adds a diminishing contribution
-    const gain   = Math.pow(PHI, 1 / level);
-    const scaled = clamp01(currentCoherence * gain / PHI);  // normalised back via /PHI
+    const gain = Math.pow(PHI, 1 / level);
 
-    // Apply safety-tier damping
-    const damped = clamp01(scaled * safetyLevel / SAFETY_LEVEL);
+    // Scale each mean, normalise back via /PHI, apply safety damping
+    const scaledArith = clamp01(currentArith * gain / PHI * (safetyLevel / SAFETY_LEVEL));
+    const scaledGeo   = clamp01(currentGeo   * gain / PHI * (safetyLevel / SAFETY_LEVEL));
+    const scaledHarm  = clamp01(currentHarm  * gain / PHI * (safetyLevel / SAFETY_LEVEL));
 
-    currentCoherence = clamp01((currentCoherence + damped) / 2);
+    // Smooth progression
+    currentArith = clamp01((currentArith + scaledArith) / 2);
+    currentGeo   = clamp01((currentGeo   + scaledGeo)   / 2);
+    currentHarm  = clamp01((currentHarm  + scaledHarm)  / 2);
 
-    // Accumulate into buckets
     if (level <= HENRY_SEED) {
-      shortSum += currentCoherence; shortCount++;
+      shortSum += currentArith; shortCount++;
     } else if (level <= HENRY_MID) {
-      midSum += currentCoherence; midCount++;
+      midSum += currentGeo; midCount++;
     } else {
-      longSum += currentCoherence; longCount++;
+      longSum += currentHarm; longCount++;
     }
   }
 
-  const shortTerm = shortCount > 0 ? clamp01(shortSum / shortCount) : baseCoherence;
-  const midTerm   = midCount   > 0 ? clamp01(midSum   / midCount)   : shortTerm;
-  const longTerm  = longCount  > 0 ? clamp01(longSum  / longCount)  : midTerm;
+  const shortTerm = shortCount > 0 ? clamp01(shortSum / shortCount) : baseArith;
+  const midTerm   = midCount   > 0 ? clamp01(midSum   / midCount)   : baseGeo;
+  const longTerm  = longCount  > 0 ? clamp01(longSum  / longCount)  : baseHarm;
 
   const finalCoherence = clamp01((shortTerm + midTerm + longTerm) / 3);
 
@@ -129,33 +146,46 @@ function project(entityId, opts = {}) {
     recursionDepth: levelsRun,
     halted,
     safetyLevel,
+    pythagorean: {
+      arithmetic:    parseFloat(baseArith.toFixed(6)),
+      geometric:     parseFloat(baseGeo.toFixed(6)),
+      harmonic:      parseFloat(baseHarm.toFixed(6)),
+      avgBalance:    ps.avgBalance,
+      dominantLabel: ps.dominantLabel,
+    },
     henryProgression: { seed: HENRY_SEED, mid: HENRY_MID, full: HENRY_FULL, ratio: HENRY_RATIO },
-    networkSummary:  graph.summary,
+    networkSummary:   graph.summary,
   };
 }
 
 /**
  * Print a projection report to stdout.
- * @param {object} result  return value of project()
+ * @param {object} result
  */
 function printProjection(result) {
-  console.log('\n' + '═'.repeat(64));
+  console.log('\n' + '═'.repeat(68));
   console.log(`MARKET PROJECTION — ${result.entityId}`);
-  console.log('═'.repeat(64));
+  console.log('═'.repeat(68));
   console.log(`Network  : ${result.networkSummary.nodeCount} nodes, ` +
               `${result.networkSummary.edgeCount} edges, ` +
               `${result.networkSummary.triangleCount} triangles`);
   console.log(`Recursion: ${result.recursionDepth} levels` +
               (result.halted ? ' (HALTED — safety threshold)' : ''));
-  console.log('─'.repeat(64));
-  console.log(`Short-Term (1–7)   : ${result.shortTerm}`);
-  console.log(`Mid-Term  (8–14)   : ${result.midTerm}`);
-  console.log(`Long-Term (15–49)  : ${result.longTerm}`);
-  console.log('─'.repeat(64));
-  console.log(`Coherence Score    : ${result.coherenceScore}`);
-  console.log(`Safety Tier        : ${result.safetyTier}`);
-  console.log(`Optimal Band?      : ${result.isOptimal ? '✅ YES (0.25–0.75)' : '⚠️  NO'}`);
-  console.log('═'.repeat(64));
+  console.log('─'.repeat(68));
+  console.log('PYTHAGOREAN LENSES');
+  console.log(`  Arithmetic mean  (current state)       : ${result.pythagorean.arithmetic}`);
+  console.log(`  Geometric  mean  (growth momentum)     : ${result.pythagorean.geometric}`);
+  console.log(`  Harmonic   mean  (structural stability): ${result.pythagorean.harmonic}`);
+  console.log(`  Avg balance      : ${result.pythagorean.avgBalance}  (${result.pythagorean.dominantLabel})`);
+  console.log('─'.repeat(68));
+  console.log(`Short-Term  (arith lens, levels  1– 7) : ${result.shortTerm}`);
+  console.log(`Mid-Term    (geom  lens, levels  8–14) : ${result.midTerm}`);
+  console.log(`Long-Term   (harm  lens, levels 15–49) : ${result.longTerm}`);
+  console.log('─'.repeat(68));
+  console.log(`Coherence Score : ${result.coherenceScore}`);
+  console.log(`Safety Tier     : ${result.safetyTier}`);
+  console.log(`Optimal Band?   : ${result.isOptimal ? '✅ YES (0.25–0.75)' : '⚠️  NO'}`);
+  console.log('═'.repeat(68));
 }
 
 module.exports = {
