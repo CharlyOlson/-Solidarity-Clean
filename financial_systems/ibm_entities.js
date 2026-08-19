@@ -1,6 +1,6 @@
 /*
- * SOLIDARITY PLATFORM - IBM ENTITY REGISTRY
- * ==========================================
+ * SOLIDARITY PLATFORM - IBM ENTITY SEED LOADER
+ * =============================================
  *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
@@ -9,236 +9,260 @@
  * Location: Kansas, USA 66210
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  *
- * ==========================================
+ * =============================================
  *
- * Seed registry of IBM ecosystem actors used by the three-point
- * connector system.  Each entity carries a movementWeight drawn
- * from the valid φ-hierarchy node set {1, 3, 4, 7, 14, 21}.
+ * Registers all IBM-ecosystem entities into the generic entity
+ * registry so the triangle network can use them.
  *
- * Categories
- *   distributors  – channel partners that move IBM product
- *   competitors   – firms contesting the same markets
- *   investors     – consistently-profiting long-tenure holders
- *   suppliers     – companies providing critical inputs to IBM
+ * Every entity carries:
+ *   movementWeight  – from valid φ-hierarchy node set {1,3,4,7,14,21}
+ *   baseSignal      – normalised market signal [0,1]
+ *   connections     – IDs of directly related entities
+ *
+ * Call seed() once at startup (idempotent).
  */
 
 'use strict';
 
-// Valid node weights from φ hierarchy {1, 3, 4, 7, 14, 21}
-const NODES = Object.freeze([1, 3, 4, 7, 14, 21]);
+const registry = require('./entity_registry');
 
-// Baseline safety level per platform convention
-const SAFETY_LEVEL = 0.618;
-const PHI = 1.618;
+// ─── Raw seed data ────────────────────────────────────────────────────────────
 
-/**
- * Normalize a raw weight to the nearest valid node value.
- * @param {number} raw
- * @returns {number}
- */
-function nearestNode(raw) {
-  return NODES.reduce((best, n) =>
-    Math.abs(n - raw) < Math.abs(best - raw) ? n : best
-  );
-}
+const IBM_SEED = [
 
-// ─── Distributors ────────────────────────────────────────────────────────────
-const DISTRIBUTORS = Object.freeze([
+  // ── IBM Core ──────────────────────────────────────────────────
+  {
+    id: 'ibm',
+    name: 'IBM (International Business Machines)',
+    role: 'core',
+    movementWeight: 21,
+    baseSignal: 0.618,
+    connections: [
+      'arrow-electronics', 'avnet', 'td-synnex',           // distributors
+      'microsoft', 'aws', 'google-cloud', 'oracle', 'sap', // competitors
+      'vanguard', 'blackrock', 'state-street',              // investors
+      'intel', 'samsung-dram', 'broadcom', 'lam-research',  // suppliers
+    ],
+    meta: { ticker: 'IBM', sector: 'Technology', exchange: 'NYSE' },
+  },
+
+  // ── Distributors ──────────────────────────────────────────────
   {
     id: 'arrow-electronics',
     name: 'Arrow Electronics',
     role: 'distributor',
-    movementWeight: 14,    // large global reach, node 14
-    baseSignal: 0.72,      // healthy channel
-    description: 'Global distributor of electronic components and IBM enterprise hardware',
+    movementWeight: 14,
+    baseSignal: 0.72,
+    connections: [
+      'ibm', 'intel', 'broadcom', 'samsung-dram',
+      'td-synnex', 'avnet',
+    ],
+    meta: { ticker: 'ARW', sector: 'Technology Distribution', exchange: 'NYSE' },
   },
   {
     id: 'avnet',
     name: 'Avnet',
     role: 'distributor',
-    movementWeight: 14,    // comparable scale to Arrow
+    movementWeight: 14,
     baseSignal: 0.68,
-    description: 'Technology distribution and supply-chain services including IBM lines',
+    connections: [
+      'ibm', 'intel', 'broadcom',
+      'arrow-electronics', 'td-synnex',
+    ],
+    meta: { ticker: 'AVT', sector: 'Technology Distribution', exchange: 'NASDAQ' },
   },
   {
     id: 'td-synnex',
     name: 'TD Synnex',
     role: 'distributor',
-    movementWeight: 21,    // largest IT distributor by revenue, top node
+    movementWeight: 21,
     baseSignal: 0.75,
-    description: 'Largest IT distributor; major IBM hardware/software channel partner',
+    connections: [
+      'ibm', 'microsoft', 'intel', 'broadcom',
+      'arrow-electronics', 'avnet',
+    ],
+    meta: { ticker: 'SNX', sector: 'Technology Distribution', exchange: 'NYSE' },
   },
-]);
 
-// ─── Competitors ─────────────────────────────────────────────────────────────
-const COMPETITORS = Object.freeze([
+  // ── Competitors ───────────────────────────────────────────────
   {
     id: 'microsoft',
     name: 'Microsoft',
     role: 'competitor',
-    movementWeight: 21,    // dominant cloud+enterprise, top node
+    movementWeight: 21,
     baseSignal: 0.80,
-    description: 'Azure cloud and enterprise software competes directly with IBM Cloud/Watson',
+    connections: [
+      'ibm', 'td-synnex', 'aws', 'google-cloud', 'oracle',
+      'vanguard', 'blackrock', 'state-street',
+      'intel', 'broadcom',
+    ],
+    meta: { ticker: 'MSFT', sector: 'Technology', exchange: 'NASDAQ' },
   },
   {
     id: 'aws',
     name: 'Amazon Web Services',
     role: 'competitor',
-    movementWeight: 21,    // largest cloud provider
+    movementWeight: 21,
     baseSignal: 0.85,
-    description: 'Market-leading public cloud; competes with IBM Cloud for enterprise workloads',
+    connections: [
+      'ibm', 'microsoft', 'google-cloud', 'oracle',
+      'vanguard', 'blackrock',
+      'intel', 'broadcom',
+    ],
+    meta: { ticker: 'AMZN', sector: 'Cloud / E-Commerce', exchange: 'NASDAQ' },
   },
   {
     id: 'google-cloud',
-    name: 'Google Cloud',
+    name: 'Google Cloud (Alphabet)',
     role: 'competitor',
-    movementWeight: 14,    // strong AI/ML; node 14
+    movementWeight: 14,
     baseSignal: 0.70,
-    description: 'AI-first cloud platform competing with IBM watsonx and data platforms',
+    connections: [
+      'ibm', 'microsoft', 'aws', 'oracle',
+      'vanguard', 'blackrock',
+      'broadcom',
+    ],
+    meta: { ticker: 'GOOGL', sector: 'Technology', exchange: 'NASDAQ' },
   },
   {
     id: 'oracle',
     name: 'Oracle',
     role: 'competitor',
-    movementWeight: 14,    // strong DB/ERP overlap
+    movementWeight: 14,
     baseSignal: 0.65,
-    description: 'Database and ERP leader competing with IBM Db2 and consulting services',
+    connections: [
+      'ibm', 'microsoft', 'aws', 'google-cloud', 'sap',
+      'vanguard', 'state-street',
+    ],
+    meta: { ticker: 'ORCL', sector: 'Enterprise Software', exchange: 'NYSE' },
   },
   {
     id: 'sap',
-    name: 'SAP',
+    name: 'SAP SE',
     role: 'competitor',
-    movementWeight: 7,     // node 7; significant ERP competitor
+    movementWeight: 7,
     baseSignal: 0.60,
-    description: 'Enterprise application software competing with IBM business process portfolio',
+    connections: [
+      'ibm', 'oracle', 'microsoft',
+      'td-synnex',
+    ],
+    meta: { ticker: 'SAP', sector: 'Enterprise Software', exchange: 'NYSE' },
   },
-]);
 
-// ─── Consistent Investors ─────────────────────────────────────────────────────
-const INVESTORS = Object.freeze([
+  // ── Consistent Investors ──────────────────────────────────────
   {
     id: 'vanguard',
     name: 'Vanguard Group',
     role: 'investor',
-    movementWeight: 21,    // largest institutional holder
+    movementWeight: 21,
     baseSignal: 0.82,
-    description: 'Long-tenure top-3 IBM institutional holder; index + active funds',
+    connections: [
+      'ibm', 'microsoft', 'aws', 'google-cloud', 'oracle',
+      'blackrock', 'state-street',
+      'intel',
+    ],
+    meta: { sector: 'Asset Management', type: 'Institutional' },
   },
   {
     id: 'blackrock',
     name: 'BlackRock',
     role: 'investor',
-    movementWeight: 21,    // co-largest institutional holder
+    movementWeight: 21,
     baseSignal: 0.80,
-    description: 'Top-3 IBM holder; consistent through cycles via iShares and active mandates',
+    connections: [
+      'ibm', 'microsoft', 'aws', 'google-cloud',
+      'vanguard', 'state-street',
+      'intel', 'broadcom',
+    ],
+    meta: { sector: 'Asset Management', type: 'Institutional' },
   },
   {
     id: 'state-street',
     name: 'State Street Global Advisors',
     role: 'investor',
-    movementWeight: 14,    // top-10 holder; node 14
+    movementWeight: 14,
     baseSignal: 0.74,
-    description: 'SPDR ETF and active mandates maintain consistent IBM position',
+    connections: [
+      'ibm', 'oracle', 'microsoft',
+      'vanguard', 'blackrock',
+    ],
+    meta: { sector: 'Asset Management', type: 'Institutional' },
   },
-]);
 
-// ─── Suppliers ────────────────────────────────────────────────────────────────
-const SUPPLIERS = Object.freeze([
+  // ── Suppliers ─────────────────────────────────────────────────
   {
     id: 'intel',
     name: 'Intel',
     role: 'supplier',
-    movementWeight: 14,    // processor supply; node 14
+    movementWeight: 14,
     baseSignal: 0.66,
-    description: 'x86 silicon for IBM servers and ThinkPad/ThinkStation product lines',
+    connections: [
+      'ibm', 'microsoft', 'aws',
+      'arrow-electronics', 'avnet', 'td-synnex',
+      'broadcom', 'lam-research',
+      'vanguard', 'blackrock',
+    ],
+    meta: { ticker: 'INTC', sector: 'Semiconductors', exchange: 'NASDAQ' },
   },
   {
     id: 'samsung-dram',
-    name: 'Samsung Electronics (DRAM)',
+    name: 'Samsung Electronics (DRAM/NAND)',
     role: 'supplier',
-    movementWeight: 14,    // memory supply; node 14
+    movementWeight: 14,
     baseSignal: 0.70,
-    description: 'Primary DRAM and NAND flash supplier for IBM server and storage products',
+    connections: [
+      'ibm', 'arrow-electronics',
+      'broadcom', 'lam-research',
+    ],
+    meta: { ticker: '005930.KS', sector: 'Semiconductors', exchange: 'KRX' },
   },
   {
     id: 'broadcom',
     name: 'Broadcom',
     role: 'supplier',
-    movementWeight: 7,     // networking silicon; node 7
+    movementWeight: 7,
     baseSignal: 0.72,
-    description: 'Networking and storage chips used in IBM infrastructure systems',
+    connections: [
+      'ibm', 'microsoft', 'aws',
+      'arrow-electronics', 'avnet', 'td-synnex',
+      'intel', 'lam-research',
+      'blackrock',
+    ],
+    meta: { ticker: 'AVGO', sector: 'Semiconductors', exchange: 'NASDAQ' },
   },
   {
     id: 'lam-research',
     name: 'Lam Research',
     role: 'supplier',
-    movementWeight: 4,     // semiconductor equipment; node 4
+    movementWeight: 4,
     baseSignal: 0.60,
-    description: 'Semiconductor etch/deposition equipment feeding IBM\'s foundry supply chain',
+    connections: [
+      'ibm', 'intel', 'samsung-dram', 'broadcom',
+    ],
+    meta: { ticker: 'LRCX', sector: 'Semiconductor Equipment', exchange: 'NASDAQ' },
   },
-]);
+];
 
-// ─── IBM Core ─────────────────────────────────────────────────────────────────
-const IBM_CORE = Object.freeze({
-  id: 'ibm',
-  name: 'International Business Machines (IBM)',
-  ticker: 'IBM',
-  role: 'core',
-  movementWeight: 21,      // anchor node — highest weight
-  baseSignal: 0.618,       // starts at φ-baseline
-  safetyLevel: SAFETY_LEVEL,
-  phi: PHI,
-  description: 'Core entity — all projections are anchored to IBM\'s own financials',
-});
+// ─── Seed function ────────────────────────────────────────────────────────────
 
-// ─── Unified registry ─────────────────────────────────────────────────────────
-const ALL_ENTITIES = Object.freeze([
-  IBM_CORE,
-  ...DISTRIBUTORS,
-  ...COMPETITORS,
-  ...INVESTORS,
-  ...SUPPLIERS,
-]);
+let _seeded = false;
 
 /**
- * Get all entities of a given role.
- * @param {'distributor'|'competitor'|'investor'|'supplier'|'core'} role
- * @returns {readonly object[]}
+ * Register all IBM-ecosystem entities into the generic registry.
+ * Idempotent — safe to call multiple times.
  */
-function getByRole(role) {
-  return ALL_ENTITIES.filter(e => e.role === role);
+function seed() {
+  if (_seeded) return;
+  registry.registerAll(IBM_SEED);
+  _seeded = true;
 }
 
 /**
- * Get an entity by its id.
- * @param {string} id
- * @returns {object|undefined}
+ * Force a re-seed even if already seeded (useful in tests).
  */
-function getById(id) {
-  return ALL_ENTITIES.find(e => e.id === id);
+function reseed() {
+  _seeded = false;
+  seed();
 }
 
-/**
- * Compute the total weight for a role group (used for normalization).
- * @param {'distributor'|'competitor'|'investor'|'supplier'} role
- * @returns {number}
- */
-function totalWeight(role) {
-  return getByRole(role).reduce((s, e) => s + e.movementWeight, 0);
-}
-
-module.exports = {
-  IBM_CORE,
-  DISTRIBUTORS,
-  COMPETITORS,
-  INVESTORS,
-  SUPPLIERS,
-  ALL_ENTITIES,
-  NODES,
-  SAFETY_LEVEL,
-  PHI,
-  nearestNode,
-  getByRole,
-  getById,
-  totalWeight,
-};
+module.exports = { seed, reseed, IBM_SEED };
