@@ -323,9 +323,10 @@ describe('API Routes', () => {
     let token;
 
     beforeEach(async () => {
+      const unique = `update_user_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
       const reg = await request(app)
         .post('/api/auth/register')
-        .send({ username: 'update_user', password: 'SecurePass123!' });
+        .send({ username: unique, password: 'SecurePass123!' });
       token = reg.body.token;
     });
 

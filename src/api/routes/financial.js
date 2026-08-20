@@ -46,6 +46,8 @@ const financialRateLimit = rateLimit({
   legacyHeaders: false
 });
 
+router.use(financialRateLimit);
+
 function stableStringify(value) {
   if (value === null || typeof value !== 'object') {
     return JSON.stringify(value);

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/api/server.js",
     "dev": "nodemon src/api/server.js --watch src",
-    "test": "npx jest --coverage",
+    "test": "jest --coverage --runInBand",
     "test:watch": "npx jest --watch",
     "test:api": "npx jest --testPathPattern=tests/api",
     "test:unit": "npx jest --testPathPattern=tests/unit",
