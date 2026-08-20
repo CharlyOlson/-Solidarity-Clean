@@ -5,7 +5,7 @@
  * POST /api/stripe/create-checkout-session — Stripe Checkout for Pro tier
  * GET  /api/stripe/subscription-status     — Current user's subscription tier
  *
- * TRADEMARK: Scott Charles Olson — March 31, 1997
+ * TRADEMARK: Scott Charles Olson
  */
 
 const express = require('express');
@@ -16,7 +16,7 @@ const logger = require('../../utils/logger');
 
 /* ── Demo / override account ── */
 const DEMO_ACCOUNT_ID = '55cc5056-8dd6-4631-9eb9-c4967acabc04';
-const DEMO_ACCOUNT_EMAIL = 'soulson1997@gmail.com';
+const DEMO_ACCOUNT_EMAIL = 'demo@solidarity.local';
 
 /* ── Stripe Price IDs ── */
 const PRICE_MAP = {

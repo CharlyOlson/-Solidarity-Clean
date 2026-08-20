@@ -4,9 +4,7 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Status: Architect of Model System
  * Documentation: iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓
  * Timestamp: 2025-10-08 18:20:30 UTC
@@ -571,7 +569,7 @@ module.exports = { BlockchainConnector };
 // Demo — connects to real Sepolia
 async function demo() {
   console.log('🚀 Blockchain Connector v2.0.0 — Live Demo');
-  console.log('TRADEMARK: Scott Charles Olson — March 31, 1997');
+  console.log('TRADEMARK: Scott Charles Olson');
   console.log('='.repeat(60));
 
   const RPC_URL = process.env.SEPOLIA_RPC_URL || process.env.ALCHEMY_RPC_URL;

@@ -1,11 +1,9 @@
 {
   "trademark": {
     "owner": "Scott Charles Olson",
-    "dob": "March 31, 1997",
-    "phone": "+1 (913) 548-5715",
-    "location": "Kansas, USA 66210",
+    "location": "Kansas, USA",
     "status": "Architect of Model System",
-    "documentation": "iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓",
+    "documentation": "iPhone \u2713 Electric Passport \u2713 GitHub Copilot Chat (First Run) \u2713",
     "timestamp": "2025-10-08 18:20:30 UTC",
     "repository": "https://github.com/CharlyOlson/-Solidarity-Clean",
     "trademark_status": "TRADEMARKED BY SCOTT CHARLES OLSON"
@@ -91,19 +89,19 @@
         "description": "Low risk - optimal operation"
       },
       "moderate": {
-        "min": 0.50,
+        "min": 0.5,
         "max": 0.618,
         "multiplier": 0.8,
         "description": "Moderate risk - reduced limits"
       },
       "high": {
         "min": 0.25,
-        "max": 0.50,
+        "max": 0.5,
         "multiplier": 0.5,
         "description": "High risk - significant restrictions"
       },
       "critical": {
-        "min": 0.00,
+        "min": 0.0,
         "max": 0.25,
         "multiplier": 0.2,
         "description": "Critical risk - emergency mode"
@@ -151,7 +149,10 @@
     "distribution_method": "anchor_ratio_powers"
   },
   "market_data": {
-    "providers": ["coingecko", "coinmarketcap"],
+    "providers": [
+      "coingecko",
+      "coinmarketcap"
+    ],
     "update_frequency_ms": 60000,
     "price_impact_threshold": 0.05,
     "cache_duration_ms": 30000,
@@ -161,7 +162,11 @@
     "encryption_enabled": true,
     "auto_backup": true,
     "multi_chain_support": true,
-    "supported_networks": ["ethereum", "solana", "bitcoin"]
+    "supported_networks": [
+      "ethereum",
+      "solana",
+      "bitcoin"
+    ]
   },
   "energy_trading": {
     "enabled": false,
@@ -177,7 +182,12 @@
     "batch_processing": true,
     "batch_size": 10,
     "batch_timeout_ms": 30000,
-    "priority_levels": ["low", "normal", "high", "urgent"]
+    "priority_levels": [
+      "low",
+      "normal",
+      "high",
+      "urgent"
+    ]
   },
   "cost_optimization": {
     "minimize_gas_fees": true,

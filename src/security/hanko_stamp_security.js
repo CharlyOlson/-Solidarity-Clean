@@ -7,15 +7,14 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
 const crypto = require('crypto');
 const fs = require('fs').promises;
 const path = require('path');
+const { PHI, PHI_RECIPROCAL, CONTROL_RATIO, SACRED_NODES } = require('../utils/constants');
 
 /**
  * Hanko Stamp Security System
@@ -29,10 +28,10 @@ const path = require('path');
  */
 class HankoStampSecurity {
   constructor(config = {}) {
-    this.PHI = 1.618033988749895;
-    this.BRIDGING_BASELINE = 0.618033988749895;
-    this.CONTROL_RATIO = 3.5;
-    this.SACRED_NODES = [1, 3, 4, 7, 14, 21, 49];
+    this.PHI = PHI;
+    this.BRIDGING_BASELINE = PHI_RECIPROCAL;
+    this.CONTROL_RATIO = CONTROL_RATIO;
+    this.SACRED_NODES = SACRED_NODES;
     
     // Safety integration
     this.safetyLevel = config.safetyLevel || 0.618;

@@ -27,6 +27,60 @@ const CoreMathematicsEngine = require('../src/utils/CoreMathematicsEngine');
 const { BridgingSafetyCoordinator } = require('../src/safety/BridgingSafetyCoordinator');
 const { ThreeBodyCoherence } = require('../src/core/ThreeBodyCoherence');
 
+// ── Triangle Network / Market Projection ──────────────────────
+const entityRegistry      = require('./entity_registry');
+const { seed: seedMarket }   = require('./market_entities');
+const pythagoreanBalancer = require('./pythagorean_balancer');
+const { computeTriangle } = require('./three_point_connector');
+const { buildNetwork, toRenderableGraph, printReport } = require('./triangle_network');
+const { project, printProjection } = require('./projection_engine');
+const { runStressTest }   = require('./market_stress_test');
+const { runMarketWeeklyForecast, printForecastReport } = require('./market_weekly_forecast');
+
+/**
+ * Run a full market projection for any registered entity.
+ * Seeds IBM ecosystem data automatically on first call.
+ *
+ * @param {string} entityId   – e.g. 'ibm', 'microsoft', 'intel'
+ * @param {object} [opts]
+ * @param {number}             [opts.maxDepth=7]
+ * @param {number}             [opts.maxRecursion=49]
+ * @param {Map<string,number>} [opts.overrides]
+ * @param {number}             [opts.safetyLevel=0.618]
+ * @param {boolean}            [opts.print=true]
+ * @param {boolean}            [opts.stress=false]  run stress test phases
+ * @returns {object}  { projection, graph, stressResults? }
+ */
+function runMarketProjection(entityId, opts = {}) {
+  // Auto-seed IBM ecosystem if not yet loaded
+  if (!entityRegistry.has('ibm')) seedMarket();
+
+  const print  = opts.print  !== undefined ? opts.print  : true;
+  const stress = opts.stress !== undefined ? opts.stress : false;
+
+  const projection = project(entityId, opts);
+  const network    = buildNetwork(entityId, opts);
+  const graph      = toRenderableGraph(network);
+
+  if (print) {
+    printReport(network);
+    printProjection(projection);
+  }
+
+  const result = { projection, graph };
+
+  if (stress) {
+    const stressResults = runStressTest(entityId, {
+      maxDepth:    opts.maxDepth,
+      safetyLevel: opts.safetyLevel,
+      verbose:     print,
+    });
+    result.stressResults = stressResults;
+  }
+
+  return result;
+}
+
 // TreasuryManager ABI — all public functions
 const TREASURY_ABI = [
   // View functions
@@ -329,6 +383,18 @@ module.exports = {
   TREASURY_ADDRESS,
   TOKEN_ABI,
   TOKEN_ADDRESS,
+  // Triangle network / market projection
+  entityRegistry,
+  pythagoreanBalancer,
+  computeTriangle,
+  buildNetwork,
+  toRenderableGraph,
+  project,
+  runStressTest,
+  runMarketProjection,
+  // IBM 4-week living-network forecast
+  runMarketWeeklyForecast,
+  printForecastReport,
 };
 
 // Demo — boots the whole system

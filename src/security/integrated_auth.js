@@ -10,9 +10,7 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
@@ -21,6 +19,7 @@ const bcrypt = require('bcrypt');
 const fs = require('fs').promises;
 const path = require('path');
 const { HankoStampSecurity } = require('./hanko_stamp_security.js');
+const { PHI, PHI_RECIPROCAL } = require('../utils/constants');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION_phi_1.618033988749895';
 const JWT_EXPIRY = process.env.JWT_EXPIRY || '24h';
@@ -33,8 +32,8 @@ const SALT_ROUNDS = 10;
  */
 class IntegratedAuthManager {
   constructor(config = {}) {
-    this.PHI = 1.618033988749895;
-    this.BRIDGING_BASELINE = 0.618;
+    this.PHI = PHI;
+    this.BRIDGING_BASELINE = PHI_RECIPROCAL;
     this.safetyLevel = config.safetyLevel || 0.618;
     
     // Initialize Hanko system

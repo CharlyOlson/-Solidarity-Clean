@@ -55,10 +55,10 @@ class SolidarityEngine {
 		this.sacredSequence = new SacredNumericSequence();
 		
 		// Initialize TIMBR compression
-		this.timbrCompression = new TIMBRCompressionSystem({
+		this.timbrCompression = TIMBRCompressionSystem ? new TIMBRCompressionSystem({
 			compressionLevel: config.compressionLevel || 7,
 			useOmegaLock: config.useOmegaLock !== undefined ? config.useOmegaLock : true
-		});
+		}) : null;
 		
 		// Initialize quantum cubic calculation system
 		this.quantumConfig = {
@@ -153,7 +153,9 @@ class SolidarityEngine {
 	 * @returns {Object} - Compressed data and metadata
 	 */
 	compressData(data, options = {}) {
-		// Apply temporary configuration if provided
+		if (!this.timbrCompression) {
+			return { data, metadata: { compressionRatio: 1.0, available: false } };
+		}
 		if (Object.keys(options).length > 0) {
 			const originalConfig = { ...this.timbrCompression.config };
 			this.timbrCompression.configure(options);
@@ -171,6 +173,9 @@ class SolidarityEngine {
 	 * @returns {Object} - Decompressed data and metadata
 	 */
 	decompressData(compressedData) {
+		if (!this.timbrCompression) {
+			return { data: compressedData, metadata: { available: false } };
+		}
 		return this.timbrCompression.decompress(compressedData);
 	}
 	
@@ -191,20 +196,19 @@ class SolidarityEngine {
 	 * @returns {Buffer} - Processed signal data
 	 */
 	applyBridgingIntegration(signalData, nodeId) {
-		// Convert buffer to numeric array
 		const signalArray = Array.from(signalData);
 		
-		// First apply sacred sequence transformation
 		const sequenceTransformed = this.sacredSequence.applyToSignal(
 			signalArray, 
-			'fibonacci', // Use fibonacci sequence
+			'fibonacci',
 			nodeId
 		);
 		
-		// Then compress with TIMBR at the specified node level
-		const compressed = this.timbrCompression.compress(Buffer.from(sequenceTransformed));
+		if (!this.timbrCompression) {
+			return Buffer.from(sequenceTransformed);
+		}
 		
-		// Decompress to get the bridging-enhanced result
+		const compressed = this.timbrCompression.compress(Buffer.from(sequenceTransformed));
 		const decompressed = this.timbrCompression.decompress(compressed.data);
 		
 		return decompressed.data;

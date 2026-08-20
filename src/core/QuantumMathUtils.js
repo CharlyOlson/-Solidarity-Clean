@@ -4,18 +4,17 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { PHI, BRIDGING_BASELINE } = require('../utils/constants');
+
 const QuantumMathUtils = {
     computePhi(value = 1) {
-        const phi = 1.618033988749;
-        return value * phi;
+        return value * PHI;
     },
-    normalizeSafety(level = 0.618) {
+    normalizeSafety(level = BRIDGING_BASELINE) {
         return Math.max(0, Math.min(1, level));
     }
 };
@@ -29,7 +28,7 @@ class QuantumProcessingPipeline {
         return {
             input,
             output: input,
-            safetyLevel: this.options.safetyLevel || 0.618
+            safetyLevel: this.options.safetyLevel || BRIDGING_BASELINE
         };
     }
 }

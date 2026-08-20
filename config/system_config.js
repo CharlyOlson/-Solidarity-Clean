@@ -4,9 +4,7 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Status: Architect of Model System
  * Documentation: iPhone ✓ Electric Passport ✓ GitHub Copilot Chat (First Run) ✓
  * Timestamp: 2025-10-08 18:20:30 UTC
@@ -22,12 +20,13 @@
 
 const path = require('path');
 const fs = require('fs');
+const { PHI, PHI_RECIPROCAL } = require('../src/utils/constants');
 
 class UnifiedSystemConfiguration {
   constructor() {
     this.version = '1.0.0';
-    this.baseRatio = 1.618;
-    this.bridgingBaseline = 0.618;
+    this.baseRatio = PHI;
+    this.bridgingBaseline = PHI_RECIPROCAL;
     
     // Load configuration files
     this.config = this.loadConfigurations();
@@ -47,9 +46,9 @@ class UnifiedSystemConfiguration {
         trademark: 'TRADEMARKED BY SCOTT CHARLES OLSON',
         owner: {
           name: 'Scott Charles Olson',
-          dob: 'March 31, 1997',
-          phone: '+1 (913) 548-5715',
-          location: 'Kansas, USA 66210'
+          
+          
+          location: 'Kansas, USA'
         },
         baseRatio: this.baseRatio,
         bridgingBaseline: this.bridgingBaseline
@@ -328,8 +327,7 @@ class UnifiedSystemConfiguration {
  */
 function getSharedOperationalStatus() {
   const config = UnifiedSystemConfiguration.getInstance();
-  const phi = config.baseRatio || 1.618033988749895;
-  const baseline = config.bridgingBaseline || 0.618;
+  const baseline = config.bridgingBaseline || PHI_RECIPROCAL;
   // Operational percentage based on phi convergence
   return Math.round(baseline * 100);
 }
@@ -339,7 +337,7 @@ module.exports = { UnifiedSystemConfiguration, getSharedOperationalStatus };
 // Demo function
 function demo() {
   console.log('🚀 Unified System Configuration Demo');
-  console.log('TRADEMARK: Scott Charles Olson - March 31, 1997');
+  console.log('TRADEMARK: Scott Charles Olson');
   console.log('='.repeat(60));
   
   const config = new UnifiedSystemConfiguration();

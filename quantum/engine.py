@@ -100,9 +100,6 @@ def ollama_query(prompt: str, model: str = 'llama3.2:3b', safety_level: float = 
         print_status(f"Ollama exception: {e}")
         return ''
 
-
-
-
 def train_ollama_with_quantum_result(result: Dict[str, Any], user_instruction: Optional[str] = None) -> str:
     """
     Send quantum experiment result and user instruction to Ollama for 'training' or analysis.
@@ -143,14 +140,10 @@ def train_ollama_with_quantum_result(result: Dict[str, Any], user_instruction: O
     context += "Respond with insights, training suggestions, next steps, and adapt your output to the requested scope or metrics."
     return ollama_query(context)
 
-
-
 # --- STUB FOR run_experiment ---
 def run_experiment(experiment: str, shots: int) -> Dict[str, Any]:
     """Stub for run_experiment. Replace with actual implementation."""
     return {"experiment": experiment, "shots": shots, "counts": {"0": shots // 2, "1": shots // 2}}
-
-
 
 # --- Main entry point ---
 def main() -> None:
