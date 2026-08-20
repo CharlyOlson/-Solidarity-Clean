@@ -17,6 +17,7 @@ const router = express.Router();
 const { startSession, loadHistory, logInteraction, pushToBin } = require('../../../launcher');
 const { stmts } = require('../db');
 const { optionalAuth } = require('../middleware/auth');
+const logger = require('../../utils/logger');
 
 const sessionRateLimit = rateLimit({
   windowMs: 60 * 1000,
@@ -31,7 +32,11 @@ router.use(sessionRateLimit);
 router.post('/start', optionalAuth, async (req, res) => {
   try {
     const { prompt, context, settings } = req.body;
-    const sessionResult = await startSession(prompt || 'Hello!', context, settings);
+    const timeoutMs = 10000;
+    const sessionResult = await Promise.race([
+      startSession(prompt || 'Hello!', context, settings),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Session start timed out')), timeoutMs))
+    ]);
     res.json({ success: true, ...sessionResult });
   } catch (err) {
     logger.error('Session start error', { error: err.message });
