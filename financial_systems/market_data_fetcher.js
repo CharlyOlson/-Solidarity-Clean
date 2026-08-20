@@ -1,5 +1,5 @@
 /*
- * SOLIDARITY PLATFORM - IBM MARKET DATA FETCHER
+ * SOLIDARITY PLATFORM - MARKET DATA FETCHER
  * ===============================================
  *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
@@ -11,7 +11,7 @@
  *
  * ===============================================
  *
- * Fetches live IBM price data from Yahoo Finance (no API key required).
+ * Fetches live market price data from Yahoo Finance (no API key required).
  * Returns:
  *   - current price, 52-week high/low, PE ratio
  *   - past 52 weeks of weekly close prices (for scaffold layering)
@@ -25,65 +25,65 @@
 
 const axios = require('axios');
 
-const TICKER       = 'IBM';
+const TICKER       = process.env.MARKET_TICKER || 'IBM';
 const YAHOO_CHART  = `https://query1.finance.yahoo.com/v8/finance/chart/${TICKER}`;
 
 // ── Static fallback: 52 weekly IBM closes (Mon weeks, Aug 2025 – Aug 2026) ──
 // Source: publicly available historical data, used as offline baseline.
 const STATIC_WEEKLY_CLOSES = [
   // date (week-start),  close
-  { date: '2025-08-18', close: 228.50 },
-  { date: '2025-08-25', close: 231.10 },
+  { date: '2025-08-18', close: 228.5 },
+  { date: '2025-08-25', close: 231.1 },
   { date: '2025-09-01', close: 229.75 },
-  { date: '2025-09-08', close: 233.40 },
-  { date: '2025-09-15', close: 236.80 },
-  { date: '2025-09-22', close: 234.20 },
-  { date: '2025-09-29', close: 238.60 },
-  { date: '2025-10-06', close: 241.30 },
-  { date: '2025-10-13', close: 239.90 },
-  { date: '2025-10-20', close: 244.50 },
-  { date: '2025-10-27', close: 242.10 },
-  { date: '2025-11-03', close: 247.80 },
-  { date: '2025-11-10', close: 250.20 },
-  { date: '2025-11-17', close: 248.40 },
-  { date: '2025-11-24', close: 252.70 },
-  { date: '2025-12-01', close: 255.10 },
-  { date: '2025-12-08', close: 253.30 },
-  { date: '2025-12-15', close: 257.90 },
-  { date: '2025-12-22', close: 256.60 },
-  { date: '2025-12-29', close: 260.40 },
-  { date: '2026-01-05', close: 258.80 },
-  { date: '2026-01-12', close: 263.20 },
-  { date: '2026-01-19', close: 261.50 },
-  { date: '2026-01-26', close: 265.90 },
-  { date: '2026-02-02', close: 264.30 },
-  { date: '2026-02-09', close: 268.70 },
-  { date: '2026-02-16', close: 267.10 },
-  { date: '2026-02-23', close: 271.50 },
-  { date: '2026-03-02', close: 269.80 },
-  { date: '2026-03-09', close: 265.40 },
-  { date: '2026-03-16', close: 262.90 },
-  { date: '2026-03-23', close: 258.60 },
-  { date: '2026-03-30', close: 261.20 },
-  { date: '2026-04-06', close: 255.80 },
-  { date: '2026-04-13', close: 252.30 },
-  { date: '2026-04-20', close: 257.70 },
-  { date: '2026-04-27', close: 261.40 },
-  { date: '2026-05-04', close: 264.90 },
-  { date: '2026-05-11', close: 268.20 },
-  { date: '2026-05-18', close: 266.50 },
-  { date: '2026-05-25', close: 270.80 },
-  { date: '2026-06-01', close: 269.10 },
-  { date: '2026-06-08', close: 273.40 },
-  { date: '2026-06-15', close: 271.70 },
-  { date: '2026-06-22', close: 275.90 },
-  { date: '2026-06-29', close: 274.20 },
-  { date: '2026-07-06', close: 272.50 },
-  { date: '2026-07-13', close: 276.80 },
-  { date: '2026-07-20', close: 275.10 },
-  { date: '2026-07-27', close: 279.40 },
-  { date: '2026-08-03', close: 277.60 },
-  { date: '2026-08-10', close: 280.90 },
+  { date: '2025-09-08', close: 233.4 },
+  { date: '2025-09-15', close: 236.8 },
+  { date: '2025-09-22', close: 234.2 },
+  { date: '2025-09-29', close: 238.6 },
+  { date: '2025-10-06', close: 241.3 },
+  { date: '2025-10-13', close: 239.9 },
+  { date: '2025-10-20', close: 244.5 },
+  { date: '2025-10-27', close: 242.1 },
+  { date: '2025-11-03', close: 247.8 },
+  { date: '2025-11-10', close: 250.2 },
+  { date: '2025-11-17', close: 248.4 },
+  { date: '2025-11-24', close: 252.7 },
+  { date: '2025-12-01', close: 255.1 },
+  { date: '2025-12-08', close: 253.3 },
+  { date: '2025-12-15', close: 257.9 },
+  { date: '2025-12-22', close: 256.6 },
+  { date: '2025-12-29', close: 260.4 },
+  { date: '2026-01-05', close: 258.8 },
+  { date: '2026-01-12', close: 263.2 },
+  { date: '2026-01-19', close: 261.5 },
+  { date: '2026-01-26', close: 265.9 },
+  { date: '2026-02-02', close: 264.3 },
+  { date: '2026-02-09', close: 268.7 },
+  { date: '2026-02-16', close: 267.1 },
+  { date: '2026-02-23', close: 271.5 },
+  { date: '2026-03-02', close: 269.8 },
+  { date: '2026-03-09', close: 265.4 },
+  { date: '2026-03-16', close: 262.9 },
+  { date: '2026-03-23', close: 258.6 },
+  { date: '2026-03-30', close: 261.2 },
+  { date: '2026-04-06', close: 255.8 },
+  { date: '2026-04-13', close: 252.3 },
+  { date: '2026-04-20', close: 257.7 },
+  { date: '2026-04-27', close: 261.4 },
+  { date: '2026-05-04', close: 264.9 },
+  { date: '2026-05-11', close: 268.2 },
+  { date: '2026-05-18', close: 266.5 },
+  { date: '2026-05-25', close: 270.8 },
+  { date: '2026-06-01', close: 269.1 },
+  { date: '2026-06-08', close: 273.4 },
+  { date: '2026-06-15', close: 271.7 },
+  { date: '2026-06-22', close: 275.9 },
+  { date: '2026-06-29', close: 274.2 },
+  { date: '2026-07-06', close: 272.5 },
+  { date: '2026-07-13', close: 276.8 },
+  { date: '2026-07-20', close: 275.1 },
+  { date: '2026-07-27', close: 279.4 },
+  { date: '2026-08-03', close: 277.6 },
+  { date: '2026-08-10', close: 280.9 },
 ];
 
 const FALLBACK_CURRENT = STATIC_WEEKLY_CLOSES[STATIC_WEEKLY_CLOSES.length - 1].close;
@@ -104,7 +104,7 @@ const FALLBACK_52L     = Math.min(...STATIC_WEEKLY_CLOSES.map(w => w.close));
  *   timestamp:    string
  * }>}
  */
-async function fetchIBMMarketData() {
+async function fetchMarketData() {
   try {
     const resp = await axios.get(YAHOO_CHART, {
       params: { interval: '1wk', range: '1y' },
@@ -175,7 +175,7 @@ function computeWeeklyChanges(weeklyCloses) {
 }
 
 module.exports = {
-  fetchIBMMarketData,
+  fetchMarketData,
   priceToSignal,
   computeWeeklyChanges,
   STATIC_WEEKLY_CLOSES,

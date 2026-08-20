@@ -29,13 +29,13 @@ const { ThreeBodyCoherence } = require('../src/core/ThreeBodyCoherence');
 
 // ── Triangle Network / Market Projection ──────────────────────
 const entityRegistry      = require('./entity_registry');
-const { seed: seedIBM }   = require('./ibm_entities');
+const { seed: seedMarket }   = require('./market_entities');
 const pythagoreanBalancer = require('./pythagorean_balancer');
 const { computeTriangle } = require('./three_point_connector');
 const { buildNetwork, toRenderableGraph, printReport } = require('./triangle_network');
 const { project, printProjection } = require('./projection_engine');
 const { runStressTest }   = require('./market_stress_test');
-const { runIBMWeeklyForecast, printForecastReport } = require('./ibm_weekly_forecast');
+const { runMarketWeeklyForecast, printForecastReport } = require('./market_weekly_forecast');
 
 /**
  * Run a full market projection for any registered entity.
@@ -53,7 +53,7 @@ const { runIBMWeeklyForecast, printForecastReport } = require('./ibm_weekly_fore
  */
 function runMarketProjection(entityId, opts = {}) {
   // Auto-seed IBM ecosystem if not yet loaded
-  if (!entityRegistry.has('ibm')) seedIBM();
+  if (!entityRegistry.has('ibm')) seedMarket();
 
   const print  = opts.print  !== undefined ? opts.print  : true;
   const stress = opts.stress !== undefined ? opts.stress : false;
@@ -393,7 +393,7 @@ module.exports = {
   runStressTest,
   runMarketProjection,
   // IBM 4-week living-network forecast
-  runIBMWeeklyForecast,
+  runMarketWeeklyForecast,
   printForecastReport,
 };
 

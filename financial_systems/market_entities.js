@@ -1,5 +1,5 @@
 /*
- * SOLIDARITY PLATFORM - IBM ENTITY SEED LOADER
+ * SOLIDARITY PLATFORM - MARKET ENTITY SEED LOADER
  * =============================================
  *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
@@ -11,7 +11,7 @@
  *
  * =============================================
  *
- * Registers all IBM-ecosystem entities into the generic entity
+ * Registers all market ecosystem entities into the entity
  * registry so the triangle network can use them.
  *
  * Every entity carries:
@@ -28,7 +28,7 @@ const registry = require('./entity_registry');
 
 // ─── Raw seed data ────────────────────────────────────────────────────────────
 
-const IBM_SEED = [
+const MARKET_SEED = [
 
   // ── IBM Core ──────────────────────────────────────────────────
   {
@@ -90,7 +90,7 @@ const IBM_SEED = [
     name: 'Microsoft',
     role: 'competitor',
     movementWeight: 21,
-    baseSignal: 0.80,
+    baseSignal: 0.8,
     connections: [
       'ibm', 'td-synnex', 'aws', 'google-cloud', 'oracle',
       'vanguard', 'blackrock', 'state-street',
@@ -116,7 +116,7 @@ const IBM_SEED = [
     name: 'Google Cloud (Alphabet)',
     role: 'competitor',
     movementWeight: 14,
-    baseSignal: 0.70,
+    baseSignal: 0.7,
     connections: [
       'ibm', 'microsoft', 'aws', 'oracle',
       'vanguard', 'blackrock',
@@ -141,7 +141,7 @@ const IBM_SEED = [
     name: 'SAP SE',
     role: 'competitor',
     movementWeight: 7,
-    baseSignal: 0.60,
+    baseSignal: 0.6,
     connections: [
       'ibm', 'oracle', 'microsoft',
       'td-synnex',
@@ -168,7 +168,7 @@ const IBM_SEED = [
     name: 'BlackRock',
     role: 'investor',
     movementWeight: 21,
-    baseSignal: 0.80,
+    baseSignal: 0.8,
     connections: [
       'ibm', 'microsoft', 'aws', 'google-cloud',
       'vanguard', 'state-street',
@@ -209,7 +209,7 @@ const IBM_SEED = [
     name: 'Samsung Electronics (DRAM/NAND)',
     role: 'supplier',
     movementWeight: 14,
-    baseSignal: 0.70,
+    baseSignal: 0.7,
     connections: [
       'ibm', 'arrow-electronics',
       'broadcom', 'lam-research',
@@ -235,7 +235,7 @@ const IBM_SEED = [
     name: 'Lam Research',
     role: 'supplier',
     movementWeight: 4,
-    baseSignal: 0.60,
+    baseSignal: 0.6,
     connections: [
       'ibm', 'intel', 'samsung-dram', 'broadcom',
     ],
@@ -248,12 +248,12 @@ const IBM_SEED = [
 let _seeded = false;
 
 /**
- * Register all IBM-ecosystem entities into the generic registry.
+ * Register all market ecosystem entities into the registry.
  * Idempotent — safe to call multiple times.
  */
 function seed() {
   if (_seeded) return;
-  registry.registerAll(IBM_SEED);
+  registry.registerAll(MARKET_SEED);
   _seeded = true;
 }
 
@@ -265,4 +265,4 @@ function reseed() {
   seed();
 }
 
-module.exports = { seed, reseed, IBM_SEED };
+module.exports = { seed, reseed, MARKET_SEED };

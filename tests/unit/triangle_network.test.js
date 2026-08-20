@@ -22,12 +22,12 @@ const { computeTriangle } = require('../../financial_systems/three_point_connect
 const { buildNetwork, toRenderableGraph } = require('../../financial_systems/triangle_network');
 const { project }       = require('../../financial_systems/projection_engine');
 const { runStressTest } = require('../../financial_systems/market_stress_test');
-const { reseed: reseedIBM } = require('../../financial_systems/ibm_entities');
+const { reseed: reseedMarket } = require('../../financial_systems/market_entities');
 
 // ── Re-seed before every test so overrides don't bleed ────────────────────────
 beforeEach(() => {
   registry.clear();
-  reseedIBM();
+  reseedMarket();
 });
 
 // =============================================================================

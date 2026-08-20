@@ -12,8 +12,8 @@
  * ===============================================
  *
  * Central registry of every market actor used by the triangle
- * network system.  Works for ANY center entity — IBM, Apple,
- * Tesla, etc.  Seed loaders (e.g. ibm_entities.js) populate
+ * network system.  Works for ANY center entity — tech companies,
+ * Tesla, etc.  Seed loaders (e.g. market_entities.js) populate
  * this registry at startup.
  *
  * Entity shape:
@@ -84,7 +84,7 @@ function register(entity) {
     movementWeight: weight,
     baseSignal:     signal,
     connections:    _mergeConnections(existing.connections, entity.connections),
-    meta:           Object.assign({}, existing.meta || {}, entity.meta || {}),
+    meta:           Object.assign({}, existing.meta || {}, entity.meta || {})
   });
 
   _store.set(entity.id, merged);
@@ -210,5 +210,5 @@ module.exports = {
   clamp01,
   PHI,
   SAFETY_LEVEL,
-  VALID_NODES,
+  VALID_NODES
 };

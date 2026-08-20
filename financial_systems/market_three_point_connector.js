@@ -1,5 +1,5 @@
 /*
- * SOLIDARITY PLATFORM - IBM THREE-POINT CONNECTOR
+ * SOLIDARITY PLATFORM - MARKET THREE-POINT CONNECTOR
  * =================================================
  *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
@@ -19,7 +19,7 @@
  *
  * Point 2 – Ecosystem Entities
  *   Weighted aggregate of distributors, competitors, and suppliers.
- *   Competitor signals are inverted (strong competitor = pressure on IBM).
+ *   Competitor signals are inverted (strong competitor = pressure on core entity).
  *
  * Point 3 – Consistently-Profiting Investors
  *   Institutional money flow signal.  High signal = sustained buying.
@@ -32,21 +32,21 @@
 
 'use strict';
 
-const { seed: seedIBM, IBM_SEED } = require('./ibm_entities');
+const { seed: seedMarket, MARKET_SEED } = require('./market_entities');
 const registry = require('./entity_registry');
 
 // Ensure IBM ecosystem is seeded before we access entities
-seedIBM();
+seedMarket();
 
 const PHI          = 1.618;
 const SAFETY_LEVEL = 0.618;
 
 // Pull entity groups from the registry by role
 function _byRole(role) {
-  return IBM_SEED.filter(e => e.role === role).map(e => registry.get(e.id) || e);
+  return MARKET_SEED.filter(e => e.role === role).map(e => registry.get(e.id) || e);
 }
 
-const IBM_CORE    = registry.get('ibm') || IBM_SEED.find(e => e.id === 'ibm');
+const MARKET_CORE    = registry.get('ibm') || MARKET_SEED.find(e => e.id === 'ibm');
 const DISTRIBUTORS = _byRole('distributor');
 const COMPETITORS  = _byRole('competitor');
 const INVESTORS    = _byRole('investor');
@@ -66,7 +66,7 @@ const TIERS = Object.freeze([
   { name: 'OPTIMAL',        min: 0.25, max: 0.75 },
   { name: 'UPPER_CAUTION',  min: 0.75, max: 0.85 },
   { name: 'UPPER_WARNING',  min: 0.85, max: 0.95 },
-  { name: 'CRITICAL_UPPER', min: 0.95, max: 1.00 },
+  { name: 'CRITICAL_UPPER', min: 0.95, max: 1 },
 ]);
 
 /**
@@ -133,10 +133,10 @@ class IBMThreePointConnector {
    * @returns {{ signal: number, weight: number, tier: string }}
    */
   computePoint1(ibmSignalOverride) {
-    const override = this._signalOverrides[IBM_CORE.id];
+    const override = this._signalOverrides[MARKET_CORE.id];
     const raw = ibmSignalOverride !== undefined
       ? ibmSignalOverride
-      : (override !== undefined ? override : IBM_CORE.baseSignal);
+      : (override !== undefined ? override : MARKET_CORE.baseSignal);
     const signal = clamp(raw);
     return { signal, weight: W1, tier: resolveTier(signal) };
   }
@@ -144,7 +144,7 @@ class IBMThreePointConnector {
   /**
    * Compute Point 2: Ecosystem aggregate signal.
    * Distributors and suppliers contribute positively (good supply chain = positive).
-   * Competitors contribute inversely (strong competitor = downward pressure on IBM).
+   * Competitors contribute inversely (strong competitor = downward pressure on core entity).
    * @returns {{ signal: number, weight: number, tier: string, breakdown: object }}
    */
   computePoint2() {
@@ -223,8 +223,8 @@ class IBMThreePointConnector {
    */
   printReport() {
     const r = this.connect();
-    console.log('\n' + '═'.repeat(60));
-    console.log('IBM THREE-POINT CONNECTOR REPORT');
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log('MARKET THREE-POINT CONNECTOR REPORT');
     console.log('═'.repeat(60));
     console.log(`φ (phi)        : ${this.phi}`);
     console.log(`Safety Level   : ${this.safetyLevel}`);

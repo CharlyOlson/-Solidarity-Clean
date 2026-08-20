@@ -1,5 +1,5 @@
 /*
- * SOLIDARITY PLATFORM - IBM 4-WEEK WEEKLY FORECAST ENGINE
+ * SOLIDARITY PLATFORM - MARKET 4-WEEK WEEKLY FORECAST ENGINE
  * =========================================================
  *
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
@@ -65,9 +65,9 @@
 
 'use strict';
 
-const { fetchIBMMarketData, computeWeeklyChanges } = require('./ibm_market_data');
+const { fetchMarketData, computeWeeklyChanges } = require('./market_data_fetcher');
 const { project }         = require('./projection_engine');
-const { seed: seedIBM } = require('./ibm_entities');
+const { seed: seedMarket } = require('./market_entities');
 const registry            = require('./entity_registry');
 
 const PHI          = 1.618;
@@ -113,7 +113,7 @@ function signalToPrice(signal, high52, low52) {
  * @returns {Map<string, number>}
  */
 function buildBaseState() {
-  seedIBM();
+  seedMarket();
   const state = new Map();
   for (const e of registry.getAll()) {
     state.set(e.id, e.baseSignal);
@@ -327,8 +327,8 @@ function projectForwardWeeks(lastState, topLayer, structLayer, currentPrice, hig
  * Main entry point.
  * @returns {Promise<object>}
  */
-async function runIBMWeeklyForecast() {
-  const marketData = await fetchIBMMarketData();
+async function runMarketWeeklyForecast() {
+  const marketData = await fetchMarketData();
   const { currentPrice, high52, low52, weeklyCloses, live, timestamp } = marketData;
 
   const enriched          = computeWeeklyChanges(weeklyCloses);
@@ -355,7 +355,7 @@ async function runIBMWeeklyForecast() {
 
 /**
  * Print a formatted report to stdout.
- * @param {object} result  — from runIBMWeeklyForecast()
+ * @param {object} result  — from runMarketWeeklyForecast()
  */
 function printForecastReport(result) {
   const { currentPrice, high52, low52, anchorDate, scaffoldLayers, forecast, live, dataTimestamp } = result;
@@ -405,7 +405,7 @@ function printForecastReport(result) {
 }
 
 module.exports = {
-  runIBMWeeklyForecast,
+  runMarketWeeklyForecast,
   printForecastReport,
   buildWeeklyNetworkStates,
   buildScaffold,
