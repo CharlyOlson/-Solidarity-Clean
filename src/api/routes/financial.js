@@ -36,9 +36,7 @@ try {
 }
 
 // Constants
-const PHI = 1.618033988749;
-const BRIDGING_BASELINE = 0.618;
-const SACRED_NODES = [1, 3, 4, 7, 14, 21, 49];
+const { PHI, PHI_RECIPROCAL: BRIDGING_BASELINE, SACRED_NODES } = require('../../utils/constants');
 
 // In-memory state (replace with database in production)
 let walletManager = null;

@@ -22,12 +22,13 @@
 
 const path = require('path');
 const fs = require('fs');
+const { PHI, PHI_RECIPROCAL } = require('../src/utils/constants');
 
 class UnifiedSystemConfiguration {
   constructor() {
     this.version = '1.0.0';
-    this.baseRatio = 1.618;
-    this.bridgingBaseline = 0.618;
+    this.baseRatio = PHI;
+    this.bridgingBaseline = PHI_RECIPROCAL;
     
     // Load configuration files
     this.config = this.loadConfigurations();
@@ -328,8 +329,7 @@ class UnifiedSystemConfiguration {
  */
 function getSharedOperationalStatus() {
   const config = UnifiedSystemConfiguration.getInstance();
-  const phi = config.baseRatio || 1.618033988749895;
-  const baseline = config.bridgingBaseline || 0.618;
+  const baseline = config.bridgingBaseline || PHI_RECIPROCAL;
   // Operational percentage based on phi convergence
   return Math.round(baseline * 100);
 }

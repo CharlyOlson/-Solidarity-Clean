@@ -28,14 +28,15 @@
 
 const CoreMathematicsEngine = require('../utils/CoreMathematicsEngine');
 const { BridgingSafetyCoordinator } = require('../safety/BridgingSafetyCoordinator');
+const { PHI, PHI_RECIPROCAL } = require('../utils/constants');
 
 class ThreeBodyCoherence {
   constructor(config = {}) {
     this.version = '1.0.0';
 
     // The constant that governs orbital decay and attraction
-    this.PHI = 1.618033988749895;
-    this.PHI_INVERSE = 0.6180339887498949; // 1/PHI — the anchor ratio
+    this.PHI = PHI;
+    this.PHI_INVERSE = PHI_RECIPROCAL; // 1/PHI — the anchor ratio
 
     // The three bodies
     this.math = config.math || new CoreMathematicsEngine();
