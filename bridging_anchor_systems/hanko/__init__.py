@@ -2,7 +2,7 @@
 SOLIDARITY PLATFORM - MODULAR HANKO SYSTEM
 ==========================================
 
-TRADEMARK: Scott Charles Olson - March 31, 1997
+TRADEMARK: Scott Charles Olson
 """
 
 from .models import UserProfile, DeviceProfile, HankoStamp, PresenceScore

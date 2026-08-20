@@ -2,7 +2,7 @@
  * SOLIDARITY PLATFORM - QUIPNOTES SECURE BROWSER
  * ==============================================
  * 
- * TRADEMARK: Scott Charles Olson - March 31, 1997
+ * TRADEMARK: Scott Charles Olson
  * 
  * Whitelist-only browser with Ollama malware scanning
  */

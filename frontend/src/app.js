@@ -5,7 +5,7 @@
  * Auth State (authenticated): Profile, News, Markets, About, Subscribe,
  *   AI Chat, Wallets, Hanko Stamps, Devices, Calculator, Credits
  *
- * TRADEMARK: Scott Charles Olson — March 31, 1997
+ * TRADEMARK: Scott Charles Olson
  */
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';

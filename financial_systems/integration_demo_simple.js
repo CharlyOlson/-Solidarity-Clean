@@ -4,9 +4,7 @@
  * 
  * TRADEMARK INFORMATION - OFFICIALLY RECORDED AND UPDATED:
  * Owner: Scott Charles Olson
- * DOB: March 31, 1997
- * Phone: +1 (913) 548-5715
- * Location: Kansas, USA 66210
+ *
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
@@ -15,7 +13,7 @@ const PaymentConnector = require('./payment_connector');
 
 console.log('🚀 WALLET + PAYMENT CONNECTOR INTEGRATION DEMO');
 console.log('='.repeat(70));
-console.log('TRADEMARK: Scott Charles Olson - March 31, 1997\n');
+console.log('TRADEMARK: Scott Charles Olson\n');
 
 // Initialize systems
 const wallet = new WalletManager({ safetyLevel: 0.618, testMode: true });
