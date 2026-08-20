@@ -134,7 +134,6 @@ async function fetchIBMMarketData() {
     return { currentPrice, high52, low52, weeklyCloses, live: true, timestamp: new Date().toISOString() };
 
   } catch (_err) {
-    const closes = STATIC_WEEKLY_CLOSES.map(w => w.close);
     return {
       currentPrice: FALLBACK_CURRENT,
       high52:       FALLBACK_52H,
