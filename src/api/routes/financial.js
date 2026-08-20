@@ -27,6 +27,26 @@ if (!SIGNING_SECRET) {
   throw new Error('FINANCIAL_KEY_SECRET must be set in production to encrypt/sign wallet keys');
 }
 
+// ─── Production guard ────────────────────────────────────────────────────────
+// FINANCIAL_TEST_MODE controls whether this server can accept live (non-test)
+// financial operations.  It defaults to TRUE (safe / demo-only).
+// Set FINANCIAL_TEST_MODE=false in the environment ONLY after completing the
+// production readiness checklist in docs/PRODUCTION_CHECKLIST.md.
+const SERVER_TEST_MODE = process.env.FINANCIAL_TEST_MODE !== 'false';
+
+/**
+ * Resolve the effective testMode for a request.
+ * When the server is in enforced test mode (SERVER_TEST_MODE=true), the client
+ * cannot override this — all operations are treated as demo/test regardless of
+ * what the request body says.
+ */
+function resolveTestMode(body = {}) {
+  if (SERVER_TEST_MODE) return true;
+  // Server is explicitly set to production mode — honour the client flag,
+  // defaulting to true if not provided.
+  return body.testMode !== false;
+}
+
 const SAFETY_TIERS = [
   { label: 'emergency', min: 0, max: 0.05, canTransact: false, maxAmount: 0 },
   { label: 'warning', min: 0.05, max: 0.15, canTransact: true, maxAmount: 25 },
@@ -125,7 +145,7 @@ function validateSafetyLevel(level, amount = 0) {
 
 function buildWalletMetadata(body = {}) {
   return {
-    testMode: body.testMode !== false,
+    testMode: resolveTestMode(body),
     createdFrom: 'api',
     requestedAddress: body.address || null
   };
@@ -170,7 +190,7 @@ function verifyPayload(payload, signature, publicKey) {
 function buildTransactionRecord(wallet, body, currentStatus = 'executed') {
   const amount = Number(body.amount);
   const metadata = {
-    testMode: body.testMode !== false,
+    testMode: resolveTestMode(body),
     signerIdentity: wallet.signer_identity,
     submittedAt: new Date().toISOString(),
     signedAt: null,
@@ -894,7 +914,7 @@ router.post('/contract', (req, res, next) => {
       address,
       JSON.stringify(abi),
       JSON.stringify({ ...state, lastAction: 'registered' }),
-      req.body.testMode === false ? 0 : 1,
+      resolveTestMode(req.body) ? 1 : 0,
       Number(req.body.safetyLevel ?? getUserSafetyLevel(req.user.id))
     );
 
@@ -907,7 +927,7 @@ router.post('/contract', (req, res, next) => {
         chain,
         abi,
         state: { ...state, lastAction: 'registered' },
-        testMode: req.body.testMode === false ? false : true
+        testMode: resolveTestMode(req.body)
       }
     });
   } catch (error) {

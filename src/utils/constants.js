@@ -10,10 +10,13 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
-const PHI = 1.618033988749895; // Golden ratio
-const PHI_RECIPROCAL = 0.6180339887498948; // 1/phi
+const PHI = 1.618033988749895; // Golden ratio (precise)
+const PHI_RECIPROCAL = 0.6180339887498948; // 1/phi (precise)
 const BASE_RATIO = PHI;
-const BRIDGING_BASELINE = PHI_RECIPROCAL;
+// Platform anchor — intentionally 0.618 (3 decimal places) as defined in the
+// Henry numerological specification. PHI_RECIPROCAL is kept separately for
+// precise mathematical operations.
+const BRIDGING_BASELINE = 0.618;
 const HENRY_BASE = 7;
 const HENRY_DOUBLE = 14;
 const HENRY_SQUARE = 49;
