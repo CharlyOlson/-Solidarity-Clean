@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { BRIDGING_BASELINE } = require('../utils/constants');
 
 /**
  * Central Safety Coordinator that bridges safety levels across:
@@ -30,12 +31,12 @@ class BridgingSafetyCoordinator {
         
         // Component safety levels
         this.componentLevels = {
-            quantum: 0.618,        // Anchor Ratio - quantum coherence
-            launcher: 0.618,       // Launcher system safety  
-            solidarity: 0.618,     // Bridging processing safety
-            ai: 0.618,            // AI integration safety
-            colorMotion: 0.618,   // Color motion processing safety
-            system: 0.618         // Overall system safety
+            quantum:     BRIDGING_BASELINE, // Anchor Ratio - quantum coherence
+            launcher:    BRIDGING_BASELINE, // Launcher system safety  
+            solidarity:  BRIDGING_BASELINE, // Bridging processing safety
+            ai:          BRIDGING_BASELINE, // AI integration safety
+            colorMotion: BRIDGING_BASELINE, // Color motion processing safety
+            system:      BRIDGING_BASELINE  // Overall system safety
         };
         
         // Safety flow rules
@@ -153,13 +154,12 @@ class BridgingSafetyCoordinator {
         console.log('🚨 EMERGENCY STABILIZATION ACTIVATED');
         console.log(`📋 Reason: ${reason}`);
         
-        const bridgingBaseline = 0.618;
-        console.log(`🌟 Restoring all systems to Bridging Baseline: ${bridgingBaseline}`);
+        console.log(`🌟 Restoring all systems to Bridging Baseline: ${BRIDGING_BASELINE}`);
         
         // Set all components to Bridging Baseline
         for (const component in this.componentLevels) {
             if (component !== 'system') {
-                this.componentLevels[component] = bridgingBaseline;
+                this.componentLevels[component] = BRIDGING_BASELINE;
             }
         }
         
@@ -253,7 +253,7 @@ class BridgingSafetyCoordinator {
         
         // Return to Anchor Ratio
         console.log('\n🌟 Returning to Anchor Ratio stability...');
-        this.bridgeAllComponents(0.618);
+        this.bridgeAllComponents(BRIDGING_BASELINE);
     }
 }
 

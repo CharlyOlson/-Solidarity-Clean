@@ -13,6 +13,7 @@
 
 const express = require('express');
 const router = express.Router();
+const { PHI: BASE_RATIO, BRIDGING_BASELINE } = require('../../utils/constants');
 
 // Import the calculator (we'll create an enhanced version)
 const PaymentSavingsCalculator = require('../../../financial_systems/PaymentSavingsCalculator');
@@ -34,10 +35,6 @@ const SAFETY_THRESHOLDS = {
   UPPER_WARNING: { min: 0.85, max: 0.95, optimizationLevel: 'conservative', discount: 0.20 },
   CRITICAL_UPPER: { min: 0.95, max: 1.00, optimizationLevel: 'minimal', discount: 0.10 }
 };
-
-// Constants
-const BASE_RATIO = 1.618;
-const BRIDGING_BASELINE = 0.618;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS

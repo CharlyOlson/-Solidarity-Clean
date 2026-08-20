@@ -8,10 +8,12 @@
  * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 
+const { PHI, SACRED_NODES } = require('../utils/constants');
+
 class SacredNumericSequence {
     constructor() {
-        this.phi = 1.618033988749;
-        this.sacredNodes = [1, 3, 4, 7, 14, 21, 49];
+        this.phi = PHI;
+        this.sacredNodes = SACRED_NODES;
     }
 
     generateSequenceReport() {
