@@ -126,6 +126,9 @@ router.post('/complete', optionalAuth, (req, res) => {
 // GET /api/session/completion-reports — Retrieve completion markers
 router.get('/completion-reports', optionalAuth, (req, res) => {
   try {
+    if (!req.user || req.user.id === 'demo-user') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
     const reports = stmts.listSessionCompletionReportsByUser.all(req.user.id).map((row) => ({
       id: row.id,
       sessionId: row.session_id,
