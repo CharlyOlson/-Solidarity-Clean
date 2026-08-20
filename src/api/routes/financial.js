@@ -37,8 +37,6 @@ const SAFETY_TIERS = [
   { label: 'critical-upper', min: 0.95, max: 1.01, canTransact: false, maxAmount: 0 }
 ];
 
-router.use(optionalAuth);
-
 const financialRateLimit = rateLimit({
   windowMs: 60 * 1000,
   max: 120,
@@ -47,6 +45,7 @@ const financialRateLimit = rateLimit({
 });
 
 router.use(financialRateLimit);
+router.use(optionalAuth);
 
 function stableStringify(value) {
   if (value === null || typeof value !== 'object') {
