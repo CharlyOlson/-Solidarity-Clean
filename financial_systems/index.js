@@ -35,6 +35,7 @@ const { computeTriangle } = require('./three_point_connector');
 const { buildNetwork, toRenderableGraph, printReport } = require('./triangle_network');
 const { project, printProjection } = require('./projection_engine');
 const { runStressTest }   = require('./market_stress_test');
+const { runIBMWeeklyForecast, printForecastReport } = require('./ibm_weekly_forecast');
 
 /**
  * Run a full market projection for any registered entity.
@@ -391,6 +392,9 @@ module.exports = {
   project,
   runStressTest,
   runMarketProjection,
+  // IBM 4-week living-network forecast
+  runIBMWeeklyForecast,
+  printForecastReport,
 };
 
 // Demo — boots the whole system
