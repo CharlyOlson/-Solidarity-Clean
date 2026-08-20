@@ -65,6 +65,7 @@ router.post('/chat', optionalAuth, async (req, res) => {
       success: false,
       error: err.message,
       offline: true,
+      provider: 'none',
       fallbackSuggestion: 'Verify the local AI service is available, or retry once system health returns to optimal range.',
     });
   }
@@ -74,9 +75,10 @@ router.post('/chat', optionalAuth, async (req, res) => {
 router.get('/live-context', optionalAuth, async (req, res) => {
   try {
     const status = await aiRouter.getStatus();
-    const provider = status.ollama?.available
-      ? 'ollama'
-      : (status.tier === 'business' && status.perplexity?.configured ? 'perplexity' : 'none');
+    const aiAvailable = (status.ollama && status.ollama.available) || (status.perplexity && status.perplexity.configured) || false;
+    const provider = (status.ollama && status.ollama.available) ? 'ollama'
+      : (status.perplexity && status.perplexity.configured) ? 'perplexity'
+      : 'none';
     res.json({
       success: true,
       safetyLevel: BRIDGING_BASELINE,
@@ -88,9 +90,9 @@ router.get('/live-context', optionalAuth, async (req, res) => {
         square: HENRY_SQUARE,
         controlRatio: CONTROL_RATIO,
       },
-      flowMode: status.coherence?.mode || 'standard',
+      flowMode: status.coherence?.mode || (aiAvailable ? 'active' : 'offline'),
       context: {
-        aiAvailable: status.ollama?.available || false,
+        aiAvailable,
         provider,
         systemHealth: 'operational',
         timestamp: new Date().toISOString(),
@@ -108,13 +110,8 @@ router.get('/live-context', optionalAuth, async (req, res) => {
         square: HENRY_SQUARE,
         controlRatio: CONTROL_RATIO,
       },
-      flowMode: 'standard',
-      context: {
-        aiAvailable: false,
-        provider: 'none',
-        systemHealth: 'operational',
-        timestamp: new Date().toISOString()
-      }
+      flowMode: 'offline',
+      context: { aiAvailable: false, provider: 'none', systemHealth: 'operational', timestamp: new Date().toISOString() },
     });
   }
 });
