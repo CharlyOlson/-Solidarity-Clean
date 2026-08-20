@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS financial_wallets (
   address TEXT NOT NULL,
   signer_identity TEXT NOT NULL,
   public_key TEXT NOT NULL,
-  private_key TEXT NOT NULL,
+  private_key TEXT NOT NULL, -- AES-256-GCM encrypted; never stored in plaintext
   safety_level REAL DEFAULT 0.618,
   node INTEGER DEFAULT 7,
   balance REAL DEFAULT 0,

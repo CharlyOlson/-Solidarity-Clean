@@ -192,7 +192,7 @@ function buildTransactionRecord(wallet, body, currentStatus = 'executed') {
     chain: body.chain || wallet.chain,
     type: body.type || 'transfer',
     status: currentStatus,
-    safetyLevel: body.safetyLevel ?? wallet.safety_level ?? BRIDGING_BASELINE,
+    safetyLevel: wallet.safety_level ?? BRIDGING_BASELINE,
     signerIdentity: wallet.signer_identity,
     timestamp,
     metadata
@@ -458,7 +458,7 @@ router.post('/transaction', (req, res, next) => {
       return res.status(400).json({ success: false, error: 'walletId, to, and positive amount are required' });
     }
 
-    const safetyLevel = Number(req.body.safetyLevel ?? wallet.safety_level);
+    const safetyLevel = Number(wallet.safety_level);
     const safetyValidation = validateSafetyLevel(safetyLevel, amount);
     if (!safetyValidation.valid) {
       return res.status(403).json({ success: false, error: safetyValidation.error, tier: safetyValidation.tier?.label });
