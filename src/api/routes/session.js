@@ -83,6 +83,9 @@ router.get('/history', optionalAuth, (req, res) => {
 // POST /api/session/complete — Record completion marker and metrics
 router.post('/complete', optionalAuth, (req, res) => {
   try {
+    if (!req.user || req.user.id === 'demo-user') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
     const {
       sessionId,
       filesModified = 0,
