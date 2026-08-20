@@ -32,10 +32,25 @@
 
 'use strict';
 
-const {
-  IBM_CORE, DISTRIBUTORS, COMPETITORS, INVESTORS, SUPPLIERS,
-  PHI, SAFETY_LEVEL, totalWeight,
-} = require('./ibm_entities');
+const { seed: seedIBM, IBM_SEED } = require('./ibm_entities');
+const registry = require('./entity_registry');
+
+// Ensure IBM ecosystem is seeded before we access entities
+seedIBM();
+
+const PHI          = 1.618;
+const SAFETY_LEVEL = 0.618;
+
+// Pull entity groups from the registry by role
+function _byRole(role) {
+  return IBM_SEED.filter(e => e.role === role).map(e => registry.get(e.id) || e);
+}
+
+const IBM_CORE    = registry.get('ibm') || IBM_SEED.find(e => e.id === 'ibm');
+const DISTRIBUTORS = _byRole('distributor');
+const COMPETITORS  = _byRole('competitor');
+const INVESTORS    = _byRole('investor');
+const SUPPLIERS    = _byRole('supplier');
 
 // φ-power weights for the three points
 const W1 = PHI * PHI;  // ~2.618  — core financials (highest)
