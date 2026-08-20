@@ -288,7 +288,7 @@ function projectForwardWeeks(lastState, topLayer, structLayer, currentPrice, hig
     // Per-entity snapshot
     const entitySnapshots = Array.from(next.entries()).map(([id, sig]) => {
       const e     = registry.get(id);
-      const prev  = state.get(id) || sig;
+      const prev  = state.get(id) ?? sig;
       return {
         id,
         name:   e ? e.name : id,
