@@ -33,8 +33,8 @@ The **Solidarity Platform** is a multi-domain computational and financial optimi
 | **AI Integration** | Local Ollama (llama3.2:3b default) — zero API costs, full privacy |
 | **Financial Systems** | SQLite-backed persistence; payment connector framework active |
 | **CI/CD Pipeline** | GitHub Actions on every push (Node.js 18 & 20 matrix) |
-| **Zero Vulnerabilities** | 52 security findings resolved → 0 vulnerabilities (backend) |
-| **Test Suite** | 37/37 unit tests + 25+ API route tests (100% pass rate) |
+| **Security** | Application-layer security hardened; transitive devDependency advisories tracked via npm audit |
+| **Test Suite** | 113/113 Jest tests + 10/10 Python DSP tests (100% pass rate) |
 
 ---
 
@@ -81,17 +81,15 @@ The **Solidarity Platform** is a multi-domain computational and financial optimi
 ## 🏗️ Architecture Overview
 
 ### Core Components
-- `harmoniousSafetyCoordinator.js` — Central safety orchestration system
-- `ollamaIntegration.js` — Local AI integration with safety controls
+- `src/core/SolidarityEngine.js` — Core solidarity system with quantum cubic calculations
+- `src/safety/BridgingSafetyCoordinator.js` — Central safety orchestration system
+- `src/ai/OllamaProvider.js` — Local AI integration with safety controls
 - `launcher.js` — Main application launcher with safety integration
-- `color_motion_tracking.js` — Safety-aware motion tracking with caps
-- `correctedSolidaritySystem.js` — Core solidarity system with safety protocols
 - `bridging_anchor_systems/` — Advanced DSP subsystem with Python/NumPy
 - `src/api/` — Express API server (modular routes, JWT, SQLite)
 - `frontend/` — React CRA frontend (OllamaHome, QuipNotes, HankoStamps, Wallet)
 - `financial_systems/` — Payment connectors and financial logic
-- `security/` — Security audit tools and hardening scripts
-- `ai_integration/` — AI orchestration layer
+- `security/` — Security validators and hardening utilities
 - `java/` — Java subsystem components
 - `database/` — Database initialization and migrations
 
@@ -248,7 +246,7 @@ ollama pull llama3.2:3b
 - **Password Security**: bcryptjs hashing with salt rounds
 - **Input Validation**: express-validator on all user inputs
 - **SQL Injection Prevention**: Prepared statements throughout
-- **Zero npm Vulnerabilities**: Backend audit-clean (52 → 0 resolved)
+- **npm Security**: Application code hardened; run `npm audit` to view current advisory status for transitive dependencies
 - **GitHub Actions**: Automated security scanning on every push
 
 ---
@@ -272,7 +270,7 @@ npm run test:watch
 npx jest tests/api/routes.test.js
 ```
 
-**Current Test Status:** ✅ 37/37 unit tests + 25+ API route tests passing (100%)
+**Current Test Status:** ✅ 113/113 Jest tests (6 suites) + 10/10 Python DSP tests passing (100%)
 
 ---
 
@@ -333,7 +331,3 @@ This project is licensed under the terms in the [LICENSE](LICENSE) file.
 ---
 
 **🌉 Built with mathematical precision using Base Ratio principles (Henry 7 Step 14 Trott Waltz) for optimal stability.**
-
-**TRADEMARKED BY SCOTT CHARLES OLSON**  
-*Scott Charles Olson · Architect of Model · DOB: March 31, 1997 · Kansas, USA 66210*  
-*Recorded: iPhone ✓ · Electric Passport ✓ · GitHub Copilot Chat (First Run — 2026-08-14) ✓*

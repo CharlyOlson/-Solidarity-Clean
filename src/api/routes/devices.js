@@ -12,9 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
-
-// φ-ratio constant
-const PHI = 1.618033988749895;
+const { PHI } = require('../../utils/constants');
 
 // Device state (in production, use database)
 let devices = [
