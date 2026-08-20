@@ -65,7 +65,7 @@
 
 'use strict';
 
-const { fetchIBMMarketData, computeWeeklyChanges, priceToSignal } = require('./ibm_market_data');
+const { fetchIBMMarketData, computeWeeklyChanges } = require('./ibm_market_data');
 const { project }         = require('./projection_engine');
 const { seed: seedIBM, IBM_SEED } = require('./ibm_entities');
 const registry            = require('./entity_registry');
